@@ -13,7 +13,6 @@ import GeneratedImage from "./image-generator/GeneratedImage";
 import Header from "./image-generator/Header";
 import Title from "./image-generator/Title";
 import PromptInput from "./image-generator/PromptInput";
-import SampleImages from "./image-generator/SampleImages";
 
 const ImageGenerator = () => {
   const [prompt, setPrompt] = useState("");
@@ -202,8 +201,6 @@ const ImageGenerator = () => {
               prompt={prompt}
             />
           )}
-
-          {!image && <SampleImages />}
         </div>
       )}
     </div>
