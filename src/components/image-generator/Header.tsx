@@ -16,15 +16,18 @@ const Header = ({ onSignOut }: HeaderProps) => {
 
   const handleHomeClick = () => {
     console.log("Home button clicked");
-    window.location.href = '/';
+    navigate('/');
   };
 
   const handleSignOut = async () => {
     try {
+      console.log("Starting sign out process");
       await signOut();
       await onSignOut();
+      console.log("Sign out successful, navigating to auth page");
       toast.success("Signed out successfully");
-      navigate('/auth');
+      // Use navigate instead of direct URL change for better state management
+      navigate('/auth', { replace: true });
     } catch (error: any) {
       console.error("Sign out error:", error);
       toast.error("Failed to sign out");

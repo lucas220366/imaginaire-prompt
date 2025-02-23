@@ -24,6 +24,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("Initial session:", session?.user?.id);
       setSession(session);
       setIsLoading(false);
     });
@@ -31,9 +32,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       console.log("Auth state changed:", _event, session?.user?.id);
-      setSession(session);
+      
+      // If signing out, ensure we clear the session completely
+      if (_event === 'SIGNED_OUT') {
+        setSession(null);
+        // Force refresh the Supabase client
+        await supabase.auth.getSession();
+      } else {
+        setSession(session);
+      }
+      
       setIsLoading(false);
     });
 
@@ -42,9 +52,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signOut = async () => {
     try {
+      console.log("Signing out...");
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
+      
+      // Explicitly clear the session
       setSession(null);
+      
+      // Force a session refresh
+      await supabase.auth.getSession();
+      
+      console.log("Sign out complete");
     } catch (error) {
       console.error("Error signing out:", error);
       throw error;
