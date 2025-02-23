@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,42 @@ export const PasswordResetForm = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const setupRecoverySession = async () => {
+      try {
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const accessToken = hashParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token');
+
+        if (!accessToken || !refreshToken) {
+          toast.error("Invalid password reset link");
+          navigate("/auth");
+          return;
+        }
+
+        const { data, error } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+
+        if (error || !data.session) {
+          console.error("Error setting recovery session:", error);
+          toast.error("Invalid or expired recovery link");
+          navigate("/auth");
+          return;
+        }
+
+        console.log("Recovery session established");
+      } catch (error) {
+        console.error("Recovery setup error:", error);
+        toast.error("Failed to setup recovery session");
+        navigate("/auth");
+      }
+    };
+
+    setupRecoverySession();
+  }, [navigate]);
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();

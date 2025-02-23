@@ -21,13 +21,6 @@ const Auth = () => {
     }
   }, [session, navigate, isRecoveryFlow]);
 
-  useEffect(() => {
-    if (isRecoveryFlow && !hashParams.get('access_token')) {
-      toast.error("Invalid password reset link");
-      navigate("/auth");
-    }
-  }, [isRecoveryFlow, navigate]);
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-blue-50">
       {isRecoveryFlow ? <PasswordResetForm /> : <AuthForm />}

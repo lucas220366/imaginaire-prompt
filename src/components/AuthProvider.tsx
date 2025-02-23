@@ -22,27 +22,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Handle recovery tokens in URL
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const accessToken = hashParams.get('access_token');
-    const refreshToken = hashParams.get('refresh_token');
-
-    if (accessToken && refreshToken) {
-      // Set session if we have recovery tokens
-      supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken,
-      }).then(({ data: { session } }) => {
-        console.log("Setting session from recovery tokens");
-        setSession(session);
-        setIsLoading(false);
-      }).catch((error) => {
-        console.error("Error setting recovery session:", error);
-        setIsLoading(false);
-      });
-      return;
-    }
-
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       console.log("Initial session:", session?.user?.id);
