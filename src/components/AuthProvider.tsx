@@ -38,13 +38,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       // If signing out, ensure we clear the session completely
       if (_event === 'SIGNED_OUT') {
         setSession(null);
-        // Force refresh the Supabase client
-        await supabase.auth.getSession();
+        setIsLoading(false);
+        // Clear any local storage related to auth
+        localStorage.removeItem('sb-' + import.meta.env.VITE_SUPABASE_PROJECT_ID + '-auth-token');
+        window.location.href = '/auth';
       } else {
         setSession(session);
+        setIsLoading(false);
       }
-      
-      setIsLoading(false);
     });
 
     return () => subscription.unsubscribe();
@@ -53,14 +54,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signOut = async () => {
     try {
       console.log("Signing out...");
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      await supabase.auth.signOut();
       
       // Explicitly clear the session
       setSession(null);
       
-      // Force a session refresh
-      await supabase.auth.getSession();
+      // Clear any local storage related to auth
+      localStorage.removeItem('sb-' + import.meta.env.VITE_SUPABASE_PROJECT_ID + '-auth-token');
+      
+      // Force a page reload to clear any cached states
+      window.location.href = '/auth';
       
       console.log("Sign out complete");
     } catch (error) {

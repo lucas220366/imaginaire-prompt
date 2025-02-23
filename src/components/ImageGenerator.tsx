@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthProvider";
@@ -8,7 +7,6 @@ import Header from "./image-generator/Header";
 import ImageGeneratorContent from "./image-generator/ImageGeneratorContent";
 import APIKeyValidator from "./image-generator/APIKeyValidator";
 import ImageGenerationHandler from "./image-generator/ImageGenerationHandler";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const ImageGenerator = () => {
@@ -18,7 +16,7 @@ const ImageGenerator = () => {
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('runwareApiKey') || "");
   const [isApiKeySet, setIsApiKeySet] = useState(() => Boolean(localStorage.getItem('runwareApiKey')));
   const navigate = useNavigate();
-  const { session } = useAuth();
+  const { session, signOut } = useAuth();
   const [settings, setSettings] = useState<ImageSettings>({
     size: "1024x1024",
     format: "PNG",
@@ -28,10 +26,9 @@ const ImageGenerator = () => {
   const handleSignOut = async () => {
     try {
       console.log("Starting sign out process");
-      await supabase.auth.signOut();
-      console.log("Sign out successful, navigating to auth page");
+      await signOut();
+      console.log("Sign out successful");
       toast.success("Signed out successfully");
-      window.location.href = '/auth';
     } catch (error: any) {
       console.error("Sign out error:", error);
       toast.error("Failed to sign out");
