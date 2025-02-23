@@ -11,41 +11,35 @@ export const PasswordResetForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Set the access token from the URL hash if present
   useEffect(() => {
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
     const accessToken = hashParams.get('access_token');
-    const refreshToken = hashParams.get('refresh_token');
     
-    if (accessToken && refreshToken) {
-      console.log("Setting session from recovery token");
-      supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken,
-      }).then(({ error }) => {
-        if (error) {
-          console.error("Error setting session:", error);
-          toast.error("Error setting up password reset. Please try again.");
-        }
-      });
-    } else {
-      console.error("Missing tokens in URL");
-      toast.error("Invalid password reset link. Please request a new one.");
+    if (!accessToken) {
+      toast.error("Invalid password reset link");
+      navigate("/auth");
+      return;
     }
-  }, []);
 
-  const handleUpdatePassword = async (newPassword: string) => {
+    // Set the session with the access token
+    supabase.auth.setSession({
+      access_token: accessToken,
+      refresh_token: hashParams.get('refresh_token') || '',
+    }).catch((error) => {
+      console.error("Error setting session:", error);
+      toast.error("Error setting up password reset");
+      navigate("/auth");
+    });
+  }, [navigate]);
+
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
     try {
       setIsLoading(true);
       
-      // First verify we have an active session
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        throw new Error("No active session. Please request a new password reset link.");
-      }
-
       const { error } = await supabase.auth.updateUser({
-        password: newPassword
+        password: password
       });
 
       if (error) throw error;
@@ -54,7 +48,7 @@ export const PasswordResetForm = () => {
       navigate("/generator");
     } catch (error: any) {
       console.error("Password update error:", error);
-      toast.error(error.message);
+      toast.error(error.message || "Failed to update password");
     } finally {
       setIsLoading(false);
     }
@@ -68,10 +62,7 @@ export const PasswordResetForm = () => {
           <p className="text-gray-600 mt-2">Enter your new password</p>
         </div>
 
-        <form onSubmit={(e) => {
-          e.preventDefault();
-          handleUpdatePassword(password);
-        }} className="space-y-4">
+        <form onSubmit={handleUpdatePassword} className="space-y-4">
           <div>
             <Input
               type="password"
