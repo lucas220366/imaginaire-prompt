@@ -15,8 +15,12 @@ const Header = ({ onSignOut }: HeaderProps) => {
 
   const handleHomeClick = () => {
     console.log("Home button clicked");
-    // Force navigation and clear replace history
     window.location.href = '/';
+  };
+
+  const handleSignOut = async () => {
+    await onSignOut();
+    navigate('/');
   };
 
   return (
@@ -36,7 +40,7 @@ const Header = ({ onSignOut }: HeaderProps) => {
         Profile
       </Button>
       <Button
-        onClick={onSignOut}
+        onClick={handleSignOut}
         variant="outline"
       >
         <LogOut className="mr-2 h-4 w-4" />
