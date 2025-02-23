@@ -106,7 +106,6 @@ export class RunwareService {
       
       console.log("Sending authentication message");
       
-      // Set up a one-time authentication callback
       const authCallback = (event: MessageEvent) => {
         const response = JSON.parse(event.data);
         if (response.data?.[0]?.taskType === "authentication") {
@@ -131,10 +130,10 @@ export class RunwareService {
     const taskUUID = crypto.randomUUID();
     
     return new Promise((resolve, reject) => {
-      // Create base message first
-      const baseMessage = {
+      const requestMessage = {
         taskType: "imageInference",
         taskUUID,
+        positivePrompt: params.positivePrompt,
         model: "runware:100@1",
         width: params.width || 1024,
         height: params.height || 1024,
@@ -144,22 +143,10 @@ export class RunwareService {
         scheduler: "FlowMatchEulerDiscreteScheduler",
         strength: 0.8,
         lora: [],
+        outputFormat: params.outputFormat
       };
 
-      // Merge with provided params, ensuring outputFormat is included
-      const message = [{
-        ...baseMessage,
-        ...params,
-        outputFormat: params.outputFormat || "PNG",
-      }];
-
-      if (!params.seed) {
-        delete message[0].seed;
-      }
-
-      if (message[0].model === "runware:100@1") {
-        delete message[0].promptWeighting;
-      }
+      const message = [requestMessage];
 
       console.log("Sending image generation message:", message);
 
