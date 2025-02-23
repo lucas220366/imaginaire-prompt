@@ -143,7 +143,7 @@ const ImageGenerator = () => {
                   )}
                 </Button>
               </div>
-              <p className="text-sm text-gray-600 mt-2">
+              <p className="text-sm text-gray-600 mt-2 font-bold">
                 For optimal results try to be specific, include clear details about your subject, style, and mood for
               </p>
             </div>
