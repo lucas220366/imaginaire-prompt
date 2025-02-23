@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, Download } from "lucide-react";
 import { toast } from "sonner";
 import { RunwareService } from '@/lib/runware';
 
@@ -30,6 +30,27 @@ const ImageGenerator = () => {
       console.error(error);
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  const handleDownload = async () => {
+    if (!image) return;
+    
+    try {
+      const response = await fetch(image);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `generated-image-${Date.now()}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      toast.success("Image downloaded successfully!");
+    } catch (error) {
+      toast.error("Failed to download image. Please try again.");
+      console.error(error);
     }
   };
 
@@ -108,12 +129,22 @@ const ImageGenerator = () => {
           {image && (
             <div className="w-full max-w-3xl animate-fade-up">
               <div className="bg-white/50 backdrop-blur-lg rounded-lg p-4 shadow-lg border border-gray-100">
-                <img
-                  src={image}
-                  alt={prompt}
-                  className="w-full h-auto rounded-lg shadow-sm"
-                  loading="lazy"
-                />
+                <div className="relative">
+                  <img
+                    src={image}
+                    alt={prompt}
+                    className="w-full h-auto rounded-lg shadow-sm"
+                    loading="lazy"
+                  />
+                  <Button
+                    onClick={handleDownload}
+                    className="absolute top-4 right-4 bg-white/80 hover:bg-white"
+                    size="icon"
+                    variant="outline"
+                  >
+                    <Download className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </div>
           )}
