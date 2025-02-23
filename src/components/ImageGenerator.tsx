@@ -8,6 +8,18 @@ import { RunwareService } from '@/lib/runware';
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthProvider";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+interface ImageSettings {
+  size: "512x512" | "1024x1024" | "1536x1536";
+  format: "PNG" | "JPEG";
+}
 
 const ImageGenerator = () => {
   const [prompt, setPrompt] = useState("");
@@ -17,6 +29,10 @@ const ImageGenerator = () => {
   const [isApiKeySet, setIsApiKeySet] = useState(() => Boolean(localStorage.getItem('runwareApiKey')));
   const navigate = useNavigate();
   const { session } = useAuth();
+  const [settings, setSettings] = useState<ImageSettings>({
+    size: "1024x1024",
+    format: "PNG"
+  });
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -31,11 +47,16 @@ const ImageGenerator = () => {
 
     setIsGenerating(true);
     try {
+      const [width, height] = settings.size.split("x").map(Number);
       const runware = new RunwareService(apiKey);
-      const result = await runware.generateImage({ positivePrompt: prompt });
+      const result = await runware.generateImage({ 
+        positivePrompt: prompt,
+        width,
+        height,
+        outputFormat: settings.format
+      });
       setImage(result.imageURL);
       
-      // Save the generated image to the user's account
       if (session?.user) {
         const { error } = await supabase
           .from('generated_images')
@@ -156,6 +177,47 @@ const ImageGenerator = () => {
           </div>
 
           <div className="bg-white/50 backdrop-blur-lg rounded-lg p-6 shadow-lg border border-gray-100">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label htmlFor="size" className="block text-sm font-medium text-gray-700 mb-1">
+                  Image Size
+                </label>
+                <Select
+                  value={settings.size}
+                  onValueChange={(value: ImageSettings["size"]) => 
+                    setSettings(prev => ({ ...prev, size: value }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select size" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="512x512">512 x 512</SelectItem>
+                    <SelectItem value="1024x1024">1024 x 1024</SelectItem>
+                    <SelectItem value="1536x1536">1536 x 1536</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label htmlFor="format" className="block text-sm font-medium text-gray-700 mb-1">
+                  Image Format
+                </label>
+                <Select
+                  value={settings.format}
+                  onValueChange={(value: ImageSettings["format"]) => 
+                    setSettings(prev => ({ ...prev, format: value }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select format" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="PNG">PNG</SelectItem>
+                    <SelectItem value="JPEG">JPEG</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
             <div className="flex gap-2">
               <Input
                 placeholder="Describe the image you want to generate... (e.g., 'A serene mountain landscape at sunset')"
