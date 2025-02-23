@@ -15,19 +15,35 @@ export const PasswordResetForm = () => {
   useEffect(() => {
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
     const accessToken = hashParams.get('access_token');
+    const refreshToken = hashParams.get('refresh_token');
     
-    if (accessToken) {
+    if (accessToken && refreshToken) {
       console.log("Setting session from recovery token");
       supabase.auth.setSession({
         access_token: accessToken,
-        refresh_token: hashParams.get('refresh_token') || '',
+        refresh_token: refreshToken,
+      }).then(({ error }) => {
+        if (error) {
+          console.error("Error setting session:", error);
+          toast.error("Error setting up password reset. Please try again.");
+        }
       });
+    } else {
+      console.error("Missing tokens in URL");
+      toast.error("Invalid password reset link. Please request a new one.");
     }
   }, []);
 
   const handleUpdatePassword = async (newPassword: string) => {
     try {
       setIsLoading(true);
+      
+      // First verify we have an active session
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error("No active session. Please request a new password reset link.");
+      }
+
       const { error } = await supabase.auth.updateUser({
         password: newPassword
       });
@@ -35,8 +51,6 @@ export const PasswordResetForm = () => {
       if (error) throw error;
       
       toast.success("Password updated successfully!");
-      // Clear the URL hash after successful password reset
-      window.location.hash = '';
       navigate("/generator");
     } catch (error: any) {
       console.error("Password update error:", error);

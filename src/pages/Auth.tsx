@@ -34,17 +34,10 @@ const Auth = () => {
 
     // Then check query parameters
     const searchParams = new URLSearchParams(window.location.search);
-    const type = searchParams.get('type');
-    const accessToken = searchParams.get('access_token');
-
-    if (type === 'recovery' && accessToken) {
-      console.log('Recovery flow detected from query');
-      return;
-    }
-
-    // Handle potential errors
     const error = searchParams.get('error');
     const errorDescription = searchParams.get('error_description');
+
+    // Handle potential errors
     if (error) {
       console.error('Auth error:', error, errorDescription);
       toast.error(errorDescription || 'Authentication error occurred');
