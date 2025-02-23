@@ -78,8 +78,17 @@ const ImageGenerator = () => {
   }, []);
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    navigate("/auth");
+    try {
+      console.log("Starting sign out process");
+      await supabase.auth.signOut();
+      console.log("Sign out successful, navigating to auth page");
+      toast.success("Signed out successfully");
+      // Force page reload to clear any cached states
+      window.location.href = '/auth';
+    } catch (error: any) {
+      console.error("Sign out error:", error);
+      toast.error("Failed to sign out");
+    }
   };
 
   const handleGenerate = async () => {
