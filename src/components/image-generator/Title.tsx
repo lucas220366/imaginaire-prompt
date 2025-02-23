@@ -6,7 +6,7 @@ const Title = () => {
   return (
     <div className="text-center space-y-4">
       <div className="flex justify-center">
-        <Rocket className="h-12 w-12 text-blue-500 animate-bounce" />
+        <Rocket className="h-12 w-12 text-[#0FA0CE] animate-bounce" />
       </div>
       <h1 className="text-3xl font-bold text-gray-800">AI Image Generator</h1>
       <p className="text-gray-600 max-w-2xl mx-auto">
