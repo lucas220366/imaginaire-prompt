@@ -1,3 +1,4 @@
+
 import { toast } from "sonner";
 
 const API_ENDPOINT = "wss://ws-api.runware.ai/v1";
@@ -136,7 +137,7 @@ export class RunwareService {
         width: 1024,
         height: 1024,
         numberResults: params.numberResults || 1,
-        outputFormat: "PNG", // Changed from WEBP to PNG
+        outputFormat: params.outputFormat || "PNG", // Changed from WEBP to PNG
         steps: 4,
         CFGScale: params.CFGScale || 1,
         scheduler: params.scheduler || "FlowMatchEulerDiscreteScheduler",
