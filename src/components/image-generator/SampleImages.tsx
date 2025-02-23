@@ -13,7 +13,7 @@ const sampleImages = [
   },
   {
     url: "/lovable-uploads/d795f3ed-1ece-45dc-a78f-b9f46602157f.png",
-    style: "Pixar Style"
+    style: "Digital Art Style"
   }
 ];
 
