@@ -22,6 +22,7 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/auth" element={session ? <Navigate to="/generator" /> : <Auth />} />
+      <Route path="/auth/reset-password" element={<Auth />} />
       <Route
         path="/generator"
         element={
