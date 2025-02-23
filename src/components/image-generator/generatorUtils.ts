@@ -1,3 +1,4 @@
+
 import { RunwareService } from '@/lib/runware';
 import { toast } from "sonner";
 
@@ -27,15 +28,17 @@ const generateVideoWithRunway = async (prompt: string, apiKey: string): Promise<
     }),
   });
 
+  const result = await response.json();
+  console.log('RunwayML API Response:', result); // Debug log
+
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Failed to generate video');
+    throw new Error(result.error || 'Failed to generate video');
   }
 
-  const result = await response.json();
   if (!result.output?.video) {
     throw new Error('No video URL in response');
   }
+
   return { videoUrl: result.output.video };
 };
 
@@ -62,6 +65,9 @@ export const generateContent = async (
 
     try {
       const result = await generateVideoWithRunway(prompt, runwayApiKey);
+      if (!result.videoUrl) {
+        throw new Error('Invalid video URL received from RunwayML');
+      }
       return { imageURL: null, videoURL: result.videoUrl };
     } catch (error) {
       console.error('RunwayML error:', error);

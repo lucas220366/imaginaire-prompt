@@ -29,8 +29,14 @@ const GeneratedContent = ({ image, video, prompt, onDownload }: GeneratedContent
             <video
               src={video}
               controls
+              autoPlay
+              playsInline
+              loop
               className="w-full h-auto rounded-lg shadow-sm"
-            />
+            >
+              <source src={video} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
           )}
           <Button
             onClick={onDownload}
