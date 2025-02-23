@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,34 @@ export const PasswordResetForm = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  // Get the recovery token from the URL when the component mounts
+  useEffect(() => {
+    const setupRecoverySession = async () => {
+      try {
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const recoveryToken = hashParams.get('access_token');
+
+        if (recoveryToken) {
+          console.log("Found recovery token, setting up session");
+          const { data, error } = await supabase.auth.refreshSession({
+            refresh_token: recoveryToken
+          });
+
+          if (error) {
+            console.error("Error setting up recovery session:", error);
+            toast.error("Error setting up recovery session");
+          } else if (data?.session) {
+            console.log("Recovery session established");
+          }
+        }
+      } catch (error) {
+        console.error("Error in recovery setup:", error);
+      }
+    };
+
+    setupRecoverySession();
+  }, []);
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,6 +58,9 @@ export const PasswordResetForm = () => {
       if (data.user) {
         console.log("Password updated successfully for user:", data.user.id);
         toast.success("Password updated successfully!");
+        
+        // Clear the hash and navigate
+        window.location.hash = '';
         navigate("/generator", { replace: true });
       }
     } catch (error: any) {
