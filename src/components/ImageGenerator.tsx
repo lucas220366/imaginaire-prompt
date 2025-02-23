@@ -165,18 +165,18 @@ const ImageGenerator = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
                 {
-                  url: "https://images.unsplash.com/photo-1534447677768-be436bb09401",
-                  prompt: "A surreal underwater scene with bioluminescent jellyfish and coral reefs in neon colors, creating a magical deep-sea atmosphere",
+                  url: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809",
+                  prompt: "A mesmerizing abstract composition with swirling iridescent liquid colors, flowing like a cosmic aurora in deep space",
                   style: "Realistic Style"
                 },
                 {
-                  url: "https://images.unsplash.com/photo-1490730141103-6cac27aaab94",
-                  prompt: "A vibrant fantasy treehouse city at sunset with rainbow bridges connecting floating islands and magical creatures flying between them",
+                  url: "https://images.unsplash.com/photo-1560130803-aaadb4bc913e",
+                  prompt: "A magical crystal palace with prism-like walls reflecting rainbow light, surrounded by floating lanterns and mystical butterflies",
                   style: "Animated Style"
                 },
                 {
-                  url: "https://images.unsplash.com/photo-1518546305927-5a555bb7020d",
-                  prompt: "A whimsical candy-colored steampunk laboratory with intricate brass machinery and swirling rainbow steam clouds",
+                  url: "https://images.unsplash.com/photo-1550859492-d5da9d8e45f3",
+                  prompt: "An enchanted forest with giant bioluminescent mushrooms, sparkling fireflies, and a winding path made of glowing stones",
                   style: "Pixar Style"
                 }
               ].map((sample, index) => (
