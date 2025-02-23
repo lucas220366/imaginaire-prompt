@@ -165,18 +165,18 @@ const ImageGenerator = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
                 {
-                  url: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
-                  prompt: "A realistic portrait photo of a professional in a modern office setting",
+                  url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
+                  prompt: "A breathtaking landscape with vibrant autumn trees surrounding a crystal-clear mountain lake at sunset",
                   style: "Realistic Style"
                 },
                 {
-                  url: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e",
-                  prompt: "An animated white robot character standing against a wall",
+                  url: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
+                  prompt: "A colorful animated cat exploring a magical garden filled with glowing butterflies and rainbow flowers",
                   style: "Animated Style"
                 },
                 {
-                  url: "https://images.unsplash.com/photo-1501286353178-1ec881214838",
-                  prompt: "A Pixar-style monkey with expressive features holding a banana",
+                  url: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7",
+                  prompt: "A detailed Pixar-style scene of a cozy cyber cafe with holographic displays and robot baristas",
                   style: "Pixar Style"
                 }
               ].map((sample, index) => (
