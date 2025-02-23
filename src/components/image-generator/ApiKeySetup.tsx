@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Camera } from "lucide-react";
@@ -12,13 +12,54 @@ interface ApiKeySetupProps {
 }
 
 const ApiKeySetup = ({ apiKey, onApiKeyChange, onApiKeySubmit }: ApiKeySetupProps) => {
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!apiKey.trim()) {
       toast.error("Please enter your Runware API key");
       return;
     }
-    onApiKeySubmit();
+
+    setIsSubmitting(true);
+    try {
+      // Test the API key by attempting to establish a WebSocket connection
+      const ws = new WebSocket('wss://ws-api.runware.ai/v1');
+      
+      const connectPromise = new Promise((resolve, reject) => {
+        ws.onopen = () => {
+          ws.send(JSON.stringify([{
+            taskType: "authentication",
+            apiKey: apiKey
+          }]));
+        };
+
+        ws.onmessage = (event) => {
+          const response = JSON.parse(event.data);
+          if (response.error || response.errors) {
+            reject(new Error(response.errorMessage || response.errors?.[0]?.message || "Invalid API key"));
+          } else if (response.data?.[0]?.taskType === "authentication") {
+            resolve(true);
+          }
+        };
+
+        ws.onerror = () => {
+          reject(new Error("Failed to connect to Runware"));
+        };
+
+        // Timeout after 5 seconds
+        setTimeout(() => reject(new Error("Connection timeout")), 5000);
+      });
+
+      await connectPromise;
+      onApiKeySubmit();
+      toast.success("API key verified successfully!");
+    } catch (error) {
+      console.error("API key verification failed:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to verify API key");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -37,9 +78,14 @@ const ApiKeySetup = ({ apiKey, onApiKeyChange, onApiKeySubmit }: ApiKeySetupProp
               value={apiKey}
               onChange={(e) => onApiKeyChange(e.target.value)}
               className="w-full"
+              disabled={isSubmitting}
             />
-            <Button type="submit" className="w-full">
-              Start Generating Images
+            <Button 
+              type="submit" 
+              className="w-full"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Verifying..." : "Start Generating Images"}
             </Button>
           </div>
           <p className="mt-4 text-sm text-gray-600 text-center">
