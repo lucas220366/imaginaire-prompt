@@ -14,12 +14,8 @@ const Header = ({ onSignOut }: HeaderProps) => {
   const { session } = useAuth();
 
   const handleHomeClick = () => {
-    // Only navigate if we have an active session
-    if (session) {
-      navigate("/generator");
-    } else {
-      navigate("/");
-    }
+    // Navigate to landing page if authenticated
+    navigate("/");
   };
 
   return (
