@@ -25,6 +25,9 @@ const Index = () => {
           >
             Get Started <ArrowRight className="ml-2" />
           </Button>
+          
+          {/* Example Creations Section */}
+          <SampleImages />
         </div>
 
         {/* Features Section */}
@@ -59,9 +62,6 @@ const Index = () => {
             </p>
           </div>
         </div>
-
-        {/* Example Creations Section */}
-        <SampleImages />
 
         {/* Call to Action */}
         <div className="text-center pt-8">
