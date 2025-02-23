@@ -48,7 +48,7 @@ const ImageGenerator = () => {
         outputFormat: settings.format,
         ...dimensions
       });
-      console.log('Generation result:', result); // Add this log
+      console.log('Generation result:', result);
       setImage(result.imageURL);
       
       if (session?.user) {
