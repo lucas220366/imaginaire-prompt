@@ -3,6 +3,7 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { LogOut, User, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../AuthProvider";
 
 interface HeaderProps {
   onSignOut: () => Promise<void>;
@@ -10,11 +11,21 @@ interface HeaderProps {
 
 const Header = ({ onSignOut }: HeaderProps) => {
   const navigate = useNavigate();
+  const { session } = useAuth();
+
+  const handleHomeClick = () => {
+    // Only navigate if we have an active session
+    if (session) {
+      navigate("/generator");
+    } else {
+      navigate("/");
+    }
+  };
 
   return (
     <div className="absolute top-4 right-4 flex gap-2">
       <Button
-        onClick={() => navigate("/")}
+        onClick={handleHomeClick}
         variant="outline"
       >
         <Home className="mr-2 h-4 w-4" />
