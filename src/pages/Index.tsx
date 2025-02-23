@@ -13,7 +13,7 @@ const Index = () => {
         {/* Hero Section */}
         <div className="text-center space-y-6">
           <div className="flex flex-col items-center gap-2">
-            <Rocket className="w-8 h-8 text-purple-500 animate-bounce" />
+            <Rocket className="w-8 h-8 text-[#0FA0CE] animate-bounce" />
             <h1 className="text-5xl font-bold text-gray-800 animate-fade-up">
               Transform Your Ideas Into Art
             </h1>
