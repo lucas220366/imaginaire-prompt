@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from "sonner";
 import { RunwareService } from '@/lib/runware';
 import { supabase } from "@/integrations/supabase/client";
@@ -20,7 +20,7 @@ const ImageGenerator = () => {
   const [image, setImage] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('runwareApiKey') || "");
-  const [isApiKeySet, setIsApiKeySet] = useState(() => false); // Force showing API key input
+  const [isApiKeySet, setIsApiKeySet] = useState(() => Boolean(localStorage.getItem('runwareApiKey')));
   const navigate = useNavigate();
   const { session } = useAuth();
   const [settings, setSettings] = useState<ImageSettings>({
@@ -28,6 +28,22 @@ const ImageGenerator = () => {
     format: "PNG",
     aspectRatio: "square"
   });
+
+  useEffect(() => {
+    // Check if API key exists and validate it
+    const storedApiKey = localStorage.getItem('runwareApiKey');
+    if (storedApiKey) {
+      const runware = new RunwareService(storedApiKey);
+      runware.generateImage({ positivePrompt: "test" })
+        .catch(() => {
+          // If validation fails, clear the stored key and show setup
+          localStorage.removeItem('runwareApiKey');
+          setApiKey("");
+          setIsApiKeySet(false);
+          toast.error("Invalid API key. Please enter a valid key.");
+        });
+    }
+  }, []);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -73,10 +89,19 @@ const ImageGenerator = () => {
     }
   };
 
-  const handleApiKeySubmit = () => {
-    localStorage.setItem('runwareApiKey', apiKey);
-    setIsApiKeySet(true);
-    toast.success("API key set successfully!");
+  const handleApiKeySubmit = async () => {
+    try {
+      // Validate the API key before saving
+      const runware = new RunwareService(apiKey);
+      await runware.generateImage({ positivePrompt: "test" });
+      
+      localStorage.setItem('runwareApiKey', apiKey);
+      setIsApiKeySet(true);
+      toast.success("API key verified and saved successfully!");
+    } catch (error) {
+      console.error('API key validation error:', error);
+      toast.error("Invalid API key. Please check and try again.");
+    }
   };
 
   return (
