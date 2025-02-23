@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/components/AuthProvider";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { PasswordResetForm } from "@/components/auth/PasswordResetForm";
+import { toast } from "sonner";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -30,17 +31,25 @@ const Auth = () => {
     if ((type === 'recovery' && accessToken) || (hashType === 'recovery' && hashAccessToken)) {
       console.log('Recovery flow detected:', { type, hashType, accessToken, hashAccessToken });
     }
+
+    // Handle potential errors
+    const error = searchParams.get('error');
+    const errorDescription = searchParams.get('error_description');
+    if (error) {
+      console.error('Auth error:', error, errorDescription);
+      toast.error(errorDescription || 'Authentication error occurred');
+    }
   }, []);
 
   // Check if we're in the password reset flow
   const isPasswordReset = window.location.pathname.includes('reset-password') || 
                          window.location.hash.includes('type=recovery');
 
-  if (isPasswordReset) {
-    return <PasswordResetForm />;
-  }
-
-  return <AuthForm />;
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-white to-blue-50">
+      {isPasswordReset ? <PasswordResetForm /> : <AuthForm />}
+    </div>
+  );
 };
 
 export default Auth;
