@@ -12,9 +12,22 @@ const ImageGenerator = () => {
   const [image, setImage] = useState<string | null>(null);
   const [video, setVideo] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [apiKey, setApiKey] = useState(() => localStorage.getItem('runwareApiKey') || "");
+  const [runwareApiKey, setRunwareApiKey] = useState(() => localStorage.getItem('runwareApiKey') || "");
+  const [runwayApiKey, setRunwayApiKey] = useState(() => localStorage.getItem('runwayApiKey') || "");
   const [isApiKeySet, setIsApiKeySet] = useState(() => Boolean(localStorage.getItem('runwareApiKey')));
   const [activeTab, setActiveTab] = useState<"image" | "video">("image");
+
+  const handleApiKeySubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!runwareApiKey.trim()) {
+      toast.error("Please enter your Runware API key");
+      return;
+    }
+    localStorage.setItem('runwareApiKey', runwareApiKey);
+    localStorage.setItem('runwayApiKey', runwayApiKey);
+    setIsApiKeySet(true);
+    toast.success("API keys set successfully!");
+  };
 
   const handleGenerate = async () => {
     if (!prompt.trim()) {
@@ -24,14 +37,18 @@ const ImageGenerator = () => {
 
     setIsGenerating(true);
     try {
-      const runware = new RunwareService(apiKey);
       if (activeTab === "image") {
+        const runware = new RunwareService(runwareApiKey);
         const result = await runware.generateImage({ positivePrompt: prompt });
         setImage(result.imageURL);
         setVideo(null);
       } else {
-        toast.info("Video generation is not currently supported. Coming soon!");
-        return;
+        if (!runwayApiKey) {
+          toast.error("Please set your RunwayML API key first");
+          return;
+        }
+        // Video generation will be implemented here
+        toast.info("Video generation with RunwayML coming soon!");
       }
       toast.success(`${activeTab === "image" ? "Image" : "Video"} generated successfully!`);
     } catch (error) {
@@ -66,46 +83,67 @@ const ImageGenerator = () => {
     }
   };
 
-  const handleApiKeySubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!apiKey.trim()) {
-      toast.error("Please enter your Runware API key");
-      return;
-    }
-    localStorage.setItem('runwareApiKey', apiKey);
-    setIsApiKeySet(true);
-    toast.success("API key set successfully!");
-  };
-
   return (
     <div className="min-h-screen p-6 flex flex-col items-center justify-center gap-8 animate-fade-in">
       {!isApiKeySet ? (
         <form onSubmit={handleApiKeySubmit} className="w-full max-w-md space-y-4">
           <div className="bg-white/50 backdrop-blur-lg rounded-lg p-6 shadow-lg border border-gray-100">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">Enter your Runware API key</h2>
+            <h2 className="text-xl font-semibold mb-4 text-gray-800">Enter your API keys</h2>
             <div className="space-y-4">
-              <Input
-                type="password"
-                placeholder="API Key"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                className="w-full"
-              />
+              <div>
+                <label htmlFor="runwareKey" className="block text-sm font-medium text-gray-700 mb-1">
+                  Runware API Key (for images)
+                </label>
+                <Input
+                  id="runwareKey"
+                  type="password"
+                  placeholder="Runware API Key"
+                  value={runwareApiKey}
+                  onChange={(e) => setRunwareApiKey(e.target.value)}
+                  className="w-full"
+                />
+              </div>
+              <div>
+                <label htmlFor="runwayKey" className="block text-sm font-medium text-gray-700 mb-1">
+                  RunwayML API Key (for videos)
+                </label>
+                <Input
+                  id="runwayKey"
+                  type="password"
+                  placeholder="RunwayML API Key (optional)"
+                  value={runwayApiKey}
+                  onChange={(e) => setRunwayApiKey(e.target.value)}
+                  className="w-full"
+                />
+              </div>
               <Button type="submit" className="w-full">
-                Set API Key
+                Set API Keys
               </Button>
             </div>
-            <p className="mt-4 text-sm text-gray-600">
-              Get your API key from{" "}
-              <a
-                href="https://runware.ai"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 hover:text-blue-600 underline"
-              >
-                Runware.ai
-              </a>
-            </p>
+            <div className="mt-4 space-y-2">
+              <p className="text-sm text-gray-600">
+                Get your Runware API key from{" "}
+                <a
+                  href="https://runware.ai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:text-blue-600 underline"
+                >
+                  Runware.ai
+                </a>
+              </p>
+              <p className="text-sm text-gray-600">
+                Get your RunwayML API key from{" "}
+                <a
+                  href="https://runway.ml"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:text-blue-600 underline"
+                >
+                  Runway.ml
+                </a>
+              </p>
+            </div>
           </div>
         </form>
       ) : (
