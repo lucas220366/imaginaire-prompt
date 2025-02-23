@@ -169,7 +169,7 @@ const ImageGenerator = () => {
                   style: "Realistic Style"
                 },
                 {
-                  url: "https://images.unsplash.com/photo-1535268647677-300dbf3d78d1",
+                  url: "https://images.unsplash.com/photo-1615796153287-98eacf0abb13",
                   style: "Animated Style"
                 },
                 {
