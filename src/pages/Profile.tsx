@@ -73,7 +73,7 @@ const Profile = () => {
         <div className="flex justify-between items-center mb-8">
           <Button
             variant="outline"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/generator")}
             className="flex items-center gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -101,7 +101,7 @@ const Profile = () => {
           <div className="text-center py-8">
             <p className="text-gray-600">You haven't generated any images yet.</p>
             <Button
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/generator")}
               className="mt-4"
             >
               Generate Your First Image
