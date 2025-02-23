@@ -166,15 +166,18 @@ const ImageGenerator = () => {
               {[
                 {
                   url: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
-                  prompt: "A professional working on a sleek laptop in a modern setting"
+                  prompt: "A realistic portrait photo of a professional in a modern office setting",
+                  style: "Realistic Style"
                 },
                 {
-                  url: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
-                  prompt: "Person working on MacBook Pro with creative inspiration"
+                  url: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e",
+                  prompt: "An animated white robot character standing against a wall",
+                  style: "Animated Style"
                 },
                 {
-                  url: "https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b",
-                  prompt: "Innovative concept with glowing blue light bulb"
+                  url: "https://images.unsplash.com/photo-1501286353178-1ec881214838",
+                  prompt: "A Pixar-style monkey with expressive features holding a banana",
+                  style: "Pixar Style"
                 }
               ].map((sample, index) => (
                 <div 
@@ -190,6 +193,11 @@ const ImageGenerator = () => {
                     />
                   </div>
                   <div className="p-4">
+                    <div className="mb-2">
+                      <span className="inline-block px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                        {sample.style}
+                      </span>
+                    </div>
                     <p className="text-sm text-gray-600">{sample.prompt}</p>
                   </div>
                 </div>
