@@ -7,7 +7,7 @@ interface RunwayVideoResponse {
 }
 
 const generateVideoWithRunway = async (prompt: string, apiKey: string): Promise<RunwayVideoResponse> => {
-  const response = await fetch('https://api.runway.ml/v1/text-to-video', {
+  const response = await fetch('https://api.runwayml.com/v1/inference', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -15,8 +15,11 @@ const generateVideoWithRunway = async (prompt: string, apiKey: string): Promise<
     },
     body: JSON.stringify({
       prompt,
-      num_frames: 30,
-      fps: 12,
+      model: 'text-to-video',
+      parameters: {
+        num_frames: 30,
+        fps: 12,
+      },
     }),
   });
 
@@ -25,7 +28,8 @@ const generateVideoWithRunway = async (prompt: string, apiKey: string): Promise<
     throw new Error(error.message || 'Failed to generate video');
   }
 
-  return response.json();
+  const result = await response.json();
+  return { videoUrl: result.output.video_url };
 };
 
 export const generateContent = async (
