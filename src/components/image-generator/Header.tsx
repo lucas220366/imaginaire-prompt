@@ -14,8 +14,8 @@ const Header = ({ onSignOut }: HeaderProps) => {
   const { session } = useAuth();
 
   const handleHomeClick = () => {
-    // Navigate to landing page if authenticated
-    navigate("/");
+    console.log("Home button clicked");
+    navigate("/", { replace: true });
   };
 
   return (
