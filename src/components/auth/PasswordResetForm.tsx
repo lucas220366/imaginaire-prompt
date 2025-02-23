@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -11,56 +11,39 @@ export const PasswordResetForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const setupRecoverySession = async () => {
-      try {
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        const accessToken = hashParams.get('access_token');
-        const refreshToken = hashParams.get('refresh_token');
-
-        if (!accessToken || !refreshToken) {
-          toast.error("Invalid password reset link");
-          navigate("/auth");
-          return;
-        }
-
-        const { data, error } = await supabase.auth.setSession({
-          access_token: accessToken,
-          refresh_token: refreshToken,
-        });
-
-        if (error || !data.session) {
-          console.error("Error setting recovery session:", error);
-          toast.error("Invalid or expired recovery link");
-          navigate("/auth");
-          return;
-        }
-
-        console.log("Recovery session established");
-      } catch (error) {
-        console.error("Recovery setup error:", error);
-        toast.error("Failed to setup recovery session");
-        navigate("/auth");
-      }
-    };
-
-    setupRecoverySession();
-  }, [navigate]);
-
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    setIsLoading(true);
+
     try {
-      setIsLoading(true);
+      // Get the tokens directly when submitting
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const accessToken = hashParams.get('access_token');
       
-      const { error } = await supabase.auth.updateUser({
+      if (!accessToken) {
+        throw new Error("No access token found");
+      }
+
+      // First set the session
+      await supabase.auth.setSession({
+        access_token: accessToken,
+        refresh_token: hashParams.get('refresh_token') || '',
+      });
+
+      // Then update the password
+      const { error: updateError } = await supabase.auth.updateUser({
         password: password
       });
 
-      if (error) throw error;
-      
+      if (updateError) throw updateError;
+
       toast.success("Password updated successfully!");
-      navigate("/generator");
+      
+      // Clear the hash from the URL
+      window.location.hash = '';
+      
+      // Navigate to the main page
+      navigate("/generator", { replace: true });
     } catch (error: any) {
       console.error("Password update error:", error);
       toast.error(error.message || "Failed to update password");
