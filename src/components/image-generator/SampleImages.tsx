@@ -8,7 +8,7 @@ const sampleImages = [
     style: "Realistic Style"
   },
   {
-    url: "https://images.pexels.com/photos/1314550/pexels-photo-1314550.jpeg",
+    url: "https://images.pexels.com/photos/7180617/pexels-photo-7180617.jpeg",
     style: "Cartoon Style"
   },
   {
