@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -10,17 +10,12 @@ const ImageGenerator = () => {
   const [prompt, setPrompt] = useState("");
   const [image, setImage] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [apiKey, setApiKey] = useState("");
-  const [isApiKeySet, setIsApiKeySet] = useState(false);
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem('runwareApiKey') || "");
+  const [isApiKeySet, setIsApiKeySet] = useState(() => Boolean(localStorage.getItem('runwareApiKey')));
 
   const handleGenerate = async () => {
     if (!prompt.trim()) {
       toast.error("Please enter a prompt");
-      return;
-    }
-
-    if (!isApiKeySet) {
-      toast.error("Please enter your Runware API key");
       return;
     }
 
@@ -44,6 +39,7 @@ const ImageGenerator = () => {
       toast.error("Please enter your Runware API key");
       return;
     }
+    localStorage.setItem('runwareApiKey', apiKey);
     setIsApiKeySet(true);
     toast.success("API key set successfully!");
   };
