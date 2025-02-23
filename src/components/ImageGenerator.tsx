@@ -30,19 +30,52 @@ const ImageGenerator = () => {
   });
 
   useEffect(() => {
-    // Check if API key exists and validate it
-    const storedApiKey = localStorage.getItem('runwareApiKey');
-    if (storedApiKey) {
-      const runware = new RunwareService(storedApiKey);
-      runware.generateImage({ positivePrompt: "test" })
-        .catch(() => {
-          // If validation fails, clear the stored key and show setup
+    // Validate stored API key on mount
+    const validateStoredApiKey = async () => {
+      const storedApiKey = localStorage.getItem('runwareApiKey');
+      if (storedApiKey) {
+        try {
+          const ws = new WebSocket('wss://ws-api.runware.ai/v1');
+          
+          await new Promise((resolve, reject) => {
+            const timeout = setTimeout(() => {
+              ws.close();
+              reject(new Error('Connection timeout'));
+            }, 5000);
+
+            ws.onopen = () => {
+              ws.send(JSON.stringify([{
+                taskType: "authentication",
+                apiKey: storedApiKey
+              }]));
+            };
+
+            ws.onmessage = (event) => {
+              const response = JSON.parse(event.data);
+              if (response.error || response.errors) {
+                reject(new Error('Invalid API key'));
+              } else if (response.data?.[0]?.taskType === "authentication") {
+                clearTimeout(timeout);
+                resolve(true);
+              }
+            };
+
+            ws.onerror = () => {
+              clearTimeout(timeout);
+              reject(new Error('Connection failed'));
+            };
+          });
+        } catch (error) {
+          console.error('API key validation error:', error);
           localStorage.removeItem('runwareApiKey');
           setApiKey("");
           setIsApiKeySet(false);
           toast.error("Invalid API key. Please enter a valid key.");
-        });
-    }
+        }
+      }
+    };
+
+    validateStoredApiKey();
   }, []);
 
   const handleSignOut = async () => {
@@ -90,11 +123,43 @@ const ImageGenerator = () => {
   };
 
   const handleApiKeySubmit = async () => {
+    if (!apiKey.trim()) {
+      toast.error("Please enter your Runware API key");
+      return;
+    }
+
     try {
-      // Validate the API key before saving
-      const runware = new RunwareService(apiKey);
-      await runware.generateImage({ positivePrompt: "test" });
+      const ws = new WebSocket('wss://ws-api.runware.ai/v1');
       
+      await new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          ws.close();
+          reject(new Error('Connection timeout'));
+        }, 5000);
+
+        ws.onopen = () => {
+          ws.send(JSON.stringify([{
+            taskType: "authentication",
+            apiKey: apiKey
+          }]));
+        };
+
+        ws.onmessage = (event) => {
+          const response = JSON.parse(event.data);
+          if (response.error || response.errors) {
+            reject(new Error('Invalid API key'));
+          } else if (response.data?.[0]?.taskType === "authentication") {
+            clearTimeout(timeout);
+            resolve(true);
+          }
+        };
+
+        ws.onerror = () => {
+          clearTimeout(timeout);
+          reject(new Error('Connection failed'));
+        };
+      });
+
       localStorage.setItem('runwareApiKey', apiKey);
       setIsApiKeySet(true);
       toast.success("API key verified and saved successfully!");
