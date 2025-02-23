@@ -19,20 +19,21 @@ const Auth = () => {
 
     try {
       if (isSignUp) {
-        // For sign up, we'll immediately sign in after registration
-        const { error: signUpError } = await supabase.auth.signUp({
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: window.location.origin,
+          }
+        });
+        if (error) throw error;
+        
+        // Since email confirmation is disabled, directly sign in
+        await supabase.auth.signInWithPassword({
           email,
           password,
         });
-        if (signUpError) throw signUpError;
-
-        // Immediately sign in after successful registration
-        const { error: signInError } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-        if (signInError) throw signInError;
-
+        
         toast.success("Account created successfully!");
         navigate("/");
       } else {
