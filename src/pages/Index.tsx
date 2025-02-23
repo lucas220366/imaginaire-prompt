@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Sparkles, Palette, Wand2, ArrowRight } from "lucide-react";
+import { Sparkles, Palette, Wand2, ArrowRight, Rocket } from "lucide-react";
 import SampleImages from "@/components/image-generator/SampleImages";
 
 const Index = () => {
@@ -12,9 +12,12 @@ const Index = () => {
       <div className="max-w-6xl mx-auto pt-16 space-y-16">
         {/* Hero Section */}
         <div className="text-center space-y-6">
-          <h1 className="text-5xl font-bold text-gray-800 animate-fade-up">
-            Transform Your Ideas Into Art
-          </h1>
+          <div className="flex flex-col items-center gap-2">
+            <Rocket className="w-8 h-8 text-purple-500 animate-bounce" />
+            <h1 className="text-5xl font-bold text-gray-800 animate-fade-up">
+              Transform Your Ideas Into Art
+            </h1>
+          </div>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto animate-fade-up">
             Create stunning, unique images in seconds using the power of AI. 
             Perfect for artists, designers, and creative minds.
