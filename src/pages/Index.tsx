@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Sparkles, Palette, Wand2, ArrowRight } from "lucide-react";
+import SampleImages from "@/components/image-generator/SampleImages";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -58,6 +59,9 @@ const Index = () => {
             </p>
           </div>
         </div>
+
+        {/* Example Creations Section */}
+        <SampleImages />
 
         {/* Call to Action */}
         <div className="text-center pt-8">
