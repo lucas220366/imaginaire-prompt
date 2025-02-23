@@ -1,4 +1,3 @@
-
 import { RunwareService } from '@/lib/runware';
 import { toast } from "sonner";
 
@@ -12,13 +11,18 @@ const generateVideoWithRunway = async (prompt: string, apiKey: string): Promise<
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${apiKey}`,
+      'Accept': 'application/json'
     },
     body: JSON.stringify({
       prompt,
-      model: 'text-to-video',
+      model: 'gen2-videoGen',
       parameters: {
-        num_frames: 30,
-        fps: 12,
+        duration_in_frames: 30,
+        frame_rate: 12,
+        guidance_scale: 17.5,
+        height: 576,
+        width: 1024,
+        negative_prompt: ''
       },
     }),
   });
@@ -29,7 +33,10 @@ const generateVideoWithRunway = async (prompt: string, apiKey: string): Promise<
   }
 
   const result = await response.json();
-  return { videoUrl: result.output.video_url };
+  if (!result.output?.video) {
+    throw new Error('No video URL in response');
+  }
+  return { videoUrl: result.output.video };
 };
 
 export const generateContent = async (
