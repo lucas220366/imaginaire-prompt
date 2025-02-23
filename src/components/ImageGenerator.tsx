@@ -113,7 +113,7 @@ const ImageGenerator = () => {
             />
           )}
 
-          <SampleImages />
+          {!image && <SampleImages />}
         </div>
       )}
     </div>
