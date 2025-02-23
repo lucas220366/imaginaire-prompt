@@ -2,9 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2, Download } from "lucide-react";
+import { Loader2, Download, LogOut } from "lucide-react";
 import { toast } from "sonner";
 import { RunwareService } from '@/lib/runware';
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "./AuthProvider";
 
 const ImageGenerator = () => {
   const [prompt, setPrompt] = useState("");
@@ -12,6 +15,13 @@ const ImageGenerator = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('runwareApiKey') || "");
   const [isApiKeySet, setIsApiKeySet] = useState(() => Boolean(localStorage.getItem('runwareApiKey')));
+  const navigate = useNavigate();
+  const { session } = useAuth();
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    navigate("/auth");
+  };
 
   const handleGenerate = async () => {
     if (!prompt.trim()) {
@@ -24,6 +34,20 @@ const ImageGenerator = () => {
       const runware = new RunwareService(apiKey);
       const result = await runware.generateImage({ positivePrompt: prompt });
       setImage(result.imageURL);
+      
+      // Save the generated image to the user's account
+      if (session?.user) {
+        const { error } = await supabase
+          .from('generated_images')
+          .insert({
+            user_id: session.user.id,
+            prompt: prompt,
+            image_url: result.imageURL
+          });
+        
+        if (error) throw error;
+      }
+      
       toast.success("Image generated successfully!");
     } catch (error) {
       toast.error("Failed to generate image. Please try again.");
@@ -67,6 +91,15 @@ const ImageGenerator = () => {
 
   return (
     <div className="min-h-screen p-6 flex flex-col items-center justify-center gap-8 animate-fade-in">
+      <Button
+        onClick={handleSignOut}
+        variant="outline"
+        className="absolute top-4 right-4"
+      >
+        <LogOut className="mr-2 h-4 w-4" />
+        Sign Out
+      </Button>
+
       {!isApiKeySet ? (
         <form onSubmit={handleApiKeySubmit} className="w-full max-w-md space-y-4">
           <div className="bg-white/50 backdrop-blur-lg rounded-lg p-6 shadow-lg border border-gray-100">
