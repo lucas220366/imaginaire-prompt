@@ -45,7 +45,7 @@ const ImageGenerator = () => {
       const runware = new RunwareService(apiKey);
       const result = await runware.generateImage({ 
         positivePrompt: prompt,
-        outputFormat: settings.format,
+        outputFormat: settings.format.toUpperCase(),
         ...dimensions
       });
       setImage(result.imageURL);
