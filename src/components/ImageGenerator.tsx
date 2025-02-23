@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -29,9 +30,8 @@ const ImageGenerator = () => {
         setImage(result.imageURL);
         setVideo(null);
       } else {
-        const result = await runware.generateVideo({ positivePrompt: prompt });
-        setVideo(result.videoURL);
-        setImage(null);
+        toast.info("Video generation is not currently supported. Coming soon!");
+        return;
       }
       toast.success(`${activeTab === "image" ? "Image" : "Video"} generated successfully!`);
     } catch (error) {
@@ -121,7 +121,7 @@ const ImageGenerator = () => {
               >
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="image">Image</TabsTrigger>
-                  <TabsTrigger value="video">Video</TabsTrigger>
+                  <TabsTrigger value="video">Video (Coming Soon)</TabsTrigger>
                 </TabsList>
               </Tabs>
               <div className="flex gap-2">
@@ -133,7 +133,7 @@ const ImageGenerator = () => {
                 />
                 <Button 
                   onClick={handleGenerate}
-                  disabled={isGenerating || !prompt.trim()}
+                  disabled={isGenerating || !prompt.trim() || activeTab === "video"}
                   className="min-w-[120px]"
                 >
                   {isGenerating ? (

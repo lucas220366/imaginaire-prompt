@@ -143,7 +143,7 @@ export class RunwareService {
         width: 1024,
         height: 1024,
         numberResults: params.numberResults || 1,
-        outputFormat: "PNG", // Changed from WEBP to PNG
+        outputFormat: "PNG",
         steps: 4,
         CFGScale: params.CFGScale || 1,
         scheduler: params.scheduler || "FlowMatchEulerDiscreteScheduler",
@@ -175,44 +175,6 @@ export class RunwareService {
   }
 
   async generateVideo(params: { positivePrompt: string }): Promise<GeneratedVideo> {
-    // Wait for connection and authentication before proceeding
-    await this.connectionPromise;
-
-    if (!this.ws || this.ws.readyState !== WebSocket.OPEN || !this.isAuthenticated) {
-      this.connectionPromise = this.connect();
-      await this.connectionPromise;
-    }
-
-    const taskUUID = crypto.randomUUID();
-    
-    return new Promise((resolve, reject) => {
-      const message = [{
-        taskType: "videoInference",
-        taskUUID,
-        model: "runware:100@1",
-        width: 512,
-        height: 512,
-        fps: 24,
-        duration: 5, // 5 seconds duration
-        outputFormat: "MP4",
-        ...params,
-      }];
-
-      console.log("Sending video generation message:", message);
-
-      this.messageCallbacks.set(taskUUID, (data) => {
-        if (data.error) {
-          reject(new Error(data.errorMessage));
-        } else {
-          resolve({
-            videoURL: data.videoURL,
-            positivePrompt: data.positivePrompt,
-            NSFWContent: data.NSFWContent,
-          });
-        }
-      });
-
-      this.ws.send(JSON.stringify(message));
-    });
+    throw new Error("Video generation is not currently supported by the Runware API");
   }
 }
