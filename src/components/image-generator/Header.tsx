@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { LogOut, User, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthProvider";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface HeaderProps {
   onSignOut: () => Promise<void>;
@@ -19,8 +21,19 @@ const Header = ({ onSignOut }: HeaderProps) => {
   };
 
   const handleSignOut = async () => {
-    await onSignOut();
-    navigate('/');
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      // Call the provided onSignOut prop after successful signout
+      await onSignOut();
+      
+      toast.success("Signed out successfully");
+      navigate('/auth');
+    } catch (error: any) {
+      console.error("Sign out error:", error);
+      toast.error(error.message);
+    }
   };
 
   return (
