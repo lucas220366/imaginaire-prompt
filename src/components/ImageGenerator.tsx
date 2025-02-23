@@ -79,7 +79,7 @@ const ImageGenerator = () => {
               >
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="image">Image</TabsTrigger>
-                  <TabsTrigger value="video">Video (Coming Soon)</TabsTrigger>
+                  <TabsTrigger value="video">Video</TabsTrigger>
                 </TabsList>
               </Tabs>
               <div className="flex gap-2">
@@ -91,7 +91,7 @@ const ImageGenerator = () => {
                 />
                 <Button 
                   onClick={handleGenerate}
-                  disabled={isGenerating || !prompt.trim() || activeTab === "video"}
+                  disabled={isGenerating || !prompt.trim() || (activeTab === "video" && !runwayApiKey)}
                   className="min-w-[120px]"
                 >
                   {isGenerating ? (
