@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2, LogOut, User, Rocket } from "lucide-react";
+import { Loader2, LogOut, User, Rocket, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { RunwareService } from '@/lib/runware';
 import { supabase } from "@/integrations/supabase/client";
@@ -144,7 +144,7 @@ const ImageGenerator = () => {
                 </Button>
               </div>
               <p className="text-sm text-gray-600 mt-2 font-bold">
-                For optimal results try to be specific, include clear details about your subject, style, and mood for
+                For optimal results try to be specific, include clear details about your subject, style, and mood
               </p>
             </div>
           </div>
@@ -155,6 +155,47 @@ const ImageGenerator = () => {
               prompt={prompt}
             />
           )}
+
+          {/* Sample Images Section */}
+          <div className="space-y-6">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-blue-500" />
+              <h2 className="text-xl font-semibold text-gray-800">Example Creations</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                {
+                  url: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
+                  prompt: "A professional working on a sleek laptop in a modern setting"
+                },
+                {
+                  url: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
+                  prompt: "Person working on MacBook Pro with creative inspiration"
+                },
+                {
+                  url: "https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b",
+                  prompt: "Innovative concept with glowing blue light bulb"
+                }
+              ].map((sample, index) => (
+                <div 
+                  key={index}
+                  className="bg-white/50 backdrop-blur-lg rounded-lg overflow-hidden shadow-lg border border-gray-100"
+                >
+                  <div className="aspect-square relative">
+                    <img
+                      src={sample.url}
+                      alt={sample.prompt}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <p className="text-sm text-gray-600">{sample.prompt}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       )}
     </div>
