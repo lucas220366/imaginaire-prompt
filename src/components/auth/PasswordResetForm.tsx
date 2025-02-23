@@ -16,33 +16,13 @@ export const PasswordResetForm = () => {
     setIsLoading(true);
 
     try {
-      // Get the tokens directly when submitting
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-      const accessToken = hashParams.get('access_token');
-      
-      if (!accessToken) {
-        throw new Error("No access token found");
-      }
-
-      // First set the session
-      await supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: hashParams.get('refresh_token') || '',
-      });
-
-      // Then update the password
-      const { error: updateError } = await supabase.auth.updateUser({
+      const { error } = await supabase.auth.updateUser({
         password: password
       });
 
-      if (updateError) throw updateError;
+      if (error) throw error;
 
       toast.success("Password updated successfully!");
-      
-      // Clear the hash from the URL
-      window.location.hash = '';
-      
-      // Navigate to the main page
       navigate("/generator", { replace: true });
     } catch (error: any) {
       console.error("Password update error:", error);

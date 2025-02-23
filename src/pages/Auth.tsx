@@ -9,9 +9,9 @@ const Auth = () => {
   const navigate = useNavigate();
   const { session } = useAuth();
 
-  // Check if we're in a recovery flow by looking at URL hash
-  const hashParams = new URLSearchParams(window.location.hash.substring(1));
-  const isRecoveryFlow = hashParams.has('access_token') || hashParams.get('type') === 'recovery';
+  // Check if we're in a recovery flow by looking at URL type parameter
+  const params = new URLSearchParams(window.location.hash.substring(1));
+  const isRecoveryFlow = params.get('type') === 'recovery';
 
   // Only redirect if we have a session and we're not in a password reset flow
   useEffect(() => {
