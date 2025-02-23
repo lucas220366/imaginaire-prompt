@@ -1,10 +1,11 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/components/AuthProvider";
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -13,6 +14,14 @@ const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const navigate = useNavigate();
+  const { session } = useAuth();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (session) {
+      navigate("/generator");
+    }
+  }, [session, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,10 +46,11 @@ const Auth = () => {
         if (error) throw error;
         
         // Since email confirmation is disabled, directly sign in
-        await supabase.auth.signInWithPassword({
+        const { error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
+        if (signInError) throw signInError;
         
         toast.success("Account created successfully!");
         navigate("/generator");
@@ -201,3 +211,4 @@ const Auth = () => {
 };
 
 export default Auth;
+
