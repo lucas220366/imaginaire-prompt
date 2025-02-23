@@ -4,15 +4,15 @@ import { Sparkles } from "lucide-react";
 
 const sampleImages = [
   {
-    url: "https://images.unsplash.com/photo-1534705867302-2a41394d2a3b",
+    url: "https://images.pexels.com/photos/2014422/pexels-photo-2014422.jpeg",
     style: "Realistic Style"
   },
   {
-    url: "https://images.unsplash.com/photo-1495853500318-2be4a7964488",
+    url: "https://images.pexels.com/photos/1314550/pexels-photo-1314550.jpeg",
     style: "Cartoon Style"
   },
   {
-    url: "https://images.unsplash.com/photo-1518562180175-34a163b1a9a6",
+    url: "https://images.pexels.com/photos/1670977/pexels-photo-1670977.jpeg",
     style: "Pixar Style"
   }
 ];
