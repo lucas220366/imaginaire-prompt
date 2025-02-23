@@ -1,3 +1,4 @@
+
 import { RunwareService } from '@/lib/runware';
 import { toast } from "sonner";
 
@@ -6,8 +7,7 @@ interface RunwayVideoResponse {
 }
 
 const generateVideoWithRunway = async (prompt: string, apiKey: string): Promise<RunwayVideoResponse> => {
-  // Add API version v0 to the URL
-  const response = await fetch('https://api.runwayml.com/v0/inference', {
+  const response = await fetch('https://api.runwayml.com/inference', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -16,7 +16,7 @@ const generateVideoWithRunway = async (prompt: string, apiKey: string): Promise<
     },
     body: JSON.stringify({
       prompt,
-      model: 'text-to-video-2',  // Updated model name
+      model: 'text-to-video-2',
       parameters: {
         num_frames: 36,
         fps: 8,
