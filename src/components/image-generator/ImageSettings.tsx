@@ -71,7 +71,6 @@ const ImageSettingsControl = ({ settings, onSettingsChange }: ImageSettingsProps
             <SelectValue placeholder="Select format" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="JPEG">JPEG</SelectItem>
             <SelectItem value="PNG">PNG</SelectItem>
           </SelectContent>
         </Select>
