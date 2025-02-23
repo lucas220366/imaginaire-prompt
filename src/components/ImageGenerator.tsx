@@ -169,7 +169,7 @@ const ImageGenerator = () => {
                   style: "Realistic Style"
                 },
                 {
-                  url: "https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif",
+                  url: "https://images.unsplash.com/photo-1608889825103-eb5ed706fc64",
                   style: "Animated Style"
                 },
                 {
