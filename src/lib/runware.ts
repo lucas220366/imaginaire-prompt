@@ -14,6 +14,8 @@ export interface GenerateImageParams {
   promptWeighting?: "compel" | "sdEmbeds";
   seed?: number | null;
   lora?: string[];
+  width?: number;
+  height?: number;
 }
 
 export interface GeneratedImage {
@@ -119,7 +121,6 @@ export class RunwareService {
   }
 
   async generateImage(params: GenerateImageParams): Promise<GeneratedImage> {
-    // Wait for connection and authentication before proceeding
     await this.connectionPromise;
 
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN || !this.isAuthenticated) {
@@ -130,20 +131,26 @@ export class RunwareService {
     const taskUUID = crypto.randomUUID();
     
     return new Promise((resolve, reject) => {
-      const message = [{
+      // Create base message first
+      const baseMessage = {
         taskType: "imageInference",
         taskUUID,
-        model: params.model || "runware:100@1",
-        width: 1024,
-        height: 1024,
-        numberResults: params.numberResults || 1,
-        outputFormat: params.outputFormat || "PNG", // Changed from WEBP to PNG
+        model: "runware:100@1",
+        width: params.width || 1024,
+        height: params.height || 1024,
+        numberResults: 1,
         steps: 4,
-        CFGScale: params.CFGScale || 1,
-        scheduler: params.scheduler || "FlowMatchEulerDiscreteScheduler",
-        strength: params.strength || 0.8,
-        lora: params.lora || [],
+        CFGScale: 1,
+        scheduler: "FlowMatchEulerDiscreteScheduler",
+        strength: 0.8,
+        lora: [],
+      };
+
+      // Merge with provided params, ensuring outputFormat is included
+      const message = [{
+        ...baseMessage,
         ...params,
+        outputFormat: params.outputFormat || "PNG",
       }];
 
       if (!params.seed) {
