@@ -14,8 +14,9 @@ export const PasswordResetForm = () => {
   useEffect(() => {
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
     const accessToken = hashParams.get('access_token');
+    const refreshToken = hashParams.get('refresh_token');
     
-    if (!accessToken) {
+    if (!accessToken || !refreshToken) {
       toast.error("Invalid password reset link");
       navigate("/auth");
       return;
@@ -24,7 +25,7 @@ export const PasswordResetForm = () => {
     // Set the session with the access token
     supabase.auth.setSession({
       access_token: accessToken,
-      refresh_token: hashParams.get('refresh_token') || '',
+      refresh_token: refreshToken,
     }).catch((error) => {
       console.error("Error setting session:", error);
       toast.error("Error setting up password reset");
