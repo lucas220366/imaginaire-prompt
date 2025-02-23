@@ -12,7 +12,7 @@ const Index = () => {
       {/* Logo */}
       <div className="absolute top-6 left-6">
         <img 
-          src="/lovable-uploads/92ae765a-7e64-4821-9c09-035aa901f97d.png"
+          src="/lovable-uploads/d795f3ed-1ece-45dc-a78f-b9f46602157f.png"
           alt="Creative Logo"
           className="w-20 h-20 object-contain hover:scale-105 transition-transform duration-200"
         />
