@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -166,17 +165,14 @@ const ImageGenerator = () => {
               {[
                 {
                   url: "https://images.unsplash.com/photo-1534705867302-2a41394d2a3b",
-                  prompt: "A dramatic snowy mountain peak illuminated by warm sunlight, with deep shadows casting across pristine white slopes",
                   style: "Realistic Style"
                 },
                 {
                   url: "https://images.unsplash.com/photo-1558470598-a5dda9640f68",
-                  prompt: "A vibrant abstract design with flowing curves of orange and purple light, creating a dynamic and energetic composition",
                   style: "Animated Style"
                 },
                 {
                   url: "https://images.unsplash.com/photo-1518562180175-34a163b1a9a6",
-                  prompt: "A majestic mountain range stretching into the distance, with dramatic clouds and golden sunlight filtering through the peaks",
                   style: "Pixar Style"
                 }
               ].map((sample, index) => (
@@ -187,18 +183,15 @@ const ImageGenerator = () => {
                   <div className="aspect-square relative">
                     <img
                       src={sample.url}
-                      alt={sample.prompt}
+                      alt={sample.style}
                       className="w-full h-full object-cover"
                       loading="lazy"
                     />
                   </div>
                   <div className="p-4">
-                    <div className="mb-2">
-                      <span className="inline-block px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-                        {sample.style}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600">{sample.prompt}</p>
+                    <span className="inline-block px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                      {sample.style}
+                    </span>
                   </div>
                 </div>
               ))}
