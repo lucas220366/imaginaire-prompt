@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { LogOut, User } from "lucide-react";
+import { LogOut, User, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
@@ -13,6 +13,13 @@ const Header = ({ onSignOut }: HeaderProps) => {
 
   return (
     <div className="absolute top-4 right-4 flex gap-2">
+      <Button
+        onClick={() => navigate("/")}
+        variant="outline"
+      >
+        <Home className="mr-2 h-4 w-4" />
+        Home
+      </Button>
       <Button
         onClick={() => navigate("/profile")}
         variant="outline"
