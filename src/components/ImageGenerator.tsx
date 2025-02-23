@@ -166,17 +166,17 @@ const ImageGenerator = () => {
               {[
                 {
                   url: "https://images.unsplash.com/photo-1534705867302-2a41394d2a3b",
-                  prompt: "A mystical ice castle in the Northern Lights, with crystalline spires and shimmering aurora reflections casting rainbow shadows",
+                  prompt: "A dramatic snowy mountain peak illuminated by warm sunlight, with deep shadows casting across pristine white slopes",
                   style: "Realistic Style"
                 },
                 {
                   url: "https://images.unsplash.com/photo-1558470598-a5dda9640f68",
-                  prompt: "A whimsical candy kingdom with lollipop trees, chocolate rivers, and flying cupcakes spreading sprinkles of joy across a cotton candy sky",
+                  prompt: "A vibrant abstract design with flowing curves of orange and purple light, creating a dynamic and energetic composition",
                   style: "Animated Style"
                 },
                 {
                   url: "https://images.unsplash.com/photo-1518562180175-34a163b1a9a6",
-                  prompt: "A fantastical treehouse city at sunset with spiral staircases wrapped in glowing vines, floating lanterns, and tiny dragons playing hide and seek",
+                  prompt: "A majestic mountain range stretching into the distance, with dramatic clouds and golden sunlight filtering through the peaks",
                   style: "Pixar Style"
                 }
               ].map((sample, index) => (
