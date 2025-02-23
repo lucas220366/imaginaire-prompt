@@ -8,8 +8,8 @@ const sampleImages = [
     style: "Realistic Style"
   },
   {
-    url: "https://images.unsplash.com/photo-1608889825103-eb5ed706fc64",
-    style: "Animated Style"
+    url: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e",
+    style: "Cartoon Style"
   },
   {
     url: "https://images.unsplash.com/photo-1518562180175-34a163b1a9a6",
