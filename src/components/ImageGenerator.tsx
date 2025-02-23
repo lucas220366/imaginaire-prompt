@@ -120,27 +120,32 @@ const ImageGenerator = () => {
               settings={settings}
               onSettingsChange={setSettings}
             />
-            <div className="flex gap-2">
-              <Input
-                placeholder="Describe the image you want to generate... (e.g., 'A serene mountain landscape at sunset')"
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                className="flex-1"
-              />
-              <Button 
-                onClick={handleGenerate}
-                disabled={isGenerating || !prompt.trim()}
-                className="min-w-[120px]"
-              >
-                {isGenerating ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Generating
-                  </>
-                ) : (
-                  "Generate"
-                )}
-              </Button>
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Describe the image you want to generate... (e.g., 'A serene mountain landscape at sunset')"
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  className="flex-1"
+                />
+                <Button 
+                  onClick={handleGenerate}
+                  disabled={isGenerating || !prompt.trim()}
+                  className="min-w-[120px]"
+                >
+                  {isGenerating ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Generating
+                    </>
+                  ) : (
+                    "Generate"
+                  )}
+                </Button>
+              </div>
+              <p className="text-sm text-gray-600 mt-2">
+                For optimal results try to be specific, include clear details about your subject, style, and mood for
+              </p>
             </div>
           </div>
 
