@@ -1,4 +1,3 @@
-
 import { RunwareService } from '@/lib/runware';
 import { toast } from "sonner";
 
@@ -7,7 +6,8 @@ interface RunwayVideoResponse {
 }
 
 const generateVideoWithRunway = async (prompt: string, apiKey: string): Promise<RunwayVideoResponse> => {
-  const response = await fetch('https://api.runwayml.com/v1/inference', {
+  // Add API version v0 to the URL
+  const response = await fetch('https://api.runwayml.com/v0/inference', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -16,13 +16,12 @@ const generateVideoWithRunway = async (prompt: string, apiKey: string): Promise<
     },
     body: JSON.stringify({
       prompt,
-      model: 'gen2-videoGen',
+      model: 'text-to-video-2',  // Updated model name
       parameters: {
-        duration_in_frames: 30,
-        frame_rate: 12,
-        guidance_scale: 17.5,
-        height: 576,
-        width: 1024,
+        num_frames: 36,
+        fps: 8,
+        num_inference_steps: 50,
+        guidance_scale: 12.5,
         negative_prompt: ''
       },
     }),
@@ -35,11 +34,11 @@ const generateVideoWithRunway = async (prompt: string, apiKey: string): Promise<
     throw new Error(result.error || 'Failed to generate video');
   }
 
-  if (!result.output?.video) {
+  if (!result.artifacts?.[0]?.uri) {
     throw new Error('No video URL in response');
   }
 
-  return { videoUrl: result.output.video };
+  return { videoUrl: result.artifacts[0].uri };
 };
 
 export const generateContent = async (
