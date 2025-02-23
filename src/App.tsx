@@ -20,7 +20,7 @@ const AppRoutes = () => {
 
   return (
     <Routes>
-      <Route path="/" element={session ? <Navigate to="/generator" /> : <Index />} />
+      <Route path="/" element={<Index />} />
       <Route path="/auth" element={session ? <Navigate to="/generator" /> : <Auth />} />
       <Route
         path="/generator"

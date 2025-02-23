@@ -15,7 +15,8 @@ const Header = ({ onSignOut }: HeaderProps) => {
 
   const handleHomeClick = () => {
     console.log("Home button clicked");
-    navigate("/", { replace: true });
+    // Force navigation and clear replace history
+    window.location.href = '/';
   };
 
   return (
