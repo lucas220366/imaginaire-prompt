@@ -35,13 +35,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
       console.log("Auth state changed:", _event, session?.user?.id);
       
-      // If signing out, ensure we clear the session completely
       if (_event === 'SIGNED_OUT') {
         setSession(null);
         setIsLoading(false);
-        // Clear any local storage related to auth
-        localStorage.removeItem('sb-' + import.meta.env.VITE_SUPABASE_PROJECT_ID + '-auth-token');
-        window.location.href = '/auth';
+        
+        // Clear all Supabase-related items from localStorage
+        Object.keys(localStorage).forEach(key => {
+          if (key.startsWith('sb-')) {
+            localStorage.removeItem(key);
+          }
+        });
+        
+        // Use replace instead of href to prevent issues with browser history
+        window.location.replace('/auth');
       } else {
         setSession(session);
         setIsLoading(false);
@@ -53,17 +59,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signOut = async () => {
     try {
-      console.log("Signing out...");
-      await supabase.auth.signOut();
+      console.log("Starting sign out process...");
       
-      // Explicitly clear the session
+      // Clear all Supabase-related items from localStorage
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('sb-')) {
+          localStorage.removeItem(key);
+        }
+      });
+      
+      // Sign out from Supabase
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      // Explicitly clear the session state
       setSession(null);
       
-      // Clear any local storage related to auth
-      localStorage.removeItem('sb-' + import.meta.env.VITE_SUPABASE_PROJECT_ID + '-auth-token');
-      
-      // Force a page reload to clear any cached states
-      window.location.href = '/auth';
+      // Use replace instead of href to prevent issues with browser history
+      window.location.replace('/auth');
       
       console.log("Sign out complete");
     } catch (error) {
