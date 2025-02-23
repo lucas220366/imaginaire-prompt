@@ -19,6 +19,7 @@ import {
 interface ImageSettings {
   size: "512x512" | "1024x1024" | "1536x1536";
   format: "PNG" | "JPEG";
+  aspectRatio: "square" | "portrait" | "landscape";
 }
 
 const ImageGenerator = () => {
@@ -31,8 +32,21 @@ const ImageGenerator = () => {
   const { session } = useAuth();
   const [settings, setSettings] = useState<ImageSettings>({
     size: "1024x1024",
-    format: "PNG"
+    format: "PNG",
+    aspectRatio: "square"
   });
+
+  const getImageDimensions = (baseSize: string, aspectRatio: string) => {
+    const [size] = baseSize.split('x').map(Number);
+    switch (aspectRatio) {
+      case 'portrait':
+        return { width: size, height: Math.round(size * (16/9)) };
+      case 'landscape':
+        return { width: Math.round(size * (16/9)), height: size };
+      default:
+        return { width: size, height: size };
+    }
+  };
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -47,13 +61,12 @@ const ImageGenerator = () => {
 
     setIsGenerating(true);
     try {
-      const [width, height] = settings.size.split("x").map(Number);
+      const dimensions = getImageDimensions(settings.size, settings.aspectRatio);
       const runware = new RunwareService(apiKey);
       const result = await runware.generateImage({ 
         positivePrompt: prompt,
-        width,
-        height,
-        outputFormat: settings.format
+        outputFormat: settings.format,
+        ...dimensions
       });
       setImage(result.imageURL);
       
@@ -177,10 +190,10 @@ const ImageGenerator = () => {
           </div>
 
           <div className="bg-white/50 backdrop-blur-lg rounded-lg p-6 shadow-lg border border-gray-100">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <div>
                 <label htmlFor="size" className="block text-sm font-medium text-gray-700 mb-1">
-                  Image Size
+                  Base Size
                 </label>
                 <Select
                   value={settings.size}
@@ -195,6 +208,26 @@ const ImageGenerator = () => {
                     <SelectItem value="512x512">512 x 512</SelectItem>
                     <SelectItem value="1024x1024">1024 x 1024</SelectItem>
                     <SelectItem value="1536x1536">1536 x 1536</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label htmlFor="aspectRatio" className="block text-sm font-medium text-gray-700 mb-1">
+                  Aspect Ratio
+                </label>
+                <Select
+                  value={settings.aspectRatio}
+                  onValueChange={(value: ImageSettings["aspectRatio"]) => 
+                    setSettings(prev => ({ ...prev, aspectRatio: value }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select aspect ratio" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="square">Square (1:1)</SelectItem>
+                    <SelectItem value="portrait">Portrait (9:16)</SelectItem>
+                    <SelectItem value="landscape">Landscape (16:9)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
