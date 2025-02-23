@@ -1,3 +1,4 @@
+
 import { toast } from "sonner";
 
 const API_ENDPOINT = "wss://ws-api.runware.ai/v1";
@@ -19,6 +20,12 @@ export interface GeneratedImage {
   imageURL: string;
   positivePrompt: string;
   seed: number;
+  NSFWContent: boolean;
+}
+
+export interface GeneratedVideo {
+  videoURL: string;
+  positivePrompt: string;
   NSFWContent: boolean;
 }
 
@@ -160,6 +167,48 @@ export class RunwareService {
           reject(new Error(data.errorMessage));
         } else {
           resolve(data);
+        }
+      });
+
+      this.ws.send(JSON.stringify(message));
+    });
+  }
+
+  async generateVideo(params: { positivePrompt: string }): Promise<GeneratedVideo> {
+    // Wait for connection and authentication before proceeding
+    await this.connectionPromise;
+
+    if (!this.ws || this.ws.readyState !== WebSocket.OPEN || !this.isAuthenticated) {
+      this.connectionPromise = this.connect();
+      await this.connectionPromise;
+    }
+
+    const taskUUID = crypto.randomUUID();
+    
+    return new Promise((resolve, reject) => {
+      const message = [{
+        taskType: "videoInference",
+        taskUUID,
+        model: "runware:100@1",
+        width: 512,
+        height: 512,
+        fps: 24,
+        duration: 5, // 5 seconds duration
+        outputFormat: "MP4",
+        ...params,
+      }];
+
+      console.log("Sending video generation message:", message);
+
+      this.messageCallbacks.set(taskUUID, (data) => {
+        if (data.error) {
+          reject(new Error(data.errorMessage));
+        } else {
+          resolve({
+            videoURL: data.videoURL,
+            positivePrompt: data.positivePrompt,
+            NSFWContent: data.NSFWContent,
+          });
         }
       });
 

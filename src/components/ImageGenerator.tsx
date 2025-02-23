@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -30,9 +29,8 @@ const ImageGenerator = () => {
         setImage(result.imageURL);
         setVideo(null);
       } else {
-        // Video generation would go here - requires video generation API implementation
-        toast.info("Video generation is coming soon!");
-        setVideo(null);
+        const result = await runware.generateVideo({ positivePrompt: prompt });
+        setVideo(result.videoURL);
         setImage(null);
       }
       toast.success(`${activeTab === "image" ? "Image" : "Video"} generated successfully!`);
