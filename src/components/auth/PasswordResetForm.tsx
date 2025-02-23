@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,20 @@ export const PasswordResetForm = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  // Set the access token from the URL hash if present
+  useEffect(() => {
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const accessToken = hashParams.get('access_token');
+    
+    if (accessToken) {
+      console.log("Setting session from recovery token");
+      supabase.auth.setSession({
+        access_token: accessToken,
+        refresh_token: hashParams.get('refresh_token') || '',
+      });
+    }
+  }, []);
 
   const handleUpdatePassword = async (newPassword: string) => {
     try {
@@ -25,6 +39,7 @@ export const PasswordResetForm = () => {
       window.location.hash = '';
       navigate("/generator");
     } catch (error: any) {
+      console.error("Password update error:", error);
       toast.error(error.message);
     } finally {
       setIsLoading(false);

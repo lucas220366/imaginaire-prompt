@@ -10,28 +10,35 @@ const Auth = () => {
   const navigate = useNavigate();
   const { session } = useAuth();
 
-  // Redirect if already authenticated
+  // Only redirect if we have a session and we're not in a password reset flow
   useEffect(() => {
-    if (session) {
+    const isPasswordReset = window.location.hash.includes('type=recovery') ||
+                           window.location.hash.includes('access_token');
+    
+    if (session && !isPasswordReset) {
       navigate("/generator");
     }
   }, [session, navigate]);
 
   // Handle URL parameters for reset password
   useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const type = searchParams.get('type');
-    const accessToken = searchParams.get('access_token');
-
-    // Also check hash parameters
+    // Check hash parameters first since recovery tokens are in the hash
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
     const hashType = hashParams.get('type');
     const hashAccessToken = hashParams.get('access_token');
 
-    // Log the recovery flow detection for debugging
-    if ((type === 'recovery' && accessToken) || (hashType === 'recovery' && hashAccessToken)) {
-      console.log('Recovery flow detected:', { type, hashType, accessToken, hashAccessToken });
-      // If we have a recovery token, show the password reset form
+    if (hashType === 'recovery' && hashAccessToken) {
+      console.log('Recovery flow detected from hash');
+      return;
+    }
+
+    // Then check query parameters
+    const searchParams = new URLSearchParams(window.location.search);
+    const type = searchParams.get('type');
+    const accessToken = searchParams.get('access_token');
+
+    if (type === 'recovery' && accessToken) {
+      console.log('Recovery flow detected from query');
       return;
     }
 
