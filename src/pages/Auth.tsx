@@ -21,7 +21,7 @@ const Auth = () => {
     try {
       if (isForgotPassword) {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/auth?reset=true`,
+          redirectTo: `${window.location.origin}/auth/reset-password`,
         });
         if (error) throw error;
         toast.success("Password reset email sent! Check your inbox.");
@@ -73,11 +73,19 @@ const Auth = () => {
     }
   };
 
-  // Check if we're in the reset password flow
-  const searchParams = new URLSearchParams(window.location.search);
-  const isResetPassword = searchParams.get("reset") === "true";
+  // Extract hash parameters
+  const hashParams = new URLSearchParams(window.location.hash.substring(1));
+  const type = hashParams.get('type');
+  const accessToken = hashParams.get('access_token');
 
-  if (isResetPassword) {
+  // Handle password reset flow
+  if (type === 'recovery' && accessToken) {
+    // Set the session with the access token
+    supabase.auth.setSession({
+      access_token: accessToken,
+      refresh_token: hashParams.get('refresh_token') || '',
+    });
+
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-md space-y-8">
