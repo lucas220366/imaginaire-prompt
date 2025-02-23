@@ -30,7 +30,7 @@ const Auth = () => {
     try {
       if (isForgotPassword) {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/auth/reset-password`,
+          redirectTo: `${window.location.origin}/auth`,
         });
         if (error) throw error;
         toast.success("Password reset email sent! Check your inbox.");
@@ -83,19 +83,33 @@ const Auth = () => {
     }
   };
 
-  // Extract hash parameters
+  // Check URL parameters for recovery flow
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const code = searchParams.get('code');
+    const type = searchParams.get('type');
+
+    if (type === 'recovery' && code) {
+      // If we have a recovery code, automatically verify it
+      supabase.auth.verifyOtp({
+        token_hash: code,
+        type: 'recovery'
+      }).then(({ error }) => {
+        if (error) {
+          toast.error('Invalid or expired recovery link');
+          navigate('/auth');
+        }
+      });
+    }
+  }, [navigate]);
+
+  // Extract hash parameters for password recovery
   const hashParams = new URLSearchParams(window.location.hash.substring(1));
   const type = hashParams.get('type');
   const accessToken = hashParams.get('access_token');
 
   // Handle password reset flow
-  if (type === 'recovery' && accessToken) {
-    // Set the session with the access token
-    supabase.auth.setSession({
-      access_token: accessToken,
-      refresh_token: hashParams.get('refresh_token') || '',
-    });
-
+  if (type === 'recovery' || accessToken) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-md space-y-8">
@@ -115,6 +129,7 @@ const Auth = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                minLength={6}
               />
             </div>
             <Button type="submit" className="w-full">
@@ -158,6 +173,7 @@ const Auth = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                minLength={6}
               />
             </div>
           )}
