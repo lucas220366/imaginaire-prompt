@@ -20,7 +20,7 @@ const ImageGenerator = () => {
   const [image, setImage] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('runwareApiKey') || "");
-  const [isApiKeySet, setIsApiKeySet] = useState(() => Boolean(localStorage.getItem('runwareApiKey')));
+  const [isApiKeySet, setIsApiKeySet] = useState(() => false); // Force showing API key input
   const navigate = useNavigate();
   const { session } = useAuth();
   const [settings, setSettings] = useState<ImageSettings>({
