@@ -1,8 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2, Download } from "lucide-react";
+import { Loader2, Download, Settings } from "lucide-react";
 import { toast } from "sonner";
 import { RunwareService } from '@/lib/runware';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -16,6 +15,7 @@ const ImageGenerator = () => {
   const [runwayApiKey, setRunwayApiKey] = useState(() => localStorage.getItem('runwayApiKey') || "");
   const [isApiKeySet, setIsApiKeySet] = useState(() => Boolean(localStorage.getItem('runwareApiKey')));
   const [activeTab, setActiveTab] = useState<"image" | "video">("image");
+  const [showSettings, setShowSettings] = useState(false);
 
   const handleApiKeySubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,7 +26,8 @@ const ImageGenerator = () => {
     localStorage.setItem('runwareApiKey', runwareApiKey);
     localStorage.setItem('runwayApiKey', runwayApiKey);
     setIsApiKeySet(true);
-    toast.success("API keys set successfully!");
+    setShowSettings(false);
+    toast.success("API keys updated successfully!");
   };
 
   const handleGenerate = async () => {
@@ -83,74 +84,97 @@ const ImageGenerator = () => {
     }
   };
 
+  const ApiKeyForm = () => (
+    <form onSubmit={handleApiKeySubmit} className="w-full max-w-md space-y-4">
+      <div className="bg-white/50 backdrop-blur-lg rounded-lg p-6 shadow-lg border border-gray-100">
+        <h2 className="text-xl font-semibold mb-4 text-gray-800">
+          {isApiKeySet ? "Update API Keys" : "Enter your API keys"}
+        </h2>
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="runwareKey" className="block text-sm font-medium text-gray-700 mb-1">
+              Runware API Key (for images)
+            </label>
+            <Input
+              id="runwareKey"
+              type="password"
+              placeholder="Runware API Key"
+              value={runwareApiKey}
+              onChange={(e) => setRunwareApiKey(e.target.value)}
+              className="w-full"
+            />
+          </div>
+          <div>
+            <label htmlFor="runwayKey" className="block text-sm font-medium text-gray-700 mb-1">
+              RunwayML API Key (for videos)
+            </label>
+            <Input
+              id="runwayKey"
+              type="password"
+              placeholder="RunwayML API Key (optional)"
+              value={runwayApiKey}
+              onChange={(e) => setRunwayApiKey(e.target.value)}
+              className="w-full"
+            />
+          </div>
+          <div className="flex gap-2">
+            <Button type="submit" className="flex-1">
+              {isApiKeySet ? "Update Keys" : "Set Keys"}
+            </Button>
+            {isApiKeySet && (
+              <Button type="button" variant="outline" onClick={() => setShowSettings(false)}>
+                Cancel
+              </Button>
+            )}
+          </div>
+        </div>
+        <div className="mt-4 space-y-2">
+          <p className="text-sm text-gray-600">
+            Get your Runware API key from{" "}
+            <a
+              href="https://runware.ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:text-blue-600 underline"
+            >
+              Runware.ai
+            </a>
+          </p>
+          <p className="text-sm text-gray-600">
+            Get your RunwayML API key from{" "}
+            <a
+              href="https://runway.ml"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:text-blue-600 underline"
+            >
+              Runway.ml
+            </a>
+          </p>
+        </div>
+      </div>
+    </form>
+  );
+
   return (
     <div className="min-h-screen p-6 flex flex-col items-center justify-center gap-8 animate-fade-in">
-      {!isApiKeySet ? (
-        <form onSubmit={handleApiKeySubmit} className="w-full max-w-md space-y-4">
-          <div className="bg-white/50 backdrop-blur-lg rounded-lg p-6 shadow-lg border border-gray-100">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">Enter your API keys</h2>
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="runwareKey" className="block text-sm font-medium text-gray-700 mb-1">
-                  Runware API Key (for images)
-                </label>
-                <Input
-                  id="runwareKey"
-                  type="password"
-                  placeholder="Runware API Key"
-                  value={runwareApiKey}
-                  onChange={(e) => setRunwareApiKey(e.target.value)}
-                  className="w-full"
-                />
-              </div>
-              <div>
-                <label htmlFor="runwayKey" className="block text-sm font-medium text-gray-700 mb-1">
-                  RunwayML API Key (for videos)
-                </label>
-                <Input
-                  id="runwayKey"
-                  type="password"
-                  placeholder="RunwayML API Key (optional)"
-                  value={runwayApiKey}
-                  onChange={(e) => setRunwayApiKey(e.target.value)}
-                  className="w-full"
-                />
-              </div>
-              <Button type="submit" className="w-full">
-                Set API Keys
-              </Button>
-            </div>
-            <div className="mt-4 space-y-2">
-              <p className="text-sm text-gray-600">
-                Get your Runware API key from{" "}
-                <a
-                  href="https://runware.ai"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 hover:text-blue-600 underline"
-                >
-                  Runware.ai
-                </a>
-              </p>
-              <p className="text-sm text-gray-600">
-                Get your RunwayML API key from{" "}
-                <a
-                  href="https://runway.ml"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 hover:text-blue-600 underline"
-                >
-                  Runway.ml
-                </a>
-              </p>
-            </div>
-          </div>
-        </form>
+      {!isApiKeySet || showSettings ? (
+        <ApiKeyForm />
       ) : (
         <>
           <div className="w-full max-w-3xl space-y-4">
             <div className="bg-white/50 backdrop-blur-lg rounded-lg p-6 shadow-lg border border-gray-100">
-              <h1 className="text-2xl font-semibold mb-6 text-gray-800">Generate Content</h1>
+              <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-semibold text-gray-800">Generate Content</h1>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setShowSettings(true)}
+                  className="hover:bg-gray-100"
+                >
+                  <Settings className="h-4 w-4" />
+                </Button>
+              </div>
               <Tabs
                 defaultValue="image"
                 value={activeTab}
