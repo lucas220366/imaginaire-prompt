@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -11,51 +11,27 @@ export const PasswordResetForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Get the hash parameters
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const accessToken = hashParams.get('access_token');
-    const refreshToken = hashParams.get('refresh_token');
-    
-    // If we have tokens, set up the session
-    if (accessToken && refreshToken) {
-      console.log("Setting up session with tokens");
-      supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken,
-      }).then(({ error }) => {
-        if (error) {
-          console.error("Session setup error:", error);
-          toast.error("Error setting up session");
-        } else {
-          console.log("Session set up successfully");
-        }
-      });
-    }
-  }, []);
-
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      console.log("Attempting to update password");
-      const { error } = await supabase.auth.updateUser({
-        password: password
+      console.log("Starting password update...");
+      
+      const { data, error } = await supabase.auth.updateUser({ 
+        password: password 
       });
 
       if (error) {
-        console.error("Update password error:", error);
+        console.error("Password update error:", error);
         throw error;
       }
 
-      console.log("Password updated successfully");
-      toast.success("Password updated successfully!");
-      
-      // Clear the hash
-      window.location.hash = '';
-      
-      navigate("/generator", { replace: true });
+      if (data.user) {
+        console.log("Password updated successfully for user:", data.user.id);
+        toast.success("Password updated successfully!");
+        navigate("/generator", { replace: true });
+      }
     } catch (error: any) {
       console.error("Password update error:", error);
       toast.error(error.message || "Failed to update password");

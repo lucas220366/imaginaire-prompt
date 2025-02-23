@@ -9,7 +9,7 @@ const Auth = () => {
   const navigate = useNavigate();
   const { session } = useAuth();
 
-  // Check if we're in a recovery flow by looking for access_token in hash
+  // Check if we're in a recovery flow
   const hashParams = new URLSearchParams(window.location.hash.substring(1));
   const isRecoveryFlow = hashParams.has('access_token') || hashParams.get('type') === 'recovery';
 

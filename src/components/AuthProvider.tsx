@@ -34,23 +34,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
       console.log("Auth state changed:", _event, session?.user?.id);
+      setSession(session);
+      setIsLoading(false);
+      
+      if (_event === 'PASSWORD_RECOVERY') {
+        console.log("Password recovery event detected");
+      }
       
       if (_event === 'SIGNED_OUT') {
-        setSession(null);
-        setIsLoading(false);
-        
         // Clear all Supabase-related items from localStorage
         Object.keys(localStorage).forEach(key => {
           if (key.startsWith('sb-')) {
             localStorage.removeItem(key);
           }
         });
-        
-        // Use replace instead of href to prevent issues with browser history
         window.location.replace('/auth');
-      } else {
-        setSession(session);
-        setIsLoading(false);
       }
     });
 
@@ -74,9 +72,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       // Explicitly clear the session state
       setSession(null);
-      
-      // Use replace instead of href to prevent issues with browser history
-      window.location.replace('/auth');
       
       console.log("Sign out complete");
     } catch (error) {
