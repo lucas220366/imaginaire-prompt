@@ -12,7 +12,7 @@ const sampleImages = [
     style: "Cartoon Style"
   },
   {
-    url: "https://images.pexels.com/photos/1670977/pexels-photo-1670977.jpeg",
+    url: "/lovable-uploads/d795f3ed-1ece-45dc-a78f-b9f46602157f.png",
     style: "Pixar Style"
   }
 ];
