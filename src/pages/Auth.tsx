@@ -1,19 +1,17 @@
 
 import { useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/components/AuthProvider";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { PasswordResetForm } from "@/components/auth/PasswordResetForm";
-import { toast } from "sonner";
 
 const Auth = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { session } = useAuth();
 
   // Check if we're in a recovery flow by looking at URL hash
-  const hashParams = new URLSearchParams(window.location.hash.substring(1));
-  const isRecoveryFlow = hashParams.has('access_token') || hashParams.get('type') === 'recovery';
+  const accessToken = new URLSearchParams(window.location.hash.substring(1)).get('access_token');
+  const isRecoveryFlow = Boolean(accessToken);
 
   // Only redirect if we have a session and we're not in a password reset flow
   useEffect(() => {
