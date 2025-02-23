@@ -6,6 +6,14 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
 
+interface GeneratedImage {
+  id: string;
+  created_at: string;
+  prompt: string;
+  image_url: string;
+  user_id: string;
+}
+
 interface GeneratedImageProps {
   imageUrl: string;
   prompt: string;
@@ -34,13 +42,13 @@ const GeneratedImage = ({ imageUrl, prompt }: GeneratedImageProps) => {
   };
 
   const handleDelete = async () => {
+    if (!session?.user?.id) return;
+
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('generated_images')
         .delete()
-        .eq('image_url', imageUrl)
-        .eq('user_id', session?.user.id)
-        .select();
+        .match({ image_url: imageUrl, user_id: session.user.id });
 
       if (error) throw error;
       

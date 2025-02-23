@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
@@ -5,13 +6,9 @@ import { Button } from "@/components/ui/button";
 import { LogOut, ArrowLeft, Download, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import type { Database } from '@/integrations/supabase/types';
 
-interface GeneratedImage {
-  id: string;
-  created_at: string;
-  prompt: string;
-  image_url: string;
-}
+type GeneratedImage = Database['public']['Tables']['generated_images']['Row'];
 
 const Profile = () => {
   const [images, setImages] = useState<GeneratedImage[]>([]);
@@ -21,15 +18,17 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchImages = async () => {
+      if (!session?.user?.id) return;
+      
       try {
         const { data, error } = await supabase
           .from('generated_images')
           .select('*')
-          .eq('user_id', session?.user.id)
+          .match({ user_id: session.user.id })
           .order('created_at', { ascending: false });
 
         if (error) throw error;
-        setImages(data);
+        if (data) setImages(data);
       } catch (error) {
         console.error('Error fetching images:', error);
         toast.error("Failed to load your images");
@@ -66,16 +65,16 @@ const Profile = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (imageId: string) => {
     try {
       const { error } = await supabase
         .from('generated_images')
         .delete()
-        .eq('id', id);
+        .match({ id: imageId, user_id: session?.user?.id });
 
       if (error) throw error;
 
-      setImages(images.filter(image => image.id !== id));
+      setImages(images.filter(image => image.id !== imageId));
       toast.success("Image deleted successfully!");
     } catch (error) {
       console.error('Error deleting image:', error);

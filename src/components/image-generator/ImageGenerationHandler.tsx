@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { getImageDimensions } from "@/utils/image-utils";
 import { Session } from '@supabase/supabase-js';
+import type { Database } from '@/integrations/supabase/types';
 
 interface ImageGenerationHandlerProps {
   apiKey: string;
@@ -44,13 +45,15 @@ const ImageGenerationHandler = async ({
     });
     
     if (session?.user) {
+      const insertData: Database['public']['Tables']['generated_images']['Insert'] = {
+        user_id: session.user.id,
+        prompt: prompt,
+        image_url: result.imageURL
+      };
+
       const { error } = await supabase
         .from('generated_images')
-        .insert({
-          user_id: session.user.id,
-          prompt: prompt,
-          image_url: result.imageURL
-        });
+        .insert(insertData);
       
       if (error) throw error;
     }

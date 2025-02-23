@@ -15,11 +15,8 @@ const initSupabaseClient = () => {
         autoRefreshToken: true,
         persistSession: true,
         detectSessionInUrl: true,
-        storage: localStorage, // Explicitly set storage
+        storage: localStorage,
         storageKey: 'supabase.auth.token',
-      },
-      headers: {
-        apikey: SUPABASE_ANON_KEY // Explicitly set API key in headers
       }
     }
   );
