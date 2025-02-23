@@ -78,11 +78,16 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
           <p className="text-gray-600 mt-2">to continue to Image Generator</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
             <Input
+              id="email"
+              name="email"
               type="email"
-              placeholder="Email"
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -90,9 +95,14 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
           </div>
           {!isForgotPassword && (
             <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                Password
+              </label>
               <Input
+                id="password"
+                name="password"
                 type="password"
-                placeholder="Password"
+                autoComplete={isSignUp ? "new-password" : "current-password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
