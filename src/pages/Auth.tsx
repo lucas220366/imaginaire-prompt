@@ -29,7 +29,9 @@ const Auth = () => {
 
     try {
       if (isForgotPassword) {
-        const { error } = await supabase.auth.resetPasswordForEmail(email);
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/auth/reset-password`,
+        });
         if (error) throw error;
         toast.success("Password reset email sent! Check your inbox.");
         setIsForgotPassword(false);
@@ -81,41 +83,27 @@ const Auth = () => {
     }
   };
 
-  // Handle the recovery token
+  // Handle URL parameters for reset password
   useEffect(() => {
-    const handleRecoveryToken = async () => {
-      // Check for recovery token in URL
-      const fragment = new URLSearchParams(window.location.hash.substring(1));
-      const accessToken = fragment.get('access_token');
-      const refreshToken = fragment.get('refresh_token');
-      const type = fragment.get('type');
+    const searchParams = new URLSearchParams(window.location.search);
+    const type = searchParams.get('type');
+    const accessToken = searchParams.get('access_token');
 
-      if (accessToken && type === 'recovery') {
-        try {
-          // Set the session with the recovery tokens
-          const { error } = await supabase.auth.setSession({
-            access_token: accessToken,
-            refresh_token: refreshToken || '',
-          });
-          if (error) throw error;
-        } catch (error: any) {
-          console.error('Error setting recovery session:', error);
-          toast.error('Error processing recovery link');
-          navigate('/auth');
-        }
-      }
-    };
+    // Also check hash parameters
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const hashType = hashParams.get('type');
+    const hashAccessToken = hashParams.get('access_token');
 
-    handleRecoveryToken();
-  }, [navigate]);
+    if ((type === 'recovery' && accessToken) || (hashType === 'recovery' && hashAccessToken)) {
+      console.log('Recovery flow detected:', { type, hashType, accessToken, hashAccessToken });
+    }
+  }, []);
 
-  // Extract hash parameters for password recovery
-  const hashParams = new URLSearchParams(window.location.hash.substring(1));
-  const type = hashParams.get('type');
-  const accessToken = hashParams.get('access_token');
+  // Check if we're in the password reset flow
+  const isPasswordReset = window.location.pathname.includes('reset-password') || 
+                         window.location.hash.includes('type=recovery');
 
-  // Handle password reset flow
-  if (type === 'recovery' || accessToken) {
+  if (isPasswordReset) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-md space-y-8">
