@@ -8,19 +8,26 @@ import { toast } from "sonner";
 
 export const PasswordResetForm = () => {
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleUpdatePassword = async (newPassword: string) => {
     try {
+      setIsLoading(true);
       const { error } = await supabase.auth.updateUser({
         password: newPassword
       });
 
       if (error) throw error;
+      
       toast.success("Password updated successfully!");
+      // Clear the URL hash after successful password reset
+      window.location.hash = '';
       navigate("/generator");
     } catch (error: any) {
       toast.error(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -44,10 +51,11 @@ export const PasswordResetForm = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
+              disabled={isLoading}
             />
           </div>
-          <Button type="submit" className="w-full">
-            Update Password
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? "Updating..." : "Update Password"}
           </Button>
         </form>
       </div>

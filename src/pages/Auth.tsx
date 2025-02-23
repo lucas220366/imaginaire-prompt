@@ -28,8 +28,11 @@ const Auth = () => {
     const hashType = hashParams.get('type');
     const hashAccessToken = hashParams.get('access_token');
 
+    // Log the recovery flow detection for debugging
     if ((type === 'recovery' && accessToken) || (hashType === 'recovery' && hashAccessToken)) {
       console.log('Recovery flow detected:', { type, hashType, accessToken, hashAccessToken });
+      // If we have a recovery token, show the password reset form
+      return;
     }
 
     // Handle potential errors
@@ -41,9 +44,10 @@ const Auth = () => {
     }
   }, []);
 
-  // Check if we're in the password reset flow
+  // Check if we're in the password reset flow by checking both URL parameters and hash
   const isPasswordReset = window.location.pathname.includes('reset-password') || 
-                         window.location.hash.includes('type=recovery');
+                         window.location.hash.includes('type=recovery') ||
+                         window.location.hash.includes('access_token');
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-blue-50">
