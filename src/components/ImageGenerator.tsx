@@ -131,7 +131,7 @@ const ImageGenerator = () => {
                 <Button 
                   onClick={handleGenerate}
                   disabled={isGenerating || !prompt.trim()}
-                  className="min-w-[120px]"
+                  className="min-w-[120px] bg-green-300 hover:bg-green-400 text-green-800"
                 >
                   {isGenerating ? (
                     <>
