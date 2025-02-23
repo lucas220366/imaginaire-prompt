@@ -1,8 +1,10 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { Download, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/components/AuthProvider";
 
 interface GeneratedImageProps {
   imageUrl: string;
@@ -10,6 +12,8 @@ interface GeneratedImageProps {
 }
 
 const GeneratedImage = ({ imageUrl, prompt }: GeneratedImageProps) => {
+  const { session } = useAuth();
+
   const handleDownload = async () => {
     try {
       const response = await fetch(imageUrl);
@@ -29,6 +33,26 @@ const GeneratedImage = ({ imageUrl, prompt }: GeneratedImageProps) => {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('generated_images')
+        .delete()
+        .eq('image_url', imageUrl)
+        .eq('user_id', session?.user.id)
+        .select();
+
+      if (error) throw error;
+      
+      toast.success("Image deleted successfully!");
+      // Refresh the page to update the image list
+      window.location.reload();
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      toast.error("Failed to delete image");
+    }
+  };
+
   return (
     <div className="animate-fade-up">
       <div className="bg-white/50 backdrop-blur-lg rounded-lg p-4 shadow-lg border border-gray-100">
@@ -39,14 +63,24 @@ const GeneratedImage = ({ imageUrl, prompt }: GeneratedImageProps) => {
             className="w-full h-auto rounded-lg shadow-sm"
             loading="lazy"
           />
-          <Button
-            onClick={handleDownload}
-            className="absolute top-4 right-4 bg-white/80 hover:bg-white"
-            size="icon"
-            variant="outline"
-          >
-            <Download className="h-4 w-4" />
-          </Button>
+          <div className="absolute top-4 right-4 flex gap-2">
+            <Button
+              onClick={handleDownload}
+              className="bg-white/80 hover:bg-white"
+              size="icon"
+              variant="outline"
+            >
+              <Download className="h-4 w-4" />
+            </Button>
+            <Button
+              onClick={handleDelete}
+              className="bg-white/80 hover:bg-white hover:text-red-600"
+              size="icon"
+              variant="outline"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </div>
     </div>

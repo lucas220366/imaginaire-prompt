@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
 import { Button } from "@/components/ui/button";
-import { LogOut, ArrowLeft } from "lucide-react";
+import { LogOut, ArrowLeft, Download, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -67,6 +67,23 @@ const Profile = () => {
     }
   };
 
+  const handleDelete = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('generated_images')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setImages(images.filter(image => image.id !== id));
+      toast.success("Image deleted successfully!");
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      toast.error("Failed to delete image");
+    }
+  };
+
   return (
     <div className="min-h-screen p-6">
       <div className="max-w-6xl mx-auto">
@@ -121,14 +138,24 @@ const Profile = () => {
                     className="w-full h-full object-cover"
                     loading="lazy"
                   />
-                  <Button
-                    onClick={() => handleDownload(image.image_url)}
-                    className="absolute top-4 right-4 bg-white/80 hover:bg-white"
-                    size="icon"
-                    variant="outline"
-                  >
-                    <LogOut className="h-4 w-4" />
-                  </Button>
+                  <div className="absolute top-4 right-4 flex gap-2">
+                    <Button
+                      onClick={() => handleDownload(image.image_url)}
+                      className="bg-white/80 hover:bg-white"
+                      size="icon"
+                      variant="outline"
+                    >
+                      <Download className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      onClick={() => handleDelete(image.id)}
+                      className="bg-white/80 hover:bg-white hover:text-red-600"
+                      size="icon"
+                      variant="outline"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
                 <div className="p-4">
                   <p className="text-sm text-gray-600 line-clamp-2">{image.prompt}</p>
