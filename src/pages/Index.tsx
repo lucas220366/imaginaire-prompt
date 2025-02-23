@@ -4,10 +4,19 @@ import { useNavigate } from "react-router-dom";
 import { Sparkles, Palette, Wand2, ArrowRight, Rocket } from "lucide-react";
 import SampleImages from "@/components/image-generator/SampleImages";
 import { useAuth } from "@/components/AuthProvider";
+import { useEffect } from "react";
 
 const Index = () => {
   const navigate = useNavigate();
-  const { session } = useAuth();
+  const { session, isLoading } = useAuth();
+
+  useEffect(() => {
+    console.log("Index page - Auth state:", {
+      isLoading,
+      isAuthenticated: !!session,
+      userId: session?.user?.id
+    });
+  }, [session, isLoading]);
 
   return (
     <div className="min-h-screen p-6 animate-fade-in bg-gradient-to-b from-white to-blue-50">

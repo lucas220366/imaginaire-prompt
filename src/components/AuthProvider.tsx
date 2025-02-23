@@ -2,6 +2,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Session } from "@supabase/supabase-js";
+import { toast } from "sonner";
 
 interface AuthContextType {
   session: Session | null;
@@ -22,9 +23,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    console.log("AuthProvider: Initializing");
+    
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log("Initial session:", session?.user?.id);
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (error) {
+        console.error("Error getting session:", error);
+        toast.error("Error getting session");
+      } else {
+        console.log("Initial session state:", {
+          isAuthenticated: !!session,
+          userId: session?.user?.id,
+          userEmail: session?.user?.email
+        });
+      }
       setSession(session);
       setIsLoading(false);
     });
@@ -32,27 +44,37 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      console.log("Auth state changed:", _event, session?.user?.id);
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("Auth state changed:", {
+        event,
+        isAuthenticated: !!session,
+        userId: session?.user?.id
+      });
+      
       setSession(session);
       setIsLoading(false);
       
-      if (_event === 'PASSWORD_RECOVERY') {
-        console.log("Password recovery event detected");
+      if (event === 'PASSWORD_RECOVERY') {
+        console.log("Password recovery flow detected");
       }
       
-      if (_event === 'SIGNED_OUT') {
+      if (event === 'SIGNED_OUT') {
+        console.log("Starting sign out cleanup...");
         // Clear all Supabase-related items from localStorage
         Object.keys(localStorage).forEach(key => {
           if (key.startsWith('sb-')) {
             localStorage.removeItem(key);
+            console.log("Cleared localStorage item:", key);
           }
         });
         window.location.replace('/auth');
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      console.log("Cleaning up auth subscription");
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signOut = async () => {
@@ -63,17 +85,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       Object.keys(localStorage).forEach(key => {
         if (key.startsWith('sb-')) {
           localStorage.removeItem(key);
+          console.log("Cleared localStorage item:", key);
         }
       });
       
       // Sign out from Supabase
       const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      if (error) {
+        console.error("Error during sign out:", error);
+        toast.error("Error signing out");
+        throw error;
+      }
       
       // Explicitly clear the session state
       setSession(null);
       
       console.log("Sign out complete");
+      toast.success("Signed out successfully");
     } catch (error) {
       console.error("Error signing out:", error);
       throw error;
