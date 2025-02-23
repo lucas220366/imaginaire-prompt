@@ -1,4 +1,3 @@
-
 import { toast } from "sonner";
 
 const API_ENDPOINT = "wss://ws-api.runware.ai/v1";
@@ -20,12 +19,6 @@ export interface GeneratedImage {
   imageURL: string;
   positivePrompt: string;
   seed: number;
-  NSFWContent: boolean;
-}
-
-export interface GeneratedVideo {
-  videoURL: string;
-  positivePrompt: string;
   NSFWContent: boolean;
 }
 
@@ -143,7 +136,7 @@ export class RunwareService {
         width: 1024,
         height: 1024,
         numberResults: params.numberResults || 1,
-        outputFormat: "PNG",
+        outputFormat: "PNG", // Changed from WEBP to PNG
         steps: 4,
         CFGScale: params.CFGScale || 1,
         scheduler: params.scheduler || "FlowMatchEulerDiscreteScheduler",
@@ -172,9 +165,5 @@ export class RunwareService {
 
       this.ws.send(JSON.stringify(message));
     });
-  }
-
-  async generateVideo(params: { positivePrompt: string }): Promise<GeneratedVideo> {
-    throw new Error("Video generation is not currently supported by the Runware API");
   }
 }
