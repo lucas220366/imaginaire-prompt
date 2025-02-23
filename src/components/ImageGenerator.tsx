@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2, Download, LogOut } from "lucide-react";
+import { Loader2, Download, LogOut, User } from "lucide-react";
 import { toast } from "sonner";
 import { RunwareService } from '@/lib/runware';
 import { supabase } from "@/integrations/supabase/client";
@@ -91,14 +91,22 @@ const ImageGenerator = () => {
 
   return (
     <div className="min-h-screen p-6 flex flex-col items-center justify-center gap-8 animate-fade-in">
-      <Button
-        onClick={handleSignOut}
-        variant="outline"
-        className="absolute top-4 right-4"
-      >
-        <LogOut className="mr-2 h-4 w-4" />
-        Sign Out
-      </Button>
+      <div className="absolute top-4 right-4 flex gap-2">
+        <Button
+          onClick={() => navigate("/profile")}
+          variant="outline"
+        >
+          <User className="mr-2 h-4 w-4" />
+          Profile
+        </Button>
+        <Button
+          onClick={handleSignOut}
+          variant="outline"
+        >
+          <LogOut className="mr-2 h-4 w-4" />
+          Sign Out
+        </Button>
+      </div>
 
       {!isApiKeySet ? (
         <form onSubmit={handleApiKeySubmit} className="w-full max-w-md space-y-4">
