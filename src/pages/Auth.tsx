@@ -35,14 +35,14 @@ const Auth = () => {
         });
         
         toast.success("Account created successfully!");
-        navigate("/");
+        navigate("/generator");
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
         if (error) throw error;
-        navigate("/");
+        navigate("/generator");
       }
     } catch (error: any) {
       toast.error(error.message);
