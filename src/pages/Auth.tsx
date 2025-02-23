@@ -29,9 +29,7 @@ const Auth = () => {
 
     try {
       if (isForgotPassword) {
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/auth`,
-        });
+        const { error } = await supabase.auth.resetPasswordForEmail(email);
         if (error) throw error;
         toast.success("Password reset email sent! Check your inbox.");
         setIsForgotPassword(false);
@@ -83,24 +81,32 @@ const Auth = () => {
     }
   };
 
-  // Check URL parameters for recovery flow
+  // Handle the recovery token
   useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const code = searchParams.get('code');
-    const type = searchParams.get('type');
+    const handleRecoveryToken = async () => {
+      // Check for recovery token in URL
+      const fragment = new URLSearchParams(window.location.hash.substring(1));
+      const accessToken = fragment.get('access_token');
+      const refreshToken = fragment.get('refresh_token');
+      const type = fragment.get('type');
 
-    if (type === 'recovery' && code) {
-      // If we have a recovery code, automatically verify it
-      supabase.auth.verifyOtp({
-        token_hash: code,
-        type: 'recovery'
-      }).then(({ error }) => {
-        if (error) {
-          toast.error('Invalid or expired recovery link');
+      if (accessToken && type === 'recovery') {
+        try {
+          // Set the session with the recovery tokens
+          const { error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken || '',
+          });
+          if (error) throw error;
+        } catch (error: any) {
+          console.error('Error setting recovery session:', error);
+          toast.error('Error processing recovery link');
           navigate('/auth');
         }
-      });
-    }
+      }
+    };
+
+    handleRecoveryToken();
   }, [navigate]);
 
   // Extract hash parameters for password recovery
