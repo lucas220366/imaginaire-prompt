@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -168,7 +169,7 @@ const ImageGenerator = () => {
                   style: "Realistic Style"
                 },
                 {
-                  url: "https://images.unsplash.com/photo-1558470598-a5dda9640f68",
+                  url: "https://images.unsplash.com/photo-1535268647677-300dbf3d78d1",
                   style: "Animated Style"
                 },
                 {
