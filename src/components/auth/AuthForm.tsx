@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -18,12 +18,30 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
   const [isForgotPassword, setIsForgotPassword] = useState(initialMode === 'forgot');
   const navigate = useNavigate();
 
+  // Add debug logging for Supabase client
+  useEffect(() => {
+    const checkSupabase = async () => {
+      try {
+        // Test the connection
+        const { data, error } = await supabase.auth.getSession();
+        console.log("Supabase connection test:", { data, error });
+      } catch (err) {
+        console.error("Supabase connection error:", err);
+      }
+    };
+    
+    checkSupabase();
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
+      console.log("Starting auth process...");
+      
       if (isForgotPassword) {
+        console.log("Attempting password reset for:", email);
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: `${window.location.origin}/auth/reset-password`,
         });
@@ -31,6 +49,7 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
         toast.success("Password reset email sent! Check your inbox.");
         setIsForgotPassword(false);
       } else if (isSignUp) {
+        console.log("Attempting signup for:", email);
         const { error } = await supabase.auth.signUp({
           email,
           password,
@@ -40,6 +59,7 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
         });
         if (error) throw error;
         
+        console.log("Signup successful, attempting immediate signin");
         // Since email confirmation is disabled, directly sign in
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email,
@@ -50,6 +70,7 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
         toast.success("Account created successfully!");
         navigate("/generator");
       } else {
+        console.log("Attempting signin for:", email);
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
@@ -58,6 +79,7 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
         navigate("/generator");
       }
     } catch (error: any) {
+      console.error("Auth error:", error);
       toast.error(error.message);
     } finally {
       setIsLoading(false);
