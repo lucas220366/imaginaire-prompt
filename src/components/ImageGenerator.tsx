@@ -170,13 +170,13 @@ const ImageGenerator = () => {
                   style: "Realistic Style"
                 },
                 {
-                  url: "https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d",
-                  prompt: "A colorful underwater city with merfolk riding seahorses through coral archways, surrounded by schools of glowing tropical fish",
+                  url: "https://images.unsplash.com/photo-1558470598-a5dda9640f68",
+                  prompt: "A whimsical candy kingdom with lollipop trees, chocolate rivers, and flying cupcakes spreading sprinkles of joy across a cotton candy sky",
                   style: "Animated Style"
                 },
                 {
-                  url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b",
-                  prompt: "A futuristic floating garden in the clouds, with floating crystal flowers and iridescent butterflies among streams of rainbow light",
+                  url: "https://images.unsplash.com/photo-1518562180175-34a163b1a9a6",
+                  prompt: "A fantastical treehouse city at sunset with spiral staircases wrapped in glowing vines, floating lanterns, and tiny dragons playing hide and seek",
                   style: "Pixar Style"
                 }
               ].map((sample, index) => (
