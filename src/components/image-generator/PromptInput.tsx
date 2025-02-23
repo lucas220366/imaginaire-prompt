@@ -36,7 +36,7 @@ const PromptInput = ({ prompt, isGenerating, onPromptChange, onGenerate }: Promp
           )}
         </Button>
       </div>
-      <p className="text-sm text-gray-600 mt-2 font-bold">
+      <p className="text-sm text-gray-600 mt-2">
         For optimal results try to be specific, include clear details about your subject, style, and mood
       </p>
     </div>
