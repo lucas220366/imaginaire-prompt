@@ -9,15 +9,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen p-6 animate-fade-in bg-gradient-to-b from-white to-blue-50">
-      {/* Logo */}
-      <div className="absolute top-6 left-6">
-        <img 
-          src="/lovable-uploads/61e17058-8f03-496d-ad0d-24fc8a03b176.png"
-          alt="Creative Logo"
-          className="w-20 h-20 object-contain hover:scale-105 transition-transform duration-200"
-        />
-      </div>
-
       <div className="max-w-6xl mx-auto pt-16 space-y-16">
         {/* Hero Section */}
         <div className="text-center space-y-6">
