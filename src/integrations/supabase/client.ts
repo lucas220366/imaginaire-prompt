@@ -1,4 +1,3 @@
-
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
@@ -7,7 +6,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 // Initialize the Supabase client with retry mechanism
 const initSupabaseClient = () => {
-  const client = createClient<Database>(
+  return createClient<Database>(
     SUPABASE_URL,
     SUPABASE_ANON_KEY,
     {
@@ -16,25 +15,17 @@ const initSupabaseClient = () => {
         persistSession: true,
         detectSessionInUrl: true,
         storage: localStorage,
-        storageKey: 'supabase.auth.token',
-        headers: {
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          'apikey': SUPABASE_ANON_KEY
-        }
+        storageKey: 'supabase.auth.token'
       },
       global: {
         headers: {
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
           'apikey': SUPABASE_ANON_KEY
         }
       }
     }
   );
-
-  return client;
 };
 
-// Create and export a single instance
 export const supabase = initSupabaseClient();
 
 // Utility function to verify client connection

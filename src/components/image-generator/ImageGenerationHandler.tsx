@@ -45,15 +45,13 @@ const ImageGenerationHandler = async ({
     });
     
     if (session?.user) {
-      const insertData: Database['public']['Tables']['generated_images']['Insert'] = {
-        user_id: session.user.id,
-        prompt: prompt,
-        image_url: result.imageURL
-      };
-
       const { error } = await supabase
         .from('generated_images')
-        .insert(insertData);
+        .insert({
+          user_id: session.user.id,
+          prompt: prompt,
+          image_url: result.imageURL
+        });
       
       if (error) throw error;
     }
