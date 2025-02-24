@@ -13,52 +13,46 @@ export const PasswordResetForm = () => {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // Get the recovery token from the URL when the component mounts
   useEffect(() => {
     const validateToken = async () => {
       try {
-        // First try to get the access_token from the URL hash
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        const recoveryToken = hashParams.get('access_token');
         const type = hashParams.get('type');
+        const accessToken = hashParams.get('access_token');
 
         console.log("Recovery flow type:", type);
-        console.log("Access token present:", !!recoveryToken);
+        console.log("Access token present:", !!accessToken);
 
-        if (!recoveryToken) {
-          console.log("No recovery token found");
+        if (!accessToken) {
+          console.log("No access token found");
           setIsTokenValid(false);
+          toast.error("Invalid password reset link");
           return;
         }
 
-        // Try to exchange the token for a session
-        const { data: { session }, error } = await supabase.auth.setSession({
-          access_token: recoveryToken,
-          refresh_token: recoveryToken
+        // First verify the token
+        const { data, error: verifyError } = await supabase.auth.verifyOtp({
+          token_hash: accessToken,
+          type: 'recovery'
         });
 
-        if (error) {
-          console.error("Error validating recovery token:", error);
+        if (verifyError) {
+          console.error("Token verification error:", verifyError);
           setIsTokenValid(false);
-          if (error.message.includes("expired")) {
-            toast.error("Password reset link has expired. Please request a new one.");
-          } else {
-            toast.error("Invalid password reset link");
-          }
+          toast.error("Password reset link has expired. Please request a new one.");
           return;
         }
 
-        if (session?.user?.email) {
-          console.log("Recovery token is valid for email:", session.user.email);
+        if (data.user?.email) {
+          console.log("Token verified for email:", data.user.email);
+          setUserEmail(data.user.email);
           setIsTokenValid(true);
-          setUserEmail(session.user.email);
         } else {
-          console.log("No valid session found");
           setIsTokenValid(false);
-          toast.error("Unable to verify password reset link");
+          toast.error("Unable to verify reset link");
         }
       } catch (error) {
-        console.error("Error in recovery validation:", error);
+        console.error("Error in token validation:", error);
         setIsTokenValid(false);
         toast.error("An error occurred while validating your reset link");
       }
@@ -72,22 +66,24 @@ export const PasswordResetForm = () => {
     setIsLoading(true);
 
     try {
-      console.log("Starting password update...");
-      
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const accessToken = hashParams.get('access_token');
+
+      if (!accessToken) {
+        throw new Error("No access token found");
+      }
+
       const { data, error } = await supabase.auth.updateUser({ 
-        password: password 
+        password: password
       });
 
       if (error) {
-        console.error("Password update error:", error);
         throw error;
       }
 
       if (data.user) {
-        console.log("Password updated successfully for user:", data.user.id);
+        console.log("Password updated successfully");
         toast.success("Password updated successfully!");
-        
-        // Clear the hash and navigate
         window.location.hash = '';
         navigate("/auth", { replace: true });
       }
