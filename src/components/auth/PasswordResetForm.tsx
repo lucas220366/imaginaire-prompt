@@ -10,6 +10,7 @@ export const PasswordResetForm = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isTokenValid, setIsTokenValid] = useState(true);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const navigate = useNavigate();
 
   // Get the recovery token from the URL when the component mounts
@@ -41,6 +42,7 @@ export const PasswordResetForm = () => {
         } else if (data?.session) {
           console.log("Recovery token is valid");
           setIsTokenValid(true);
+          setUserEmail(data.session.user.email);
         }
       } catch (error) {
         console.error("Error in recovery validation:", error);
@@ -86,13 +88,14 @@ export const PasswordResetForm = () => {
   const handleRequestNewLink = async () => {
     try {
       setIsLoading(true);
-      const { data: session } = await supabase.auth.getSession();
-      if (session?.user?.email) {
-        const { error } = await supabase.auth.resetPasswordForEmail(session.user.email, {
+      if (userEmail) {
+        const { error } = await supabase.auth.resetPasswordForEmail(userEmail, {
           redirectTo: `${window.location.origin}/auth/reset-password`
         });
         if (error) throw error;
         toast.success("New password reset link sent to your email!");
+      } else {
+        toast.error("No email found. Please try resetting your password from the login page.");
       }
     } catch (error: any) {
       console.error("Error requesting new link:", error);
