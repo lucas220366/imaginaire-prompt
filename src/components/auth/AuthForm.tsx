@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -18,21 +18,6 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
   const [isForgotPassword, setIsForgotPassword] = useState(initialMode === 'forgot');
   const navigate = useNavigate();
 
-  // Add debug logging for Supabase client
-  useEffect(() => {
-    const checkSupabase = async () => {
-      try {
-        // Test the connection
-        const { data, error } = await supabase.auth.getSession();
-        console.log("Supabase connection test:", { data, error });
-      } catch (err) {
-        console.error("Supabase connection error:", err);
-      }
-    };
-    
-    checkSupabase();
-  }, []);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -43,7 +28,10 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
       if (isForgotPassword) {
         console.log("Attempting password reset for:", email);
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/auth/reset-password`,
+          redirectTo: `${window.location.origin}/auth`,
+          options: {
+            emailRedirectTo: `${window.location.origin}/auth`
+          }
         });
         if (error) throw error;
         toast.success("Password reset email sent! Check your inbox.");
