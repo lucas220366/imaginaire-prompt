@@ -10,6 +10,7 @@ export class WebSocketManager {
   private connectionPromise: Promise<void> | null = null;
   private reconnectAttempts: number = 0;
   private maxReconnectAttempts: number = 3;
+  private authenticationInProgress: boolean = false;
 
   constructor(private apiEndpoint: string, private apiKey: string) {
     if (!apiKey) {
@@ -21,11 +22,16 @@ export class WebSocketManager {
   private connect(): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
+        if (this.authenticationInProgress) {
+          console.log("Authentication already in progress, waiting...");
+          return;
+        }
+
         console.log("Attempting to connect to WebSocket...");
         this.ws = new WebSocket(this.apiEndpoint);
         
         this.ws.onopen = () => {
-          console.log("WebSocket connection established");
+          console.log("WebSocket connection established, attempting authentication...");
           this.reconnectAttempts = 0;
           this.authenticate().then(resolve).catch(reject);
         };
@@ -35,12 +41,16 @@ export class WebSocketManager {
         this.ws.onerror = (error) => {
           console.error("WebSocket error:", error);
           toast.error("Connection error occurred. Please try again.");
+          this.isAuthenticated = false;
+          this.authenticationInProgress = false;
           reject(error);
         };
 
         this.ws.onclose = () => {
           console.log("WebSocket connection closed");
           this.isAuthenticated = false;
+          this.authenticationInProgress = false;
+          
           if (this.reconnectAttempts < this.maxReconnectAttempts) {
             console.log(`Attempting to reconnect... (Attempt ${this.reconnectAttempts + 1})`);
             this.reconnectAttempts++;
@@ -54,6 +64,7 @@ export class WebSocketManager {
         };
       } catch (error) {
         console.error("Error establishing connection:", error);
+        this.authenticationInProgress = false;
         reject(error);
       }
     });
@@ -79,11 +90,16 @@ export class WebSocketManager {
             console.log("Authentication successful, session UUID:", item.connectionSessionUUID);
             this.connectionSessionUUID = item.connectionSessionUUID;
             this.isAuthenticated = true;
-          } else if (item.taskType === "imageInference" && item.imageURL) {
-            console.log("Image generation successful:", item);
+            this.authenticationInProgress = false;
+          } else if (item.taskType === "imageInference") {
+            console.log("Image inference response:", item);
             const callback = this.messageCallbacks.get(item.taskUUID);
             if (callback) {
-              callback(item);
+              if (item.imageURL) {
+                callback(item);
+              } else if (item.error) {
+                callback({ error: item.error });
+              }
               this.messageCallbacks.delete(item.taskUUID);
             }
           }
@@ -97,10 +113,17 @@ export class WebSocketManager {
 
   private authenticate(): Promise<void> {
     return new Promise((resolve, reject) => {
+      if (this.authenticationInProgress) {
+        console.log("Authentication already in progress");
+        return;
+      }
+
       if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
         reject(new Error("WebSocket not ready for authentication"));
         return;
       }
+      
+      this.authenticationInProgress = true;
       
       const authMessage: WebSocketMessage[] = [{
         taskType: "authentication",
@@ -111,6 +134,7 @@ export class WebSocketManager {
       console.log("Sending authentication message");
       
       const timeout = setTimeout(() => {
+        this.authenticationInProgress = false;
         reject(new Error("Authentication timeout"));
       }, 10000);
 
@@ -129,6 +153,9 @@ export class WebSocketManager {
   }
 
   public async sendMessage<T>(message: WebSocketMessage[]): Promise<T> {
+    if (!this.connectionPromise) {
+      this.connectionPromise = this.connect();
+    }
     await this.connectionPromise;
 
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN || !this.isAuthenticated) {
