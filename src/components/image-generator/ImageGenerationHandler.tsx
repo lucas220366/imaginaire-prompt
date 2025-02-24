@@ -47,16 +47,25 @@ const ImageGenerationHandler = async ({
     
     console.log("Image generation successful:", result);
     
-    if (session?.user) {
-      const { error } = await supabase
-        .from('generated_images')
-        .insert({
-          user_id: session.user.id,
-          prompt: prompt,
-          image_url: result.imageURL
-        });
-      
-      if (error) throw error;
+    // Only try to save to Supabase if we have both a session and a user ID
+    if (session?.user?.id) {
+      try {
+        const { error } = await supabase
+          .from('generated_images')
+          .insert({
+            user_id: session.user.id,
+            prompt: prompt,
+            image_url: result.imageURL
+          });
+        
+        if (error) {
+          console.error("Failed to save to database:", error);
+          // Don't throw the error - just log it and continue
+        }
+      } catch (dbError) {
+        console.error("Database operation failed:", dbError);
+        // Don't let database errors prevent the image from being shown
+      }
     }
     
     onSuccess(result.imageURL);
