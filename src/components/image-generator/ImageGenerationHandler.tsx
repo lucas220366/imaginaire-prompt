@@ -34,6 +34,12 @@ const ImageGenerationHandler = async ({
     return;
   }
 
+  if (!session?.user?.id) {
+    toast.error("Please log in to generate and save images");
+    onError();
+    return;
+  }
+
   onStartGenerating();
   try {
     const dimensions = getImageDimensions(settings.size, settings.aspectRatio);
@@ -47,25 +53,18 @@ const ImageGenerationHandler = async ({
     
     console.log("Image generation successful:", result);
     
-    // Only try to save to Supabase if we have both a session and a user ID
-    if (session?.user?.id) {
-      try {
-        const { error } = await supabase
-          .from('generated_images')
-          .insert({
-            user_id: session.user.id,
-            prompt: prompt,
-            image_url: result.imageURL
-          });
-        
-        if (error) {
-          console.error("Failed to save to database:", error);
-          // Don't throw the error - just log it and continue
-        }
-      } catch (dbError) {
-        console.error("Database operation failed:", dbError);
-        // Don't let database errors prevent the image from being shown
-      }
+    // Save to Supabase
+    const { error: saveError } = await supabase
+      .from('generated_images')
+      .insert({
+        user_id: session.user.id,
+        prompt: prompt,
+        image_url: result.imageURL
+      });
+    
+    if (saveError) {
+      console.error("Failed to save to database:", saveError);
+      toast.error("Image generated but failed to save to your profile");
     }
     
     onSuccess(result.imageURL);
