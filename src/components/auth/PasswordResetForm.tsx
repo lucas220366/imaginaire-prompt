@@ -45,10 +45,10 @@ export const PasswordResetForm = () => {
           return;
         }
 
-        // Try to recover the session
+        // Try to recover the session with the token hash
         const { error } = await supabase.auth.verifyOtp({
-          token: token,
-          type: 'recovery'
+          token_hash: token,
+          type: 'recovery_token'
         });
 
         if (error) {
