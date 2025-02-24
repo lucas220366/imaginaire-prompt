@@ -16,10 +16,15 @@ const initSupabaseClient = () => {
         persistSession: true,
         detectSessionInUrl: true,
         storage: localStorage,
-        storageKey: 'supabase.auth.token'
+        storageKey: 'supabase.auth.token',
+        headers: {
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'apikey': SUPABASE_ANON_KEY
+        }
       },
       global: {
         headers: {
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
           'apikey': SUPABASE_ANON_KEY
         }
       }
