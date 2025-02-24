@@ -16,6 +16,7 @@ export const PasswordResetForm = () => {
   useEffect(() => {
     const validateToken = async () => {
       try {
+        // Parse the URL fragments
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
         const type = hashParams.get('type');
         const accessToken = hashParams.get('access_token');
@@ -23,36 +24,37 @@ export const PasswordResetForm = () => {
         console.log("Recovery flow type:", type);
         console.log("Access token present:", !!accessToken);
 
-        if (!accessToken) {
-          console.log("No access token found");
+        if (!accessToken || type !== 'recovery') {
+          console.log("Invalid recovery parameters:", { type, hasToken: !!accessToken });
           setIsTokenValid(false);
           toast.error("Invalid password reset link");
           return;
         }
 
-        // First verify the token
-        const { data, error: verifyError } = await supabase.auth.verifyOtp({
-          token_hash: accessToken,
-          type: 'recovery'
+        // Set the session with the recovery token
+        const { data: { session }, error: sessionError } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: accessToken
         });
 
-        if (verifyError) {
-          console.error("Token verification error:", verifyError);
+        if (sessionError) {
+          console.error("Session error:", sessionError);
           setIsTokenValid(false);
           toast.error("Password reset link has expired. Please request a new one.");
           return;
         }
 
-        if (data.user?.email) {
-          console.log("Token verified for email:", data.user.email);
-          setUserEmail(data.user.email);
+        if (session?.user?.email) {
+          console.log("Session established for:", session.user.email);
+          setUserEmail(session.user.email);
           setIsTokenValid(true);
         } else {
+          console.log("No valid session established");
           setIsTokenValid(false);
           toast.error("Unable to verify reset link");
         }
       } catch (error) {
-        console.error("Error in token validation:", error);
+        console.error("Token validation error:", error);
         setIsTokenValid(false);
         toast.error("An error occurred while validating your reset link");
       }
@@ -66,29 +68,21 @@ export const PasswordResetForm = () => {
     setIsLoading(true);
 
     try {
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-      const accessToken = hashParams.get('access_token');
-
-      if (!accessToken) {
-        throw new Error("No access token found");
-      }
-
       const { data, error } = await supabase.auth.updateUser({ 
         password: password
       });
 
       if (error) {
+        console.error("Update password error:", error);
         throw error;
       }
 
-      if (data.user) {
-        console.log("Password updated successfully");
-        toast.success("Password updated successfully!");
-        window.location.hash = '';
-        navigate("/auth", { replace: true });
-      }
+      console.log("Password update successful");
+      toast.success("Password updated successfully!");
+      window.location.hash = '';
+      navigate("/auth", { replace: true });
     } catch (error: any) {
-      console.error("Password update error:", error);
+      console.error("Password update failed:", error);
       toast.error(error.message || "Failed to update password");
     } finally {
       setIsLoading(false);
@@ -99,6 +93,7 @@ export const PasswordResetForm = () => {
     try {
       setIsLoading(true);
       if (userEmail) {
+        console.log("Requesting new reset link for:", userEmail);
         const { error } = await supabase.auth.resetPasswordForEmail(userEmail, {
           redirectTo: `${window.location.origin}/auth/reset-password`
         });
@@ -108,7 +103,7 @@ export const PasswordResetForm = () => {
         toast.error("No email found. Please try resetting your password from the login page.");
       }
     } catch (error: any) {
-      console.error("Error requesting new link:", error);
+      console.error("New link request failed:", error);
       toast.error("Failed to send new reset link");
     } finally {
       setIsLoading(false);
