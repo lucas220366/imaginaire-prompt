@@ -53,11 +53,11 @@ const ImageGenerationHandler = async ({
     
     console.log("Image generation successful:", result);
     
-    // Save to Supabase
+    // Save to Supabase with explicit user_id from session
     const { error: saveError } = await supabase
       .from('generated_images')
       .insert({
-        user_id: session.user.id,
+        user_id: session.user.id,  // This is critical for RLS
         prompt: prompt,
         image_url: result.imageURL
       });
@@ -65,10 +65,12 @@ const ImageGenerationHandler = async ({
     if (saveError) {
       console.error("Failed to save to database:", saveError);
       toast.error("Image generated but failed to save to your profile");
+      onError();
+      return;
     }
     
     onSuccess(result.imageURL);
-    toast.success("Image generated successfully!");
+    toast.success("Image generated and saved successfully!");
   } catch (error) {
     console.error("Image generation failed:", error);
     onError();
