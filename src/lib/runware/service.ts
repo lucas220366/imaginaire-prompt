@@ -33,7 +33,7 @@ export class RunwareService {
       outputFormat: params.outputFormat || "WEBP"
     }];
 
-    console.log("Sending image generation message:", JSON.stringify(message, null, 2));
+    console.log("Starting image generation with params:", JSON.stringify(params, null, 2));
     return this.wsManager.sendMessage<GeneratedImage>(message);
   }
 }

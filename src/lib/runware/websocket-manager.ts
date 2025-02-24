@@ -12,16 +12,20 @@ export class WebSocketManager {
   private maxReconnectAttempts: number = 3;
 
   constructor(private apiEndpoint: string, private apiKey: string) {
+    if (!apiKey) {
+      throw new Error("API key is required");
+    }
     this.connectionPromise = this.connect();
   }
 
   private connect(): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
+        console.log("Attempting to connect to WebSocket...");
         this.ws = new WebSocket(this.apiEndpoint);
         
         this.ws.onopen = () => {
-          console.log("WebSocket connected");
+          console.log("WebSocket connection established");
           this.reconnectAttempts = 0;
           this.authenticate().then(resolve).catch(reject);
         };
@@ -30,12 +34,12 @@ export class WebSocketManager {
 
         this.ws.onerror = (error) => {
           console.error("WebSocket error:", error);
-          toast.error("Connection error. Please try again.");
+          toast.error("Connection error occurred. Please try again.");
           reject(error);
         };
 
         this.ws.onclose = () => {
-          console.log("WebSocket closed");
+          console.log("WebSocket connection closed");
           this.isAuthenticated = false;
           if (this.reconnectAttempts < this.maxReconnectAttempts) {
             console.log(`Attempting to reconnect... (Attempt ${this.reconnectAttempts + 1})`);
@@ -44,44 +48,50 @@ export class WebSocketManager {
               this.connectionPromise = this.connect();
             }, 1000 * this.reconnectAttempts);
           } else {
-            console.error("Max reconnection attempts reached");
-            toast.error("Connection lost. Please refresh the page.");
+            console.error("Maximum reconnection attempts reached");
+            toast.error("Connection lost. Please refresh the page to try again.");
           }
         };
       } catch (error) {
-        console.error("Error in connect:", error);
+        console.error("Error establishing connection:", error);
         reject(error);
       }
     });
   }
 
   private handleMessage(event: MessageEvent): void {
-    console.log("WebSocket message received:", event.data);
-    const response: WebSocketResponse = JSON.parse(event.data);
-    
-    if (response.error || response.errors) {
-      console.error("WebSocket error response:", response);
-      const errorMessage = response.errorMessage || response.errors?.[0]?.message || "An error occurred";
-      toast.error(errorMessage);
-      this.messageCallbacks.forEach((callback) => callback({ error: errorMessage }));
-      this.messageCallbacks.clear();
-      return;
-    }
+    try {
+      console.log("Raw WebSocket message received:", event.data);
+      const response: WebSocketResponse = JSON.parse(event.data);
+      
+      if (response.error || response.errors) {
+        console.error("WebSocket error response:", response);
+        const errorMessage = response.errorMessage || response.errors?.[0]?.message || "An error occurred";
+        toast.error(errorMessage);
+        this.messageCallbacks.forEach((callback) => callback({ error: errorMessage }));
+        this.messageCallbacks.clear();
+        return;
+      }
 
-    if (response.data) {
-      response.data.forEach((item: any) => {
-        if (item.taskType === "authentication") {
-          console.log("Authentication successful, session UUID:", item.connectionSessionUUID);
-          this.connectionSessionUUID = item.connectionSessionUUID;
-          this.isAuthenticated = true;
-        } else if (item.taskType === "imageInference" && item.imageURL) {
-          const callback = this.messageCallbacks.get(item.taskUUID);
-          if (callback) {
-            callback(item);
-            this.messageCallbacks.delete(item.taskUUID);
+      if (response.data) {
+        response.data.forEach((item: any) => {
+          if (item.taskType === "authentication") {
+            console.log("Authentication successful, session UUID:", item.connectionSessionUUID);
+            this.connectionSessionUUID = item.connectionSessionUUID;
+            this.isAuthenticated = true;
+          } else if (item.taskType === "imageInference" && item.imageURL) {
+            console.log("Image generation successful:", item);
+            const callback = this.messageCallbacks.get(item.taskUUID);
+            if (callback) {
+              callback(item);
+              this.messageCallbacks.delete(item.taskUUID);
+            }
           }
-        }
-      });
+        });
+      }
+    } catch (error) {
+      console.error("Error handling WebSocket message:", error);
+      toast.error("Error processing server response");
     }
   }
 
@@ -122,17 +132,21 @@ export class WebSocketManager {
     await this.connectionPromise;
 
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN || !this.isAuthenticated) {
+      console.log("Connection not ready, attempting to reconnect...");
       this.connectionPromise = this.connect();
       await this.connectionPromise;
     }
 
     return new Promise((resolve, reject) => {
       const taskUUID = message[0].taskUUID;
-      if (!taskUUID) return reject(new Error("Task UUID is required"));
+      if (!taskUUID) {
+        return reject(new Error("Task UUID is required"));
+      }
 
       const timeout = setTimeout(() => {
         this.messageCallbacks.delete(taskUUID);
         reject(new Error("Operation timeout"));
+        toast.error("Request timed out. Please try again.");
       }, 30000);
 
       this.messageCallbacks.set(taskUUID, (data) => {
@@ -145,10 +159,12 @@ export class WebSocketManager {
       });
 
       try {
+        console.log("Sending message:", JSON.stringify(message, null, 2));
         this.ws.send(JSON.stringify(message));
       } catch (error) {
         clearTimeout(timeout);
         this.messageCallbacks.delete(taskUUID);
+        console.error("Failed to send message:", error);
         reject(new Error("Failed to send request"));
       }
     });
