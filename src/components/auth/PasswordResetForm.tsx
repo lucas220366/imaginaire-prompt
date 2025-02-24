@@ -36,7 +36,8 @@ export const PasswordResetForm = () => {
           hasToken: !!token,
           hasAccessToken: hashParams.has('access_token'),
           currentUrl: window.location.href,
-          origin: window.location.origin
+          origin: window.location.origin,
+          token: token
         });
 
         if (!token && !hashParams.has('access_token')) {
