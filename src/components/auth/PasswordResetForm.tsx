@@ -35,7 +35,8 @@ export const PasswordResetForm = () => {
         console.log("Recovery flow params:", {
           hasToken: !!token,
           hasAccessToken: hashParams.has('access_token'),
-          currentUrl: window.location.href
+          currentUrl: window.location.href,
+          origin: window.location.origin
         });
 
         if (!token && !hashParams.has('access_token')) {
@@ -119,7 +120,7 @@ export const PasswordResetForm = () => {
       if (userEmail) {
         console.log("Requesting new reset link for:", userEmail);
         const { error } = await supabase.auth.resetPasswordForEmail(userEmail, {
-          redirectTo: `${window.location.origin}/auth/reset-password`
+          redirectTo: window.location.origin + '/auth'
         });
         if (error) throw error;
         toast.success("New password reset link sent to your email!");
