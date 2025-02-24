@@ -25,12 +25,12 @@ export class RunwareService {
       width: params.width || 1024,
       height: params.height || 1024,
       numberResults: 1,
-      steps: 4,
-      CFGScale: 1,
-      scheduler: "FlowMatchEulerDiscreteScheduler",
-      strength: 0.8,
+      steps: 20,
+      CFGScale: 7,
+      scheduler: "DPMSolverMultistepScheduler",
+      strength: 1.0,
       lora: [],
-      outputFormat: params.outputFormat
+      outputFormat: params.outputFormat || "WEBP"
     }];
 
     console.log("Sending image generation message:", JSON.stringify(message, null, 2));
