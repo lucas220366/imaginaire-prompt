@@ -17,8 +17,13 @@ export const PasswordResetForm = () => {
   useEffect(() => {
     const validateToken = async () => {
       try {
+        // First try to get the access_token from the URL hash
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
         const recoveryToken = hashParams.get('access_token');
+        const type = hashParams.get('type');
+
+        console.log("Recovery flow type:", type);
+        console.log("Access token present:", !!recoveryToken);
 
         if (!recoveryToken) {
           console.log("No recovery token found");
@@ -26,8 +31,9 @@ export const PasswordResetForm = () => {
           return;
         }
 
-        console.log("Found recovery token, validating session");
-        const { data, error } = await supabase.auth.refreshSession({
+        // Try to exchange the token for a session
+        const { data: { session }, error } = await supabase.auth.setSession({
+          access_token: recoveryToken,
           refresh_token: recoveryToken
         });
 
@@ -39,14 +45,22 @@ export const PasswordResetForm = () => {
           } else {
             toast.error("Invalid password reset link");
           }
-        } else if (data?.session) {
-          console.log("Recovery token is valid");
+          return;
+        }
+
+        if (session?.user?.email) {
+          console.log("Recovery token is valid for email:", session.user.email);
           setIsTokenValid(true);
-          setUserEmail(data.session.user.email);
+          setUserEmail(session.user.email);
+        } else {
+          console.log("No valid session found");
+          setIsTokenValid(false);
+          toast.error("Unable to verify password reset link");
         }
       } catch (error) {
         console.error("Error in recovery validation:", error);
         setIsTokenValid(false);
+        toast.error("An error occurred while validating your reset link");
       }
     };
 
