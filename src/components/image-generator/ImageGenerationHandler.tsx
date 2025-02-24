@@ -38,11 +38,14 @@ const ImageGenerationHandler = async ({
   try {
     const dimensions = getImageDimensions(settings.size, settings.aspectRatio);
     const runware = new RunwareService(apiKey);
+    console.log("Starting image generation with prompt:", prompt);
     const result = await runware.generateImage({ 
       positivePrompt: prompt,
       outputFormat: settings.format,
       ...dimensions
     });
+    
+    console.log("Image generation successful:", result);
     
     if (session?.user) {
       const { error } = await supabase
@@ -59,7 +62,7 @@ const ImageGenerationHandler = async ({
     onSuccess(result.imageURL);
     toast.success("Image generated successfully!");
   } catch (error) {
-    console.error(error);
+    console.error("Image generation failed:", error);
     onError();
     toast.error("Failed to generate image. Please try again.");
   } finally {

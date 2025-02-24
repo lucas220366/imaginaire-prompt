@@ -113,11 +113,6 @@ export class WebSocketManager {
 
   private authenticate(): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (this.authenticationInProgress) {
-        console.log("Authentication already in progress");
-        return;
-      }
-
       if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
         reject(new Error("WebSocket not ready for authentication"));
         return;
@@ -128,7 +123,7 @@ export class WebSocketManager {
       const authMessage: WebSocketMessage[] = [{
         taskType: "authentication",
         apiKey: this.apiKey,
-        ...(this.connectionSessionUUID && { connectionSessionUUID: this.connectionSessionUUID }),
+        ...(this.connectionSessionUUID && { connectionSessionUUID: this.connectionSessionUUID })
       }];
       
       console.log("Sending authentication message");
