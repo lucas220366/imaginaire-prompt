@@ -28,10 +28,7 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
       if (isForgotPassword) {
         console.log("Attempting password reset for:", email);
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/auth`,
-          options: {
-            emailRedirectTo: `${window.location.origin}/auth`
-          }
+          redirectTo: `${window.location.origin}/auth`
         });
         if (error) throw error;
         toast.success("Password reset email sent! Check your inbox.");
