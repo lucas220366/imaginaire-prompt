@@ -1,32 +1,27 @@
 
 import { toast } from "sonner";
-import { WebSocketMessage } from "./types";
-import { BaseWebSocketService } from "./websocket/base-service";
-import { MessageHandler } from "./websocket/message-handler";
-import { TimeoutManager } from "./websocket/timeout-manager";
+import { WebSocketMessage, WebSocketResponse } from "./types";
 
-export class WebSocketManager extends BaseWebSocketService {
+export class WebSocketManager {
+  private ws: WebSocket | null = null;
   private messageCallbacks: Map<string, (data: any) => void> = new Map();
-  private messageHandler: MessageHandler;
-  private timeoutManager: TimeoutManager;
+  private isAuthenticated: boolean = false;
+  private connectionSessionUUID: string | null = null;
+  private connectionPromise: Promise<void> | null = null;
+  private reconnectAttempts: number = 0;
+  private maxReconnectAttempts: number = 3;
   private authenticationInProgress: boolean = false;
-  private readonly operationTimeout: number = 60000;
+  private connectionTimeout: number = 30000; // 30 seconds timeout
+  private operationTimeout: number = 60000; // 60 seconds timeout for operations
 
-  constructor(apiEndpoint: string, apiKey: string) {
-    super(apiEndpoint, apiKey);
-    this.messageHandler = new MessageHandler(
-      this.messageCallbacks,
-      (sessionUUID) => {
-        this.connectionSessionUUID = sessionUUID;
-        this.isAuthenticated = true;
-        this.authenticationInProgress = false;
-      }
-    );
-    this.timeoutManager = new TimeoutManager();
+  constructor(private apiEndpoint: string, private apiKey: string) {
+    if (!apiKey) {
+      throw new Error("API key is required");
+    }
     this.connectionPromise = this.connect();
   }
 
-  protected connect(): Promise<void> {
+  private connect(): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
         if (this.authenticationInProgress) {
@@ -37,6 +32,7 @@ export class WebSocketManager extends BaseWebSocketService {
         console.log("Attempting to connect to WebSocket...");
         this.ws = new WebSocket(this.apiEndpoint);
         
+        // Connection timeout
         const connectionTimeout = setTimeout(() => {
           console.error("Connection timeout");
           this.ws?.close();
@@ -50,15 +46,33 @@ export class WebSocketManager extends BaseWebSocketService {
           this.authenticate().then(resolve).catch(reject);
         };
 
-        this.ws.onmessage = this.messageHandler.handleMessage.bind(this.messageHandler);
+        this.ws.onmessage = this.handleMessage.bind(this);
+
         this.ws.onerror = (error) => {
+          console.error("WebSocket error:", error);
           clearTimeout(connectionTimeout);
-          this.handleConnectionError(error);
+          toast.error("Connection error occurred. Please try again.");
+          this.isAuthenticated = false;
+          this.authenticationInProgress = false;
           reject(error);
         };
+
         this.ws.onclose = () => {
+          console.log("WebSocket connection closed");
           clearTimeout(connectionTimeout);
-          this.handleConnectionClose();
+          this.isAuthenticated = false;
+          this.authenticationInProgress = false;
+          
+          if (this.reconnectAttempts < this.maxReconnectAttempts) {
+            console.log(`Attempting to reconnect... (Attempt ${this.reconnectAttempts + 1})`);
+            this.reconnectAttempts++;
+            setTimeout(() => {
+              this.connectionPromise = this.connect();
+            }, 1000 * this.reconnectAttempts);
+          } else {
+            console.error("Maximum reconnection attempts reached");
+            toast.error("Connection lost. Please refresh the page to try again.");
+          }
         };
       } catch (error) {
         console.error("Error establishing connection:", error);
@@ -68,7 +82,48 @@ export class WebSocketManager extends BaseWebSocketService {
     });
   }
 
-  protected authenticate(): Promise<void> {
+  private handleMessage(event: MessageEvent): void {
+    try {
+      console.log("Raw WebSocket message received:", event.data);
+      const response: WebSocketResponse = JSON.parse(event.data);
+      
+      if (response.error || response.errors) {
+        console.error("WebSocket error response:", response);
+        const errorMessage = response.errorMessage || response.errors?.[0]?.message || "An error occurred";
+        toast.error(errorMessage);
+        this.messageCallbacks.forEach((callback) => callback({ error: errorMessage }));
+        this.messageCallbacks.clear();
+        return;
+      }
+
+      if (response.data) {
+        response.data.forEach((item: any) => {
+          if (item.taskType === "authentication") {
+            console.log("Authentication successful, session UUID:", item.connectionSessionUUID);
+            this.connectionSessionUUID = item.connectionSessionUUID;
+            this.isAuthenticated = true;
+            this.authenticationInProgress = false;
+          } else if (item.taskType === "imageInference") {
+            console.log("Image inference response:", item);
+            const callback = this.messageCallbacks.get(item.taskUUID);
+            if (callback) {
+              if (item.imageURL) {
+                callback(item);
+              } else if (item.error) {
+                callback({ error: item.error });
+              }
+              this.messageCallbacks.delete(item.taskUUID);
+            }
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Error handling WebSocket message:", error);
+      toast.error("Error processing server response");
+    }
+  }
+
+  private authenticate(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
         reject(new Error("WebSocket not ready for authentication"));
@@ -76,6 +131,7 @@ export class WebSocketManager extends BaseWebSocketService {
       }
       
       this.authenticationInProgress = true;
+      
       const authMessage: WebSocketMessage[] = [{
         taskType: "authentication",
         apiKey: this.apiKey,
@@ -121,14 +177,14 @@ export class WebSocketManager extends BaseWebSocketService {
         return reject(new Error("Task UUID is required"));
       }
 
-      this.timeoutManager.setOperationTimeout(taskUUID, () => {
+      const timeout = setTimeout(() => {
         this.messageCallbacks.delete(taskUUID);
         reject(new Error("Operation timeout"));
         toast.error("Request timed out. Please try again.");
       }, this.operationTimeout);
 
       this.messageCallbacks.set(taskUUID, (data) => {
-        this.timeoutManager.clearTimeout(taskUUID);
+        clearTimeout(timeout);
         if (data.error) {
           reject(new Error(data.error));
         } else {
@@ -140,7 +196,7 @@ export class WebSocketManager extends BaseWebSocketService {
         console.log("Sending message:", JSON.stringify(message, null, 2));
         this.ws.send(JSON.stringify(message));
       } catch (error) {
-        this.timeoutManager.clearTimeout(taskUUID);
+        clearTimeout(timeout);
         this.messageCallbacks.delete(taskUUID);
         console.error("Failed to send message:", error);
         reject(new Error("Failed to send request"));

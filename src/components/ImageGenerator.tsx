@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthProvider";
@@ -37,29 +36,16 @@ const ImageGenerator = () => {
   };
 
   const handleGenerate = async () => {
-    if (isGenerating) {
-      toast.error("Please wait for the current generation to complete");
-      return;
-    }
-
-    try {
-      setIsGenerating(true);
-      await ImageGenerationHandler({
-        apiKey,
-        prompt,
-        settings,
-        session,
-        onSuccess: setImage,
-        onError: () => {},
-        onStartGenerating: () => setIsGenerating(true),
-        onFinishGenerating: () => setIsGenerating(false)
-      });
-    } catch (error) {
-      console.error("Generation error:", error);
-      toast.error("Failed to generate image");
-    } finally {
-      setIsGenerating(false);
-    }
+    await ImageGenerationHandler({
+      apiKey,
+      prompt,
+      settings,
+      session,
+      onSuccess: setImage,
+      onError: () => {},
+      onStartGenerating: () => setIsGenerating(true),
+      onFinishGenerating: () => setIsGenerating(false)
+    });
   };
 
   return (
