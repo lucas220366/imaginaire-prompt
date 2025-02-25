@@ -14,7 +14,7 @@ const Index = () => {
             backgroundImage: 'url("/placeholder.svg")',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            backgroundBlend: 'overlay'
+            backgroundBlendMode: 'overlay'
           }}
         />
         <div className="relative z-10 space-y-6 px-4 animate-fade-up">
