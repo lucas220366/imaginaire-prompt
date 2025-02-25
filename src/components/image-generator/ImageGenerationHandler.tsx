@@ -19,6 +19,9 @@ interface ImageGenerationHandlerProps {
   onFinishGenerating: () => void;
 }
 
+// Create a flag to track if generation is in progress
+let isGenerating = false;
+
 const ImageGenerationHandler = async ({
   apiKey,
   prompt,
@@ -29,6 +32,11 @@ const ImageGenerationHandler = async ({
   onStartGenerating,
   onFinishGenerating
 }: ImageGenerationHandlerProps) => {
+  if (isGenerating) {
+    toast.error("Please wait for the current generation to complete");
+    return;
+  }
+
   if (!prompt.trim()) {
     toast.error("Please enter a prompt");
     return;
@@ -40,6 +48,7 @@ const ImageGenerationHandler = async ({
     return;
   }
 
+  isGenerating = true;
   onStartGenerating();
   
   const abortController = new AbortController();
@@ -48,6 +57,7 @@ const ImageGenerationHandler = async ({
     toast.error("Image generation timed out. Please try again.");
     onError();
     onFinishGenerating();
+    isGenerating = false;
   }, 120000); // 2 minute timeout
 
   try {
@@ -110,6 +120,7 @@ const ImageGenerationHandler = async ({
     onError();
   } finally {
     onFinishGenerating();
+    isGenerating = false;
   }
 };
 
