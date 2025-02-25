@@ -34,6 +34,16 @@ export class RunwareService {
     }];
 
     console.log("Starting image generation with params:", JSON.stringify(params, null, 2));
-    return this.wsManager.sendMessage<GeneratedImage>(message);
+    
+    try {
+      const result = await this.wsManager.sendMessage<GeneratedImage>(message);
+      if (!result) {
+        throw new Error("No result received from WebSocket");
+      }
+      return result;
+    } catch (error) {
+      console.error("Error in generateImage:", error);
+      throw error;
+    }
   }
 }
