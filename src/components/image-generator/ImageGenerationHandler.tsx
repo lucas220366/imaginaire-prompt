@@ -44,37 +44,58 @@ const ImageGenerationHandler = async ({
   try {
     const dimensions = getImageDimensions(settings.size, settings.aspectRatio);
     const runware = new RunwareService(apiKey);
+    
     console.log("Starting image generation with prompt:", prompt);
+    console.log("Using dimensions:", dimensions);
+    console.log("Current session user ID:", session.user.id);
+
     const result = await runware.generateImage({ 
       positivePrompt: prompt,
-      outputFormat: settings.format,
+      outputFormat: settings.format || "PNG",
       ...dimensions
     });
     
+    if (!result?.imageURL) {
+      console.error("No image URL in response:", result);
+      toast.error("Failed to generate image. Invalid response from API.");
+      onError();
+      return;
+    }
+
     console.log("Image generation successful:", result);
     
-    // Save to Supabase with explicit user_id from session
-    const { error: saveError } = await supabase
+    // Save to Supabase
+    const { data: savedData, error: saveError } = await supabase
       .from('generated_images')
       .insert({
-        user_id: session.user.id,  // This is critical for RLS
+        user_id: session.user.id,
         prompt: prompt,
         image_url: result.imageURL
-      });
+      })
+      .select()
+      .single();
     
     if (saveError) {
       console.error("Failed to save to database:", saveError);
-      toast.error("Image generated but failed to save to your profile");
+      toast.error(`Failed to save to profile: ${saveError.message}`);
+      onError();
+      return;
+    }
+
+    if (!savedData) {
+      console.error("No data returned after save");
+      toast.error("Failed to verify image was saved");
       onError();
       return;
     }
     
+    console.log("Successfully saved image to database:", savedData);
     onSuccess(result.imageURL);
     toast.success("Image generated and saved successfully!");
-  } catch (error) {
-    console.error("Image generation failed:", error);
+  } catch (error: any) {
+    console.error("Image generation or save failed:", error);
+    toast.error(error?.message || "Failed to generate image. Please try again.");
     onError();
-    toast.error("Failed to generate image. Please try again.");
   } finally {
     onFinishGenerating();
   }
