@@ -17,11 +17,6 @@ const initSupabaseClient = () => {
         detectSessionInUrl: true,
         storage: localStorage,
         storageKey: 'sb-auth-token'
-      },
-      global: {
-        headers: {
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-        }
       }
     }
   );
