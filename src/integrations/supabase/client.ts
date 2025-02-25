@@ -7,11 +7,6 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 // Initialize the Supabase client with retry mechanism
 const initSupabaseClient = () => {
-  const headers = {
-    'apikey': SUPABASE_ANON_KEY,
-    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-  };
-
   return createClient<Database>(
     SUPABASE_URL,
     SUPABASE_ANON_KEY,
@@ -21,17 +16,12 @@ const initSupabaseClient = () => {
         persistSession: true,
         detectSessionInUrl: true,
         storage: localStorage,
-        storageKey: 'supabase.auth.token',
-        flowType: 'pkce'
+        storageKey: 'sb-auth-token'
       },
       global: {
-        headers
-      },
-      db: {
-        schema: 'public'
-      },
-      realtime: {
-        headers
+        headers: {
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+        }
       }
     }
   );

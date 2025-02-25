@@ -48,6 +48,7 @@ const ImageGenerationHandler = async ({
     console.log("Starting image generation with prompt:", prompt);
     console.log("Using dimensions:", dimensions);
     console.log("Current session user ID:", session.user.id);
+    console.log("Current access token:", session.access_token);
 
     const result = await runware.generateImage({ 
       positivePrompt: prompt,
@@ -64,7 +65,7 @@ const ImageGenerationHandler = async ({
 
     console.log("Image generation successful:", result);
     
-    // Save to Supabase
+    // Save to Supabase with auth header
     const { data: savedData, error: saveError } = await supabase
       .from('generated_images')
       .insert({
