@@ -11,6 +11,8 @@ export class WebSocketManager {
   private reconnectAttempts: number = 0;
   private maxReconnectAttempts: number = 3;
   private authenticationInProgress: boolean = false;
+  private connectionTimeout: number = 30000; // 30 seconds timeout
+  private operationTimeout: number = 60000; // 60 seconds timeout for operations
 
   constructor(private apiEndpoint: string, private apiKey: string) {
     if (!apiKey) {
@@ -30,7 +32,15 @@ export class WebSocketManager {
         console.log("Attempting to connect to WebSocket...");
         this.ws = new WebSocket(this.apiEndpoint);
         
+        // Connection timeout
+        const connectionTimeout = setTimeout(() => {
+          console.error("Connection timeout");
+          this.ws?.close();
+          reject(new Error("Connection timeout"));
+        }, this.connectionTimeout);
+        
         this.ws.onopen = () => {
+          clearTimeout(connectionTimeout);
           console.log("WebSocket connection established, attempting authentication...");
           this.reconnectAttempts = 0;
           this.authenticate().then(resolve).catch(reject);
@@ -40,6 +50,7 @@ export class WebSocketManager {
 
         this.ws.onerror = (error) => {
           console.error("WebSocket error:", error);
+          clearTimeout(connectionTimeout);
           toast.error("Connection error occurred. Please try again.");
           this.isAuthenticated = false;
           this.authenticationInProgress = false;
@@ -48,6 +59,7 @@ export class WebSocketManager {
 
         this.ws.onclose = () => {
           console.log("WebSocket connection closed");
+          clearTimeout(connectionTimeout);
           this.isAuthenticated = false;
           this.authenticationInProgress = false;
           
@@ -169,7 +181,7 @@ export class WebSocketManager {
         this.messageCallbacks.delete(taskUUID);
         reject(new Error("Operation timeout"));
         toast.error("Request timed out. Please try again.");
-      }, 30000);
+      }, this.operationTimeout);
 
       this.messageCallbacks.set(taskUUID, (data) => {
         clearTimeout(timeout);

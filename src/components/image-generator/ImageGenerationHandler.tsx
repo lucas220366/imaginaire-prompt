@@ -41,6 +41,15 @@ const ImageGenerationHandler = async ({
   }
 
   onStartGenerating();
+  
+  const abortController = new AbortController();
+  const timeoutId = setTimeout(() => {
+    abortController.abort();
+    toast.error("Image generation timed out. Please try again.");
+    onError();
+    onFinishGenerating();
+  }, 120000); // 2 minute timeout
+
   try {
     const dimensions = getImageDimensions(settings.size, settings.aspectRatio);
     const runware = new RunwareService(apiKey);
@@ -48,13 +57,14 @@ const ImageGenerationHandler = async ({
     console.log("Starting image generation with prompt:", prompt);
     console.log("Using dimensions:", dimensions);
     console.log("Current session user ID:", session.user.id);
-    console.log("Current access token:", session.access_token);
 
     const result = await runware.generateImage({ 
       positivePrompt: prompt,
       outputFormat: settings.format || "PNG",
       ...dimensions
     });
+    
+    clearTimeout(timeoutId);
     
     if (!result?.imageURL) {
       console.error("No image URL in response:", result);
@@ -65,7 +75,7 @@ const ImageGenerationHandler = async ({
 
     console.log("Image generation successful:", result);
     
-    // Save to Supabase with auth header
+    // Save to Supabase
     const { data: savedData, error: saveError } = await supabase
       .from('generated_images')
       .insert({
@@ -94,6 +104,7 @@ const ImageGenerationHandler = async ({
     onSuccess(result.imageURL);
     toast.success("Image generated and saved successfully!");
   } catch (error: any) {
+    clearTimeout(timeoutId);
     console.error("Image generation or save failed:", error);
     toast.error(error?.message || "Failed to generate image. Please try again.");
     onError();
