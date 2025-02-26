@@ -17,9 +17,7 @@ export const supabase = createClient<Database>(
       detectSessionInUrl: true,
       flowType: 'pkce',
       storage: localStorage,
-      storageKey: 'sb-auth-token',
-      // Instead of defaultOptions, we can pass redirectTo directly
-      redirectTo: `${site_url}/auth`
+      storageKey: 'sb-auth-token'
     }
   }
 );
