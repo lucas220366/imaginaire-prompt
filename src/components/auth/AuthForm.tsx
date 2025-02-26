@@ -11,7 +11,6 @@ export const AuthForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
-  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -19,15 +18,7 @@ export const AuthForm = () => {
     setIsLoading(true);
 
     try {
-      if (isForgotPassword) {
-        console.log("Sending password reset email...");
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/auth#recovery`
-        });
-        if (error) throw error;
-        toast.success("Password reset email sent! Check your inbox.");
-        setIsForgotPassword(false);
-      } else if (isSignUp) {
+      if (isSignUp) {
         const { error } = await supabase.auth.signUp({
           email,
           password,
@@ -59,11 +50,7 @@ export const AuthForm = () => {
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <h2 className="text-2xl font-bold">
-            {isForgotPassword
-              ? "Reset Password"
-              : isSignUp
-              ? "Create Account"
-              : "Sign In"}
+            {isSignUp ? "Create Account" : "Sign In"}
           </h2>
           <p className="text-gray-600 mt-2">to continue to Image Generator</p>
         </div>
@@ -78,61 +65,31 @@ export const AuthForm = () => {
               required
             />
           </div>
-          {!isForgotPassword && (
-            <div>
-              <Input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-              />
-            </div>
-          )}
+          <div>
+            <Input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={6}
+            />
+          </div>
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading
-              ? "Loading..."
-              : isForgotPassword
-              ? "Send Reset Link"
-              : isSignUp
-              ? "Sign Up"
-              : "Sign In"}
+            {isLoading ? "Loading..." : (isSignUp ? "Sign Up" : "Sign In")}
           </Button>
         </form>
 
-        <div className="text-center space-y-2">
-          {!isForgotPassword && (
-            <button
-              type="button"
-              onClick={() => setIsSignUp(!isSignUp)}
-              className="text-blue-500 hover:text-blue-600"
-            >
-              {isSignUp
-                ? "Already have an account? Sign in"
-                : "Need an account? Sign up"}
-            </button>
-          )}
-          {!isSignUp && !isForgotPassword && (
-            <div>
-              <button
-                type="button"
-                onClick={() => setIsForgotPassword(true)}
-                className="text-blue-500 hover:text-blue-600"
-              >
-                Forgot password?
-              </button>
-            </div>
-          )}
-          {isForgotPassword && (
-            <button
-              type="button"
-              onClick={() => setIsForgotPassword(false)}
-              className="text-blue-500 hover:text-blue-600"
-            >
-              Back to sign in
-            </button>
-          )}
+        <div className="text-center">
+          <button
+            type="button"
+            onClick={() => setIsSignUp(!isSignUp)}
+            className="text-blue-500 hover:text-blue-600"
+          >
+            {isSignUp
+              ? "Already have an account? Sign in"
+              : "Need an account? Sign up"}
+          </button>
         </div>
       </div>
     </div>
