@@ -18,13 +18,7 @@ export const supabase = createClient<Database>(
       detectSessionInUrl: true,
       flowType: 'pkce',
       storage: localStorage,
-      storageKey: 'sb-auth-token',
-      // Add these options to match Supabase configuration
-      cookieOptions: {
-        domain: 'yqbepcvnnnujsgvqmvno.lovable.ai',
-        sameSite: 'lax',
-        secure: true
-      }
+      storageKey: 'sb-auth-token'
     }
   }
 );

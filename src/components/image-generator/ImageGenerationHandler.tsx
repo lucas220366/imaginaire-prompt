@@ -84,14 +84,16 @@ const ImageGenerationHandler = async ({
 
     console.log("Image generation successful:", result);
 
+    type GeneratedImageInsert = Database['public']['Tables']['generated_images']['Insert'];
+    
     const { data: savedImage, error: saveError } = await supabase
       .from('generated_images')
-      .insert({
+      .insert([{
         user_id: session.user.id,
         prompt: prompt,
         image_url: result.imageURL
-      } as Database['public']['Tables']['generated_images']['Insert'])
-      .select('*')
+      } satisfies GeneratedImageInsert])
+      .select()
       .single();
     
     if (saveError) {
