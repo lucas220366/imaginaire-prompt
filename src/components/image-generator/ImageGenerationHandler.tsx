@@ -83,18 +83,14 @@ const ImageGenerationHandler = async ({
     }
 
     console.log("Image generation successful:", result);
-    
-    type GeneratedImageInsert = Database['public']['Tables']['generated_images']['Insert'];
-    
-    const imageData: GeneratedImageInsert = {
-      user_id: session.user.id,
-      prompt: prompt,
-      image_url: result.imageURL
-    };
-    
-    const { data: savedData, error: saveError } = await supabase
+
+    const { data: savedImage, error: saveError } = await supabase
       .from('generated_images')
-      .insert(imageData)
+      .insert({
+        user_id: session.user.id,
+        prompt: prompt,
+        image_url: result.imageURL
+      })
       .select()
       .single();
     
@@ -105,14 +101,14 @@ const ImageGenerationHandler = async ({
       return;
     }
 
-    if (!savedData) {
+    if (!savedImage) {
       console.error("No data returned after save");
       toast.error("Failed to verify image was saved");
       onError();
       return;
     }
     
-    console.log("Successfully saved image to database:", savedData);
+    console.log("Successfully saved image to database:", savedImage);
     onSuccess(result.imageURL);
     toast.success("Image generated and saved successfully!");
   } catch (error: any) {

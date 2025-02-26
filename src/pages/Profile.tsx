@@ -27,11 +27,14 @@ const Profile = () => {
         const { data, error } = await supabase
           .from('generated_images')
           .select('*')
-          .eq('user_id', session.user.id)
+          .eq('user_id', session.user.id as string)
           .order('created_at', { ascending: false });
 
         if (error) throw error;
-        setImages(data || []);
+        
+        // Explicitly type the data as an array of GeneratedImage
+        const typedData = data as GeneratedImage[];
+        setImages(typedData || []);
       } catch (error) {
         console.error('Error fetching images:', error);
         toast.error("Failed to load your images");
