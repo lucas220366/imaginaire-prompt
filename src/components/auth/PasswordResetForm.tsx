@@ -36,7 +36,7 @@ export const PasswordResetForm = () => {
           hasToken: !!token,
           hasAccessToken: hashParams.has('access_token'),
           currentUrl: window.location.href,
-          origin: window.location.origin,
+          redirectUrl: 'https://yqbepcvnnnujsgvqmvno.lovable.ai/auth',
           token: token
         });
 
@@ -120,8 +120,11 @@ export const PasswordResetForm = () => {
       setIsLoading(true);
       if (userEmail) {
         console.log("Requesting new reset link for:", userEmail);
+        const redirectUrl = 'https://yqbepcvnnnujsgvqmvno.lovable.ai/auth';
+        console.log("Using redirect URL:", redirectUrl);
+        
         const { error } = await supabase.auth.resetPasswordForEmail(userEmail, {
-          redirectTo: `${window.location.origin}/auth`
+          redirectTo: redirectUrl
         });
         if (error) throw error;
         toast.success("New password reset link sent to your email!");

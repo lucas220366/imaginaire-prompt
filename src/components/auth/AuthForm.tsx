@@ -25,13 +25,14 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
     try {
       console.log("Starting auth process...");
       
+      const redirectUrl = 'https://yqbepcvnnnujsgvqmvno.lovable.ai/auth';
+      
       if (isForgotPassword) {
         console.log("Attempting password reset for:", email);
-        const redirectTo = `${window.location.origin}/auth`;
-        console.log("Reset password redirect URL:", redirectTo);
+        console.log("Reset password redirect URL:", redirectUrl);
         
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: redirectTo
+          redirectTo: redirectUrl
         });
         if (error) throw error;
         toast.success("Password reset email sent! Check your inbox.");
@@ -42,7 +43,7 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/auth`
+            emailRedirectTo: redirectUrl
           }
         });
         if (error) throw error;

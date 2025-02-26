@@ -16,7 +16,9 @@ export const supabase = createClient<Database>(
       detectSessionInUrl: true,
       flowType: 'pkce',
       storage: localStorage,
-      storageKey: 'sb-auth-token'
+      storageKey: 'sb-auth-token',
+      // Explicitly set the auth redirect URLs
+      redirectTo: 'https://yqbepcvnnnujsgvqmvno.lovable.ai/auth'
     }
   }
 );
