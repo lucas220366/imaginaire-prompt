@@ -1,10 +1,8 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { AUTH_REDIRECT_URL } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 interface AuthFormProps {
@@ -28,10 +26,8 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
       
       if (isForgotPassword) {
         console.log("Attempting password reset for:", email);
-        console.log("Using redirect URL:", AUTH_REDIRECT_URL);
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: AUTH_REDIRECT_URL
-        });
+        // Let's try the simpler version without redirectTo
+        const { error } = await supabase.auth.resetPasswordForEmail(email);
         if (error) throw error;
         toast.success("Password reset email sent! Check your inbox.");
         setIsForgotPassword(false);
@@ -39,10 +35,7 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
         console.log("Attempting signup for:", email);
         const { error } = await supabase.auth.signUp({
           email,
-          password,
-          options: {
-            emailRedirectTo: AUTH_REDIRECT_URL
-          }
+          password
         });
         if (error) throw error;
         
