@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
@@ -11,7 +12,6 @@ interface AuthFormProps {
 
 const SITE_URL = "https://yqbepcvnnnujsgvqmvno.lovable.ai";
 const AUTH_REDIRECT_URL = `${SITE_URL}/auth`;
-const AUTH_CALLBACK_URL = `${SITE_URL}/auth/callback`;
 
 export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
