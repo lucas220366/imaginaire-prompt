@@ -1,8 +1,10 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { AUTH_REDIRECT_URL } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 interface AuthFormProps {
@@ -26,8 +28,9 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
       
       if (isForgotPassword) {
         console.log("Attempting password reset for:", email);
+        console.log("Using redirect URL:", AUTH_REDIRECT_URL);
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/auth`
+          redirectTo: AUTH_REDIRECT_URL
         });
         if (error) throw error;
         toast.success("Password reset email sent! Check your inbox.");
@@ -38,7 +41,7 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/auth`
+            emailRedirectTo: AUTH_REDIRECT_URL
           }
         });
         if (error) throw error;
