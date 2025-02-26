@@ -26,12 +26,12 @@ const Profile = () => {
       try {
         const { data, error } = await supabase
           .from('generated_images')
-          .select()
+          .select('*')
           .eq('user_id', session.user.id)
           .order('created_at', { ascending: false });
 
         if (error) throw error;
-        if (data) setImages(data as GeneratedImage[]);
+        setImages(data || []);
       } catch (error) {
         console.error('Error fetching images:', error);
         toast.error("Failed to load your images");
@@ -73,7 +73,7 @@ const Profile = () => {
       const { error } = await supabase
         .from('generated_images')
         .delete()
-        .match({ id: imageId, user_id: session?.user?.id });
+        .match({ id: imageId });
 
       if (error) throw error;
 

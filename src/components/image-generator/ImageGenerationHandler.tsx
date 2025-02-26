@@ -19,7 +19,6 @@ interface ImageGenerationHandlerProps {
   onFinishGenerating: () => void;
 }
 
-// Create a flag to track if generation is in progress
 let isGenerating = false;
 
 const ImageGenerationHandler = async ({
@@ -58,7 +57,7 @@ const ImageGenerationHandler = async ({
     onError();
     onFinishGenerating();
     isGenerating = false;
-  }, 120000); // 2 minute timeout
+  }, 120000);
 
   try {
     const dimensions = getImageDimensions(settings.size, settings.aspectRatio);
@@ -85,14 +84,17 @@ const ImageGenerationHandler = async ({
 
     console.log("Image generation successful:", result);
     
-    // Save to Supabase
+    type GeneratedImageInsert = Database['public']['Tables']['generated_images']['Insert'];
+    
+    const imageData: GeneratedImageInsert = {
+      user_id: session.user.id,
+      prompt: prompt,
+      image_url: result.imageURL
+    };
+    
     const { data: savedData, error: saveError } = await supabase
       .from('generated_images')
-      .insert({
-        user_id: session.user.id,
-        prompt: prompt,
-        image_url: result.imageURL
-      })
+      .insert(imageData)
       .select()
       .single();
     
