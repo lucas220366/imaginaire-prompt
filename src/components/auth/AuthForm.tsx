@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
@@ -9,9 +8,6 @@ import { toast } from "sonner";
 interface AuthFormProps {
   initialMode?: 'signin' | 'signup' | 'forgot';
 }
-
-const SITE_URL = "https://yqbepcvnnnujsgvqmvno.lovable.ai";
-const AUTH_REDIRECT_URL = `${SITE_URL}/auth`;
 
 export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +27,7 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
       if (isForgotPassword) {
         console.log("Attempting password reset for:", email);
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: AUTH_REDIRECT_URL
+          redirectTo: `${window.location.origin}/auth`
         });
         if (error) throw error;
         toast.success("Password reset email sent! Check your inbox.");
@@ -42,7 +38,7 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
           email,
           password,
           options: {
-            emailRedirectTo: AUTH_REDIRECT_URL
+            emailRedirectTo: `${window.location.origin}/auth`
           }
         });
         if (error) throw error;
