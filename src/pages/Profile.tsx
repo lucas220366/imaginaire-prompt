@@ -3,16 +3,19 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
 import { Button } from "@/components/ui/button";
-import { LogOut, ArrowLeft, Download, Trash2 } from "lucide-react";
+import { LogOut, ArrowLeft, Download, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import type { Database } from '@/integrations/supabase/types';
 
 type GeneratedImage = Database['public']['Tables']['generated_images']['Row'];
 
+const IMAGES_PER_PAGE = 30;
+
 const Profile = () => {
   const [images, setImages] = useState<GeneratedImage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
   const { session } = useAuth();
   const navigate = useNavigate();
 
@@ -82,6 +85,17 @@ const Profile = () => {
     }
   };
 
+  // Pagination logic
+  const totalPages = Math.ceil(images.length / IMAGES_PER_PAGE);
+  const startIndex = (currentPage - 1) * IMAGES_PER_PAGE;
+  const endIndex = startIndex + IMAGES_PER_PAGE;
+  const currentImages = images.slice(startIndex, endIndex);
+
+  const goToPage = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className="min-h-screen p-6">
       <div className="max-w-6xl mx-auto">
@@ -123,47 +137,76 @@ const Profile = () => {
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {images.map((image) => (
-              <div
-                key={image.id}
-                className="bg-white/50 backdrop-blur-lg rounded-lg overflow-hidden shadow-lg border border-gray-100"
-              >
-                <div className="relative aspect-square">
-                  <img
-                    src={image.image_url}
-                    alt={image.prompt}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                  <div className="absolute top-4 right-4 flex gap-2">
-                    <Button
-                      onClick={() => handleDownload(image.image_url)}
-                      className="bg-white/80 hover:bg-white"
-                      size="icon"
-                      variant="outline"
-                    >
-                      <Download className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      onClick={() => handleDelete(image.id)}
-                      className="bg-white/80 hover:bg-white hover:text-red-600"
-                      size="icon"
-                      variant="outline"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {currentImages.map((image) => (
+                <div
+                  key={image.id}
+                  className="bg-white/50 backdrop-blur-lg rounded-lg overflow-hidden shadow-lg border border-gray-100"
+                >
+                  <div className="relative aspect-square">
+                    <img
+                      src={image.image_url}
+                      alt={image.prompt}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                    <div className="absolute top-4 right-4 flex gap-2">
+                      <Button
+                        onClick={() => handleDownload(image.image_url)}
+                        className="bg-white/80 hover:bg-white"
+                        size="icon"
+                        variant="outline"
+                      >
+                        <Download className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        onClick={() => handleDelete(image.id)}
+                        className="bg-white/80 hover:bg-white hover:text-red-600"
+                        size="icon"
+                        variant="outline"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <p className="text-sm text-gray-600 line-clamp-2">{image.prompt}</p>
+                    <p className="text-xs text-gray-500 mt-2">
+                      {new Date(image.created_at).toLocaleDateString()}
+                    </p>
                   </div>
                 </div>
-                <div className="p-4">
-                  <p className="text-sm text-gray-600 line-clamp-2">{image.prompt}</p>
-                  <p className="text-xs text-gray-500 mt-2">
-                    {new Date(image.created_at).toLocaleDateString()}
-                  </p>
-                </div>
+              ))}
+            </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-4 mt-8">
+                <Button
+                  variant="outline"
+                  onClick={() => goToPage(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="flex items-center gap-2"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  Previous
+                </Button>
+                <span className="text-sm text-gray-600">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <Button
+                  variant="outline"
+                  onClick={() => goToPage(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="flex items-center gap-2"
+                >
+                  Next
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
               </div>
-            ))}
-          </div>
+            )}
+          </>
         )}
       </div>
     </div>
