@@ -20,7 +20,10 @@ export const AuthForm = () => {
 
     try {
       if (isForgotPassword) {
-        const { error } = await supabase.auth.resetPasswordForEmail(email);
+        console.log("Sending password reset email...");
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/auth#recovery`
+        });
         if (error) throw error;
         toast.success("Password reset email sent! Check your inbox.");
         setIsForgotPassword(false);
@@ -28,6 +31,9 @@ export const AuthForm = () => {
         const { error } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/auth`
+          }
         });
         if (error) throw error;
         toast.success("Account created successfully!");
