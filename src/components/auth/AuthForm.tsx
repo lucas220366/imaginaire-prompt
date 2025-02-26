@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
@@ -5,16 +6,12 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-interface AuthFormProps {
-  initialMode?: 'signin' | 'signup' | 'forgot';
-}
-
-export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
+export const AuthForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isSignUp, setIsSignUp] = useState(initialMode === 'signup');
-  const [isForgotPassword, setIsForgotPassword] = useState(initialMode === 'forgot');
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -22,34 +19,20 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
     setIsLoading(true);
 
     try {
-      console.log("Starting auth process...");
-      
       if (isForgotPassword) {
-        console.log("Attempting password reset for:", email);
-        // Let's try the simpler version without redirectTo
         const { error } = await supabase.auth.resetPasswordForEmail(email);
         if (error) throw error;
         toast.success("Password reset email sent! Check your inbox.");
         setIsForgotPassword(false);
       } else if (isSignUp) {
-        console.log("Attempting signup for:", email);
         const { error } = await supabase.auth.signUp({
-          email,
-          password
-        });
-        if (error) throw error;
-        
-        console.log("Signup successful, attempting immediate signin");
-        const { error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
-        if (signInError) throw signInError;
-        
+        if (error) throw error;
         toast.success("Account created successfully!");
         navigate("/generator");
       } else {
-        console.log("Attempting signin for:", email);
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
@@ -59,7 +42,7 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
       }
     } catch (error: any) {
       console.error("Auth error:", error);
-      toast.error(error.message);
+      toast.error(error.message || "An error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -79,16 +62,11 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
           <p className="text-gray-600 mt-2">to continue to Image Generator</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
             <Input
-              id="email"
-              name="email"
               type="email"
-              autoComplete="email"
+              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -96,14 +74,9 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
           </div>
           {!isForgotPassword && (
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                Password
-              </label>
               <Input
-                id="password"
-                name="password"
                 type="password"
-                autoComplete={isSignUp ? "new-password" : "current-password"}
+                placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
