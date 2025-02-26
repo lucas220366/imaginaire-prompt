@@ -24,15 +24,15 @@ const Profile = () => {
       if (!session?.user?.id) return;
       
       try {
-        const response = await supabase
+        const result = await supabase
           .from('generated_images')
           .select('*')
-          .eq('user_id', session.user.id)
-          .order('created_at', { ascending: false })
-          .returns<GeneratedImage[]>();
+          .eq('user_id', session.user.id as string)
+          .order('created_at', { ascending: false });
 
-        if (response.error) throw response.error;
-        setImages(response.data || []);
+        if (result.error) throw result.error;
+        
+        setImages(result.data as GeneratedImage[]);
       } catch (error) {
         console.error('Error fetching images:', error);
         toast.error("Failed to load your images");
