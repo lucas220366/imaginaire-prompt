@@ -27,8 +27,11 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
       
       if (isForgotPassword) {
         console.log("Attempting password reset for:", email);
+        const redirectTo = `${window.location.origin}/auth`;
+        console.log("Reset password redirect URL:", redirectTo);
+        
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/auth`
+          redirectTo: redirectTo
         });
         if (error) throw error;
         toast.success("Password reset email sent! Check your inbox.");
@@ -39,13 +42,12 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
           email,
           password,
           options: {
-            emailRedirectTo: window.location.origin,
+            emailRedirectTo: `${window.location.origin}/auth`
           }
         });
         if (error) throw error;
         
         console.log("Signup successful, attempting immediate signin");
-        // Since email confirmation is disabled, directly sign in
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,

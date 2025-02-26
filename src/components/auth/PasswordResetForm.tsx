@@ -29,7 +29,7 @@ export const PasswordResetForm = () => {
           }
         }
 
-        // If no access_token or session, look for recovery token
+        // If no access_token, look for recovery token
         const token = hashParams.get('token') || new URLSearchParams(window.location.search).get('token');
         
         console.log("Recovery flow params:", {
@@ -121,7 +121,7 @@ export const PasswordResetForm = () => {
       if (userEmail) {
         console.log("Requesting new reset link for:", userEmail);
         const { error } = await supabase.auth.resetPasswordForEmail(userEmail, {
-          redirectTo: window.location.origin + '/auth'
+          redirectTo: `${window.location.origin}/auth`
         });
         if (error) throw error;
         toast.success("New password reset link sent to your email!");
