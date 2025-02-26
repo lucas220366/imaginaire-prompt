@@ -7,7 +7,6 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const site_url = "https://yqbepcvnnnujsgvqmvno.lovable.ai";
 
-// Initialize the Supabase client with proper configuration for auth
 export const supabase = createClient<Database>(
   SUPABASE_URL,
   SUPABASE_ANON_KEY,
@@ -18,10 +17,7 @@ export const supabase = createClient<Database>(
       detectSessionInUrl: true,
       flowType: 'pkce',
       storage: localStorage,
-      storageKey: 'sb-auth-token',
-      defaultOptions: {
-        emailRedirectTo: `${site_url}/auth`
-      }
+      storageKey: 'sb-auth-token'
     }
   }
 );
