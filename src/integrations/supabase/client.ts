@@ -5,6 +5,8 @@ import type { Database } from './types';
 const SUPABASE_URL = "https://yqbepcvnnnujsgvqmvno.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlxYmVwY3Zubm51anNndnFtdm5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDAzMTE3NjEsImV4cCI6MjA1NTg4Nzc2MX0.Grq-F9BU9Hft4RAcYACbeIN7AQgoo-9nJtEFFAjeOEk";
 
+const site_url = "https://yqbepcvnnnujsgvqmvno.lovable.ai";
+
 // Initialize the Supabase client with proper configuration for auth
 export const supabase = createClient<Database>(
   SUPABASE_URL,
@@ -16,7 +18,10 @@ export const supabase = createClient<Database>(
       detectSessionInUrl: true,
       flowType: 'pkce',
       storage: localStorage,
-      storageKey: 'sb-auth-token'
+      storageKey: 'sb-auth-token',
+      defaultOptions: {
+        emailRedirectTo: `${site_url}/auth`
+      }
     }
   }
 );

@@ -10,6 +10,8 @@ interface AuthFormProps {
   initialMode?: 'signin' | 'signup' | 'forgot';
 }
 
+const site_url = "https://yqbepcvnnnujsgvqmvno.lovable.ai";
+
 export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -25,14 +27,10 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
     try {
       console.log("Starting auth process...");
       
-      const redirectUrl = 'https://yqbepcvnnnujsgvqmvno.lovable.ai/auth';
-      
       if (isForgotPassword) {
         console.log("Attempting password reset for:", email);
-        console.log("Reset password redirect URL:", redirectUrl);
-        
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: redirectUrl
+          redirectTo: `${site_url}/auth`
         });
         if (error) throw error;
         toast.success("Password reset email sent! Check your inbox.");
@@ -43,7 +41,7 @@ export const AuthForm = ({ initialMode = 'signin' }: AuthFormProps) => {
           email,
           password,
           options: {
-            emailRedirectTo: redirectUrl
+            emailRedirectTo: `${site_url}/auth`
           }
         });
         if (error) throw error;
