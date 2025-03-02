@@ -10,7 +10,6 @@ const Auth = () => {
   const [isReset, setIsReset] = useState(false);
   const navigate = useNavigate();
 
-  
   return (
     <div className="flex items-center justify-center min-h-screen p-4 bg-gradient-to-b from-white to-blue-50">
       <Card className="w-full max-w-md">
