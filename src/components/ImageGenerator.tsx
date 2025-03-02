@@ -9,7 +9,6 @@ import ImageGeneratorContent from "./image-generator/ImageGeneratorContent";
 import APIKeyValidator from "./image-generator/APIKeyValidator";
 import ImageGenerationHandler from "./image-generator/ImageGenerationHandler";
 import { toast } from "sonner";
-import Logo from "./Logo";
 
 const ImageGenerator = () => {
   const [prompt, setPrompt] = useState("");
@@ -52,7 +51,6 @@ const ImageGenerator = () => {
 
   return (
     <div className="min-h-screen p-6 animate-fade-in">
-      <Logo />
       <Header onSignOut={handleSignOut} />
       <APIKeyValidator 
         apiKey={apiKey}

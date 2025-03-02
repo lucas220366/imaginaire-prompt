@@ -4,7 +4,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AuthForm } from '@/components/auth/AuthForm';
 import { PasswordResetForm } from '@/components/auth/PasswordResetForm';
-import Logo from '@/components/Logo';
 import { useNavigate } from 'react-router-dom';
 
 const Auth = () => {
@@ -14,8 +13,6 @@ const Auth = () => {
   
   return (
     <div className="flex items-center justify-center min-h-screen p-4 bg-gradient-to-b from-white to-blue-50">
-      <Logo />
-      
       <Card className="w-full max-w-md">
         <CardContent className="pt-6">
           {isReset ? (
