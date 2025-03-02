@@ -1,8 +1,9 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import AuthForm from '@/components/auth/AuthForm';
-import PasswordResetForm from '@/components/auth/PasswordResetForm';
+import { AuthForm } from '@/components/auth/AuthForm';
+import { PasswordResetForm } from '@/components/auth/PasswordResetForm';
 import Logo from '@/components/Logo';
 import { useNavigate } from 'react-router-dom';
 
