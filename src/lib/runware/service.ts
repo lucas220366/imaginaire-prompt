@@ -4,6 +4,21 @@ import { WebSocketManager } from "./websocket-manager";
 
 const API_ENDPOINT = "wss://ws-api.runware.ai/v1";
 
+// Helper function to generate a UUID
+function generateUUID() {
+  // Use crypto.randomUUID if available (modern browsers)
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  
+  // Fallback implementation for environments without crypto.randomUUID
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
 export class RunwareService {
   private wsManager: WebSocketManager;
 
@@ -15,7 +30,7 @@ export class RunwareService {
   }
 
   async generateImage(params: GenerateImageParams): Promise<GeneratedImage> {
-    const taskUUID = crypto.randomUUID();
+    const taskUUID = generateUUID();
     
     const message: WebSocketMessage[] = [{
       taskType: "imageInference",
