@@ -12,6 +12,7 @@ const Title = () => {
       <p className="text-gray-600 max-w-2xl mx-auto">
         Transform your ideas into stunning images using AI. Just describe what you want to see, and watch the magic happen!
       </p>
+      <p className="text-xs text-gray-500">Deployment test - Build version 1.0.1</p>
     </div>
   );
 };
