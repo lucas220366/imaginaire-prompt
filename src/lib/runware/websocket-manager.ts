@@ -1,205 +1,138 @@
 
-import { toast } from "sonner";
-import { WebSocketMessage, WebSocketResponse } from "./types";
+import { WebSocketMessage } from "./types";
 
 export class WebSocketManager {
   private ws: WebSocket | null = null;
+  private apiKey: string;
+  private endpoint: string;
+  private isConnected: boolean = false;
   private messageCallbacks: Map<string, (data: any) => void> = new Map();
-  private isAuthenticated: boolean = false;
-  private connectionSessionUUID: string | null = null;
   private connectionPromise: Promise<void> | null = null;
-  private reconnectAttempts: number = 0;
-  private maxReconnectAttempts: number = 3;
-  private authenticationInProgress: boolean = false;
-  private connectionTimeout: number = 30000; // 30 seconds timeout
-  private operationTimeout: number = 60000; // 60 seconds timeout for operations
 
-  constructor(private apiEndpoint: string, private apiKey: string) {
-    if (!apiKey) {
-      throw new Error("API key is required");
-    }
+  constructor(endpoint: string, apiKey: string) {
+    this.endpoint = endpoint;
+    this.apiKey = apiKey;
     this.connectionPromise = this.connect();
   }
 
   private connect(): Promise<void> {
     return new Promise((resolve, reject) => {
-      try {
-        if (this.authenticationInProgress) {
-          console.log("Authentication already in progress, waiting...");
-          return;
-        }
-
-        console.log("Attempting to connect to WebSocket...");
-        this.ws = new WebSocket(this.apiEndpoint);
-        
-        // Connection timeout
-        const connectionTimeout = setTimeout(() => {
-          console.error("Connection timeout");
-          this.ws?.close();
-          reject(new Error("Connection timeout"));
-        }, this.connectionTimeout);
-        
-        this.ws.onopen = () => {
-          clearTimeout(connectionTimeout);
-          console.log("WebSocket connection established, attempting authentication...");
-          this.reconnectAttempts = 0;
-          this.authenticate().then(resolve).catch(reject);
-        };
-
-        this.ws.onmessage = this.handleMessage.bind(this);
-
-        this.ws.onerror = (error) => {
-          console.error("WebSocket error:", error);
-          clearTimeout(connectionTimeout);
-          toast.error("Connection error occurred. Please try again.");
-          this.isAuthenticated = false;
-          this.authenticationInProgress = false;
-          reject(error);
-        };
-
-        this.ws.onclose = () => {
-          console.log("WebSocket connection closed");
-          clearTimeout(connectionTimeout);
-          this.isAuthenticated = false;
-          this.authenticationInProgress = false;
-          
-          if (this.reconnectAttempts < this.maxReconnectAttempts) {
-            console.log(`Attempting to reconnect... (Attempt ${this.reconnectAttempts + 1})`);
-            this.reconnectAttempts++;
-            setTimeout(() => {
-              this.connectionPromise = this.connect();
-            }, 1000 * this.reconnectAttempts);
-          } else {
-            console.error("Maximum reconnection attempts reached");
-            toast.error("Connection lost. Please refresh the page to try again.");
-          }
-        };
-      } catch (error) {
-        console.error("Error establishing connection:", error);
-        this.authenticationInProgress = false;
-        reject(error);
-      }
-    });
-  }
-
-  private handleMessage(event: MessageEvent): void {
-    try {
-      console.log("Raw WebSocket message received:", event.data);
-      const response: WebSocketResponse = JSON.parse(event.data);
+      this.ws = new WebSocket(this.endpoint);
       
-      if (response.error || response.errors) {
-        console.error("WebSocket error response:", response);
-        const errorMessage = response.errorMessage || response.errors?.[0]?.message || "An error occurred";
-        toast.error(errorMessage);
-        this.messageCallbacks.forEach((callback) => callback({ error: errorMessage }));
-        this.messageCallbacks.clear();
-        return;
-      }
+      this.ws.onopen = () => {
+        console.log("WebSocket connected");
+        this.isConnected = true;
+        this.authenticate().then(resolve).catch(reject);
+      };
 
-      if (response.data) {
-        response.data.forEach((item: any) => {
-          if (item.taskType === "authentication") {
-            console.log("Authentication successful, session UUID:", item.connectionSessionUUID);
-            this.connectionSessionUUID = item.connectionSessionUUID;
-            this.isAuthenticated = true;
-            this.authenticationInProgress = false;
-          } else if (item.taskType === "imageInference") {
-            console.log("Image inference response:", item);
-            const callback = this.messageCallbacks.get(item.taskUUID);
-            if (callback) {
-              if (item.imageURL) {
-                callback(item);
-              } else if (item.error) {
-                callback({ error: item.error });
-              }
-              this.messageCallbacks.delete(item.taskUUID);
-            }
+      this.ws.onmessage = (event) => {
+        try {
+          const response = JSON.parse(event.data);
+          
+          if (response.error || response.errors) {
+            console.error("WebSocket error response:", response);
+            const errorMessage = response.errorMessage || response.errors?.[0]?.message || "An error occurred";
+            reject(new Error(errorMessage));
+            return;
           }
-        });
-      }
-    } catch (error) {
-      console.error("Error handling WebSocket message:", error);
-      toast.error("Error processing server response");
-    }
+
+          if (response.data) {
+            response.data.forEach((item: any) => {
+              const callback = this.messageCallbacks.get(item.taskUUID);
+              if (callback) {
+                callback(item);
+                this.messageCallbacks.delete(item.taskUUID);
+              }
+            });
+          }
+        } catch (error) {
+          console.error("Error processing WebSocket message:", error);
+          reject(error);
+        }
+      };
+
+      this.ws.onerror = (error) => {
+        console.error("WebSocket error:", error);
+        this.isConnected = false;
+        reject(error);
+      };
+
+      this.ws.onclose = () => {
+        console.log("WebSocket closed");
+        this.isConnected = false;
+        this.connectionPromise = null;
+      };
+    });
   }
 
   private authenticate(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
-        reject(new Error("WebSocket not ready for authentication"));
-        return;
-      }
-      
-      this.authenticationInProgress = true;
-      
-      const authMessage: WebSocketMessage[] = [{
-        taskType: "authentication",
-        apiKey: this.apiKey,
-        ...(this.connectionSessionUUID && { connectionSessionUUID: this.connectionSessionUUID })
-      }];
-      
-      console.log("Sending authentication message");
-      
-      const timeout = setTimeout(() => {
-        this.authenticationInProgress = false;
-        reject(new Error("Authentication timeout"));
-      }, 10000);
+    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+      return Promise.reject(new Error("WebSocket not ready for authentication"));
+    }
+    
+    const authMessage = [{
+      taskType: "authentication",
+      apiKey: this.apiKey
+    }];
+    
+    console.log("Sending authentication message");
+    this.ws.send(JSON.stringify(authMessage));
+    return Promise.resolve();
+  }
 
-      const authCallback = (event: MessageEvent) => {
-        const response = JSON.parse(event.data);
-        if (response.data?.[0]?.taskType === "authentication") {
-          clearTimeout(timeout);
-          this.ws?.removeEventListener("message", authCallback);
-          resolve();
-        }
-      };
-      
-      this.ws.addEventListener("message", authCallback);
-      this.ws.send(JSON.stringify(authMessage));
+  // Generate UUID function to replace crypto.randomUUID
+  private generateUUID(): string {
+    // Use crypto.randomUUID if available (modern browsers)
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+      return crypto.randomUUID();
+    }
+    
+    // Fallback implementation for environments without crypto.randomUUID
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
     });
   }
 
-  public async sendMessage<T>(message: WebSocketMessage[]): Promise<T> {
-    if (!this.connectionPromise) {
-      this.connectionPromise = this.connect();
-    }
-    await this.connectionPromise;
-
-    if (!this.ws || this.ws.readyState !== WebSocket.OPEN || !this.isAuthenticated) {
-      console.log("Connection not ready, attempting to reconnect...");
+  async sendMessage<T>(message: WebSocketMessage[]): Promise<T> {
+    // Wait for connection before proceeding
+    if (!this.isConnected && this.connectionPromise) {
+      await this.connectionPromise;
+    } else if (!this.isConnected) {
       this.connectionPromise = this.connect();
       await this.connectionPromise;
     }
 
-    return new Promise((resolve, reject) => {
-      const taskUUID = message[0].taskUUID;
-      if (!taskUUID) {
-        return reject(new Error("Task UUID is required"));
-      }
+    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+      throw new Error("WebSocket not connected");
+    }
 
-      const timeout = setTimeout(() => {
-        this.messageCallbacks.delete(taskUUID);
-        reject(new Error("Operation timeout"));
-        toast.error("Request timed out. Please try again.");
-      }, this.operationTimeout);
+    return new Promise((resolve, reject) => {
+      // Use the taskUUID from the message, or generate a new one if not provided
+      const taskUUID = message[0].taskUUID || this.generateUUID();
+      message[0].taskUUID = taskUUID;
 
       this.messageCallbacks.set(taskUUID, (data) => {
-        clearTimeout(timeout);
         if (data.error) {
-          reject(new Error(data.error));
+          reject(new Error(data.errorMessage));
         } else {
           resolve(data as T);
         }
       });
 
+      // Set a timeout to prevent hanging promises
+      const timeoutId = setTimeout(() => {
+        this.messageCallbacks.delete(taskUUID);
+        reject(new Error("Request timed out"));
+      }, 120000); // 2 minute timeout
+
       try {
-        console.log("Sending message:", JSON.stringify(message, null, 2));
         this.ws.send(JSON.stringify(message));
       } catch (error) {
-        clearTimeout(timeout);
+        clearTimeout(timeoutId);
         this.messageCallbacks.delete(taskUUID);
-        console.error("Failed to send message:", error);
-        reject(new Error("Failed to send request"));
+        reject(error);
       }
     });
   }
