@@ -1,48 +1,41 @@
 
-import React, { useState } from 'react';
-import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AuthForm } from '@/components/auth/AuthForm';
-import { PasswordResetForm } from '@/components/auth/PasswordResetForm';
-import { useNavigate } from 'react-router-dom';
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/components/AuthProvider";
+import { AuthForm } from "@/components/auth/AuthForm";
+import { PasswordResetForm } from "@/components/auth/PasswordResetForm";
 
 const Auth = () => {
-  const [isReset, setIsReset] = useState(false);
   const navigate = useNavigate();
+  const { session } = useAuth();
+
+  // Check if we're in a recovery flow by looking at both URL hash and search params
+  const hashParams = new URLSearchParams(window.location.hash.substring(1));
+  const searchParams = new URLSearchParams(window.location.search);
+  const isRecoveryFlow = hashParams.has('access_token') || 
+                        searchParams.has('token') || 
+                        hashParams.get('type') === 'recovery' ||
+                        searchParams.get('type') === 'recovery';
+
+  useEffect(() => {
+    // Log current state for debugging
+    console.log("Auth page - Current URL:", window.location.href);
+    console.log("Auth page - Hash params:", Object.fromEntries(hashParams));
+    console.log("Auth page - Search params:", Object.fromEntries(searchParams));
+    console.log("Auth page - isRecoveryFlow:", isRecoveryFlow);
+    console.log("Auth page - session:", session);
+  }, [isRecoveryFlow, session]);
+
+  // Only redirect if we have a session and we're not in a password reset flow
+  useEffect(() => {
+    if (session && !isRecoveryFlow) {
+      navigate("/generator");
+    }
+  }, [session, navigate, isRecoveryFlow]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4 bg-gradient-to-b from-white to-blue-50">
-      <Card className="w-full max-w-md">
-        <CardContent className="pt-6">
-          {isReset ? (
-            <PasswordResetForm onCancel={() => setIsReset(false)} />
-          ) : (
-            <Tabs defaultValue="login" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="login">Login</TabsTrigger>
-                <TabsTrigger value="register">Register</TabsTrigger>
-              </TabsList>
-              <TabsContent value="login">
-                <div className="space-y-4 py-4">
-                  <AuthForm 
-                    mode="login" 
-                    onResetPassword={() => setIsReset(true)}
-                    onSuccess={() => navigate('/generator')} 
-                  />
-                </div>
-              </TabsContent>
-              <TabsContent value="register">
-                <div className="space-y-4 py-4">
-                  <AuthForm 
-                    mode="register" 
-                    onSuccess={() => navigate('/generator')} 
-                  />
-                </div>
-              </TabsContent>
-            </Tabs>
-          )}
-        </CardContent>
-      </Card>
+    <div className="min-h-screen bg-gradient-to-b from-white to-blue-50">
+      {isRecoveryFlow ? <PasswordResetForm /> : <AuthForm />}
     </div>
   );
 };
