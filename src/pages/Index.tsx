@@ -20,6 +20,17 @@ const Index = () => {
 
   return (
     <div className="min-h-screen p-6 animate-fade-in bg-gradient-to-b from-white to-blue-50">
+      {/* Logo */}
+      <div className="absolute top-4 left-4 z-10">
+        <div className="font-black" style={{ 
+          fontFamily: "Arial Black, sans-serif", 
+          color: "#0FA0CE",
+          fontSize: "1.25rem" 
+        }}>
+          vraho.com
+        </div>
+      </div>
+
       <div className="max-w-6xl mx-auto pt-16 space-y-16">
         {/* Hero Section */}
         <div className="text-center space-y-6">
