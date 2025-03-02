@@ -5,6 +5,7 @@ import { Sparkles, Palette, Wand2, ArrowRight, Rocket } from "lucide-react";
 import SampleImages from "@/components/image-generator/SampleImages";
 import { useAuth } from "@/components/AuthProvider";
 import { useEffect } from "react";
+import Logo from "@/components/Logo";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -20,6 +21,8 @@ const Index = () => {
 
   return (
     <div className="min-h-screen p-6 animate-fade-in bg-gradient-to-b from-white to-blue-50">
+      <Logo />
+      
       <div className="max-w-6xl mx-auto pt-16 space-y-16">
         {/* Hero Section */}
         <div className="text-center space-y-6">
