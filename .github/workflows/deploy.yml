@@ -33,7 +33,7 @@ jobs:
       - name: Build
         run: npm run build
       - name: Copy CNAME to dist
-        run: cp public/CNAME dist/
+        run: cp public/CNAME dist/ || echo "CNAME file not found, continuing anyway"
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
