@@ -67,7 +67,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             console.log("Cleared localStorage item:", key);
           }
         });
-        window.location.replace('/auth');
+        
+        // Use window.location.href instead of replace to ensure proper navigation
+        window.location.href = '/';
       }
     });
 
@@ -102,6 +104,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       console.log("Sign out complete");
       toast.success("Signed out successfully");
+      
+      // Navigate to home page using window.location.href for complete page refresh
+      window.location.href = '/';
     } catch (error) {
       console.error("Error signing out:", error);
       throw error;
