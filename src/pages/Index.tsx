@@ -1,6 +1,7 @@
+
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Sparkles, Palette, Wand2, ArrowRight, Rocket, User, LogOut } from "lucide-react";
+import { Sparkles, Palette, Wand2, ArrowRight, Rocket } from "lucide-react";
 import SampleImages from "@/components/image-generator/SampleImages";
 import { useAuth } from "@/components/AuthProvider";
 import { useEffect } from "react";
@@ -8,7 +9,7 @@ import { toast } from "sonner";
 
 const Index = () => {
   const navigate = useNavigate();
-  const { session, isLoading, signOut } = useAuth();
+  const { session, isLoading } = useAuth();
 
   useEffect(() => {
     console.log("Index page - Auth state:", {
@@ -18,44 +19,8 @@ const Index = () => {
     });
   }, [session, isLoading]);
 
-  const handleSignOut = async () => {
-    try {
-      console.log("Starting sign out process");
-      await signOut();
-      console.log("Sign out successful");
-      toast.success("Signed out successfully");
-    } catch (error: any) {
-      console.error("Sign out error:", error);
-      toast.error("Failed to sign out");
-    }
-  };
-
   return (
     <div className="min-h-screen p-6 animate-fade-in bg-gradient-to-b from-white to-blue-50">
-      {/* Navigation Links */}
-      {session && (
-        <div className="absolute top-4 right-4 z-10 flex gap-2">
-          <Button
-            onClick={() => navigate("/profile")}
-            variant="ghost"
-            size="sm"
-            className="bg-white/80 backdrop-blur-sm text-gray-700 hover:bg-white"
-          >
-            <User className="h-4 w-4 mr-1" />
-            Profile
-          </Button>
-          <Button
-            onClick={handleSignOut}
-            variant="ghost"
-            size="sm"
-            className="bg-white/80 backdrop-blur-sm text-gray-700 hover:bg-white"
-          >
-            <LogOut className="h-4 w-4 mr-1" />
-            Sign Out
-          </Button>
-        </div>
-      )}
-
       <div className="max-w-6xl mx-auto pt-16 space-y-16">
         {/* Hero Section */}
         <div className="text-center space-y-6">
