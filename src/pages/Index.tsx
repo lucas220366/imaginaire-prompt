@@ -35,11 +35,12 @@ const Index = () => {
     <div className="min-h-screen p-6 animate-fade-in bg-gradient-to-b from-white to-blue-50">
       {/* Navigation Links */}
       {session && (
-        <div className="absolute top-4 right-4 flex gap-2">
+        <div className="absolute top-4 right-4 flex gap-2 z-10">
           <Button
             onClick={() => navigate("/profile")}
             variant="outline"
             size="sm"
+            className="bg-white/80 backdrop-blur-sm hover:bg-white"
           >
             <User className="mr-2 h-4 w-4" />
             Profile
@@ -48,6 +49,7 @@ const Index = () => {
             onClick={handleSignOut}
             variant="outline"
             size="sm"
+            className="bg-white/80 backdrop-blur-sm hover:bg-white"
           >
             <LogOut className="mr-2 h-4 w-4" />
             Sign Out
