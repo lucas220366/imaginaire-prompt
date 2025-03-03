@@ -35,25 +35,27 @@ const Index = () => {
     <div className="min-h-screen p-6 animate-fade-in bg-gradient-to-b from-white to-blue-50">
       {/* Navigation Links */}
       {session && (
-        <div className="absolute top-4 right-4 flex gap-2 z-10">
-          <Button
-            onClick={() => navigate("/profile")}
-            variant="outline"
-            size="sm"
-            className="bg-white/80 backdrop-blur-sm hover:bg-white"
-          >
-            <User className="mr-2 h-4 w-4" />
-            Profile
-          </Button>
-          <Button
-            onClick={handleSignOut}
-            variant="outline"
-            size="sm"
-            className="bg-white/80 backdrop-blur-sm hover:bg-white"
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            Sign Out
-          </Button>
+        <div className="absolute top-4 right-4 z-10">
+          <div className="flex gap-2 p-2 bg-white/80 backdrop-blur-sm rounded-lg shadow-sm border border-gray-100">
+            <Button
+              onClick={() => navigate("/profile")}
+              variant="ghost"
+              size="sm"
+              className="flex items-center gap-2 text-gray-700 hover:bg-gray-100"
+            >
+              <User className="h-4 w-4" />
+              Profile
+            </Button>
+            <Button
+              onClick={handleSignOut}
+              variant="ghost"
+              size="sm"
+              className="flex items-center gap-2 text-gray-700 hover:bg-gray-100"
+            >
+              <LogOut className="h-4 w-4" />
+              Sign Out
+            </Button>
+          </div>
         </div>
       )}
 
