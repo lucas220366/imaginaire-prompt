@@ -38,13 +38,13 @@ const Index = () => {
       {/* Add Logo */}
       <Logo />
       
-      {/* Header with Profile and Sign Out links */}
+      {/* Header with Profile and Sign Out links - adjusted positioning */}
       {session && (
         <div className="absolute top-4 right-4 z-50 flex gap-2">
           <Button
             onClick={() => navigate("/profile")}
             variant="outline"
-            className="flex items-center gap-2 bg-white/80 backdrop-blur-sm hover:bg-white/90"
+            className="flex items-center gap-2"
           >
             <User className="h-4 w-4" />
             Profile
@@ -52,7 +52,7 @@ const Index = () => {
           <Button
             onClick={handleSignOut}
             variant="outline"
-            className="flex items-center gap-2 bg-white/80 backdrop-blur-sm hover:bg-white/90"
+            className="flex items-center gap-2"
           >
             <LogOut className="h-4 w-4" />
             Sign Out
