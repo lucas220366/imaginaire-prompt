@@ -20,7 +20,7 @@ const Index = () => {
   }, [session, isLoading]);
 
   return (
-    <div className="min-h-screen p-6 animate-fade-in bg-gradient-to-b from-white to-blue-50">
+    <div className="min-h-screen p-6 animate-fade-in">
       <div className="max-w-6xl mx-auto pt-16 space-y-16">
         {/* Hero Section */}
         <div className="text-center space-y-6">
