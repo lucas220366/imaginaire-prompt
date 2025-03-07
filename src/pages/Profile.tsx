@@ -106,7 +106,7 @@ const Profile = () => {
       <Logo />
       
       <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-end items-center mb-8 gap-2">
           <Button
             variant="outline"
             onClick={() => navigate("/generator")}
