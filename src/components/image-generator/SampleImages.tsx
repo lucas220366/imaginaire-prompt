@@ -19,16 +19,16 @@ const sampleImages = [
 
 const SampleImages = () => {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex items-center gap-2">
-        <Sparkles className="h-5 w-5 text-blue-500" />
-        <h2 className="text-xl font-semibold text-gray-800">Example Creations</h2>
+        <Sparkles className="h-4 w-4 text-blue-500" />
+        <h2 className="text-lg font-semibold text-gray-800">Example Creations</h2>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {sampleImages.map((sample, index) => (
           <div 
             key={index}
-            className="bg-white/50 backdrop-blur-lg rounded-lg overflow-hidden shadow-lg border border-gray-100"
+            className="bg-white/50 backdrop-blur-lg rounded-lg overflow-hidden shadow-md border border-gray-100"
           >
             <div className="aspect-square relative">
               <img
@@ -38,7 +38,7 @@ const SampleImages = () => {
                 loading="lazy"
               />
             </div>
-            <div className="p-4">
+            <div className="p-3">
               <span className="inline-block px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
                 {sample.style}
               </span>

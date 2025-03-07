@@ -32,7 +32,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-blue-50">
       {/* Add Logo */}
       <Logo />
       
@@ -43,6 +43,7 @@ const Index = () => {
             onClick={() => navigate("/profile")}
             variant="outline"
             className="flex items-center gap-2"
+            size="sm"
           >
             <User className="h-4 w-4" />
             Profile
@@ -51,6 +52,7 @@ const Index = () => {
             onClick={handleSignOut}
             variant="outline"
             className="flex items-center gap-2"
+            size="sm"
           >
             <LogOut className="h-4 w-4" />
             Sign Out
@@ -58,30 +60,30 @@ const Index = () => {
         </div>
       )}
 
-      <div className="max-w-4xl mx-auto p-4 sm:p-6 md:p-8 space-y-8">
+      <div className="w-full max-w-3xl mx-auto px-4 py-6 space-y-6">
         {/* Hero Section */}
-        <div className="text-center space-y-6">
+        <div className="text-center space-y-4">
           <div className="flex flex-col items-center gap-2">
-            <Rocket className="w-10 h-10 text-[#0FA0CE]" />
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800">
+            <Rocket className="w-8 h-8 text-[#0FA0CE]" />
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800">
               Transform Your Ideas Into Art
             </h1>
           </div>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-base text-gray-600 max-w-xl mx-auto">
             Create stunning, unique images in seconds using the power of AI. 
             Perfect for artists, designers, and creative minds.
           </p>
           {session ? (
             <Button
               onClick={() => navigate("/generator")}
-              className="text-lg px-6 py-4 h-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+              className="text-base px-4 py-2 h-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
             >
               Go to Generator <ArrowRight className="ml-2" />
             </Button>
           ) : (
             <Button
               onClick={() => navigate("/auth")}
-              className="text-lg px-6 py-4 h-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+              className="text-base px-4 py-2 h-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
             >
               Get Started <ArrowRight className="ml-2" />
             </Button>
@@ -92,33 +94,33 @@ const Index = () => {
         <SampleImages />
 
         {/* Features Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white/60 backdrop-blur-lg rounded-xl p-6 shadow-lg border border-gray-100">
-            <div className="h-12 w-12 rounded-lg bg-blue-100 flex items-center justify-center mb-4">
-              <Sparkles className="h-6 w-6 text-blue-600" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-white/60 backdrop-blur-lg rounded-xl p-4 shadow-md border border-gray-100">
+            <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center mb-3">
+              <Sparkles className="h-5 w-5 text-blue-600" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Easy to Use</h3>
-            <p className="text-gray-600">
+            <h3 className="text-lg font-semibold mb-2">Easy to Use</h3>
+            <p className="text-sm text-gray-600">
               Simply describe what you want to see, and watch as AI brings your vision to life in seconds.
             </p>
           </div>
 
-          <div className="bg-white/60 backdrop-blur-lg rounded-xl p-6 shadow-lg border border-gray-100">
-            <div className="h-12 w-12 rounded-lg bg-purple-100 flex items-center justify-center mb-4">
-              <Palette className="h-6 w-6 text-purple-600" />
+          <div className="bg-white/60 backdrop-blur-lg rounded-xl p-4 shadow-md border border-gray-100">
+            <div className="h-10 w-10 rounded-lg bg-purple-100 flex items-center justify-center mb-3">
+              <Palette className="h-5 w-5 text-purple-600" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Endless Possibilities</h3>
-            <p className="text-gray-600">
+            <h3 className="text-lg font-semibold mb-2">Endless Possibilities</h3>
+            <p className="text-sm text-gray-600">
               Create any style of image you can imagine, from photorealistic scenes to artistic illustrations.
             </p>
           </div>
 
-          <div className="bg-white/60 backdrop-blur-lg rounded-xl p-6 shadow-lg border border-gray-100">
-            <div className="h-12 w-12 rounded-lg bg-pink-100 flex items-center justify-center mb-4">
-              <Wand2 className="h-6 w-6 text-pink-600" />
+          <div className="bg-white/60 backdrop-blur-lg rounded-xl p-4 shadow-md border border-gray-100">
+            <div className="h-10 w-10 rounded-lg bg-pink-100 flex items-center justify-center mb-3">
+              <Wand2 className="h-5 w-5 text-pink-600" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Customizable</h3>
-            <p className="text-gray-600">
+            <h3 className="text-lg font-semibold mb-2">Customizable</h3>
+            <p className="text-sm text-gray-600">
               Fine-tune your results with adjustable settings for size, style, and other parameters.
             </p>
           </div>
@@ -126,14 +128,15 @@ const Index = () => {
 
         {/* Call to Action */}
         <div className="text-center">
-          <p className="text-gray-600 mb-6">
+          <p className="text-sm text-gray-600 mb-4">
             Ready to start creating? Join now and bring your ideas to life!
           </p>
           {!session && (
             <Button
               onClick={() => navigate("/auth")}
               variant="outline"
-              className="text-lg"
+              className="text-sm"
+              size="sm"
             >
               Sign Up Now <ArrowRight className="ml-2" />
             </Button>
