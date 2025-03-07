@@ -6,6 +6,7 @@ import SampleImages from "@/components/image-generator/SampleImages";
 import { useAuth } from "@/components/AuthProvider";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import Logo from "@/components/Logo";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -34,6 +35,9 @@ const Index = () => {
     <div className="min-h-screen p-6 animate-fade-in" style={{
       backgroundImage: "radial-gradient(circle at center, rgba(255, 255, 255, 0.8) 0%, rgba(240, 240, 240, 0.6) 100%)"
     }}>
+      {/* Add Logo */}
+      <Logo />
+      
       {/* Header with Profile and Sign Out links */}
       {session && (
         <div className="absolute top-4 right-4 z-50 flex gap-2">
