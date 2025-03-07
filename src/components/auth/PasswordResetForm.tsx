@@ -13,6 +13,7 @@ export const PasswordResetForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isTokenValid, setIsTokenValid] = useState(true);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [tokenInfo, setTokenInfo] = useState<any>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,44 +26,91 @@ export const PasswordResetForm = () => {
         const token = fragment.get('token') || query.get('token');
         const type = fragment.get('type') || query.get('type');
 
+        // Store token info for debugging
+        setTokenInfo({
+          hasAccessToken: !!accessToken,
+          hasToken: !!token,
+          type: type,
+          currentUrl: window.location.href,
+          hash: window.location.hash,
+          search: window.location.search
+        });
+        
         console.log("Recovery flow params:", {
           hasAccessToken: !!accessToken,
           hasToken: !!token,
           type: type,
-          currentUrl: window.location.href
+          currentUrl: window.location.href,
+          hash: window.location.hash,
+          search: window.location.search
         });
 
         if (accessToken) {
           // Handle direct access token case
-          const { data: { user } } = await supabase.auth.getUser();
-          if (user?.email) {
-            setUserEmail(user.email);
-            setIsTokenValid(true);
-            return;
+          try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user?.email) {
+              setUserEmail(user.email);
+              setIsTokenValid(true);
+              return;
+            }
+          } catch (error) {
+            console.error("Error getting user with access token:", error);
           }
         }
 
+        // First try to use the token via a recovery flow
         if (token && type === 'recovery') {
-          const { error } = await supabase.auth.verifyOtp({
-            token_hash: token,
-            type: 'recovery'
-          });
+          try {
+            const { error } = await supabase.auth.verifyOtp({
+              token_hash: token,
+              type: 'recovery'
+            });
 
-          if (error) {
-            console.error("Token verification failed:", error);
-            setIsTokenValid(false);
-            toast.error("Invalid or expired reset link");
-            return;
+            if (error) {
+              console.error("Token verification failed:", error);
+              setIsTokenValid(false);
+              toast.error("Invalid or expired reset link");
+              return;
+            }
+
+            // Get user after verification
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user?.email) {
+              setUserEmail(user.email);
+              setIsTokenValid(true);
+              return;
+            }
+          } catch (verifyError) {
+            console.error("Error during OTP verification:", verifyError);
           }
-
-          // Get user after verification
+        }
+        
+        // As a fallback, try to check the current session
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
           const { data: { user } } = await supabase.auth.getUser();
-          if (user?.email) {
+          
+          console.log("Current session:", {
+            hasSession: !!session,
+            hasUser: !!user,
+            email: user?.email
+          });
+          
+          if (user && user.email) {
             setUserEmail(user.email);
             setIsTokenValid(true);
+            return;
           }
-        } else if (!accessToken) {
-          setIsTokenValid(false);
+        } catch (sessionError) {
+          console.error("Error getting session:", sessionError);
+        }
+
+        // If we got here, no valid token or session was found
+        setIsTokenValid(false);
+        if (!type || !token) {
+          toast.error("Missing reset parameters");
+        } else {
           toast.error("Invalid reset link");
         }
       } catch (error) {
@@ -80,6 +128,11 @@ export const PasswordResetForm = () => {
     
     if (password !== confirmPassword) {
       toast.error("Passwords don't match");
+      return;
+    }
+    
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters");
       return;
     }
     
@@ -114,6 +167,11 @@ export const PasswordResetForm = () => {
           <div className="text-center">
             <h2 className="text-2xl font-bold">Invalid Reset Link</h2>
             <p className="text-gray-600 mt-2">This password reset link is invalid or has expired.</p>
+            {tokenInfo && (
+              <div className="mt-4 p-4 bg-gray-100 rounded text-left text-xs overflow-auto max-h-32">
+                <pre>{JSON.stringify(tokenInfo, null, 2)}</pre>
+              </div>
+            )}
           </div>
           <Button
             onClick={() => navigate("/auth")}

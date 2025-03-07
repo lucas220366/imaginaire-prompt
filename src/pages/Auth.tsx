@@ -16,20 +16,29 @@ const Auth = () => {
     const fragment = new URLSearchParams(window.location.hash.substring(1));
     const query = new URLSearchParams(window.location.search);
     const accessToken = fragment.get('access_token');
+    const token = fragment.get('token') || query.get('token');
     const type = fragment.get('type') || query.get('type');
     
+    // Show reset form if we have recovery token or recovery type
     if ((accessToken && type === 'recovery') || 
-        (query.get('token') && type === 'recovery')) {
+        (token && type === 'recovery') ||
+        // Also check for recovery in hash fragment without type parameter
+        (window.location.hash.includes('type=recovery'))) {
       setShowResetForm(true);
     }
     
     // Log current state for debugging
     console.log("Auth page - Current URL:", window.location.href);
+    console.log("Auth page - URL hash:", window.location.hash);
+    console.log("Auth page - URL search:", window.location.search);
     console.log("Auth page - session:", session);
     console.log("Auth page - URL params:", {
-      hasToken: !!query.get('token') || !!fragment.get('token'),
-      type,
-      hasAccessToken: !!accessToken
+      hasToken: !!(query.get('token') || fragment.get('token')),
+      type: type,
+      hasAccessToken: !!accessToken,
+      showResetForm: ((accessToken && type === 'recovery') || 
+        (token && type === 'recovery') ||
+        (window.location.hash.includes('type=recovery')))
     });
   }, []);
 
