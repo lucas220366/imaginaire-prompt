@@ -61,9 +61,9 @@ const Index = () => {
         </div>
       )}
 
-      <div className="container mx-auto p-6">
+      <div className="max-w-6xl mx-auto p-6 pt-16">
         {/* Hero Section */}
-        <div className="text-center space-y-4">
+        <div className="text-center space-y-4 mb-12">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mt-16">
             Transform Your Ideas Into Art
           </h1>
@@ -93,7 +93,7 @@ const Index = () => {
 
         {/* Features Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-          <div className="bg-white shadow-md rounded-lg p-6 text-center">
+          <div className="bg-white/50 backdrop-blur-lg rounded-lg p-6 text-center shadow-md border border-gray-100">
             <div className="bg-blue-100 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4">
               <Sparkles className="h-6 w-6 text-blue-600" />
             </div>
@@ -103,7 +103,7 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="bg-white shadow-md rounded-lg p-6 text-center">
+          <div className="bg-white/50 backdrop-blur-lg rounded-lg p-6 text-center shadow-md border border-gray-100">
             <div className="bg-purple-100 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4">
               <Palette className="h-6 w-6 text-purple-600" />
             </div>
@@ -113,7 +113,7 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="bg-white shadow-md rounded-lg p-6 text-center">
+          <div className="bg-white/50 backdrop-blur-lg rounded-lg p-6 text-center shadow-md border border-gray-100">
             <div className="bg-pink-100 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4">
               <Wand2 className="h-6 w-6 text-pink-600" />
             </div>
