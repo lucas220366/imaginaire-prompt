@@ -6,7 +6,7 @@ const Logo = () => {
   
   return (
     <div 
-      className="absolute top-4 left-4 z-50 cursor-pointer"
+      className="absolute top-4 left-24 z-50 cursor-pointer"
       onClick={() => navigate("/")}
     >
       <img 

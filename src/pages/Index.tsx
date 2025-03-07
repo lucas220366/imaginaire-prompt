@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Sparkles, Palette, Wand2, ArrowRight, Rocket, User, LogOut } from "lucide-react";
@@ -31,6 +32,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
+      {/* Rocket positioned at top left */}
+      <div className="absolute top-4 left-4 z-10">
+        <Rocket className="w-16 h-16 text-[#0FA0CE] animate-bounce" />
+      </div>
+
       {/* Header with Profile and Sign Out links */}
       {session && (
         <div className="absolute top-4 right-4 z-10 flex gap-2">
@@ -58,12 +64,9 @@ const Index = () => {
       <div className="container mx-auto p-6">
         {/* Hero Section */}
         <div className="text-center space-y-4">
-          <div className="flex flex-col items-center gap-2">
-            <Rocket className="w-16 h-16 text-[#0FA0CE] animate-bounce" />
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800">
-              Transform Your Ideas Into Art
-            </h1>
-          </div>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mt-16">
+            Transform Your Ideas Into Art
+          </h1>
           <p className="text-base text-gray-600 max-w-xl mx-auto">
             Create stunning, unique images in seconds using the power of AI. 
             Perfect for artists, designers, and creative minds.
