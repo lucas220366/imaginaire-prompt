@@ -30,7 +30,7 @@ const Index = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-blue-50">
+    <div className="min-h-screen p-6">
       {/* Header with Profile and Sign Out links */}
       {session && (
         <div className="absolute top-4 right-4 z-10 flex gap-2">
@@ -55,7 +55,7 @@ const Index = () => {
         </div>
       )}
 
-      <div className="w-full max-w-3xl mx-auto px-4 py-6 space-y-6">
+      <div className="w-full max-w-4xl mx-auto space-y-6">
         {/* Hero Section */}
         <div className="text-center space-y-4">
           <div className="flex flex-col items-center gap-2">
@@ -84,7 +84,7 @@ const Index = () => {
             </Button>
           )}
         </div>
-          
+
         {/* Example Creations Section */}
         <SampleImages />
 
