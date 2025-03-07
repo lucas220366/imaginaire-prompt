@@ -38,9 +38,9 @@ const Index = () => {
       {/* Add Logo */}
       <Logo />
       
-      {/* Header with Profile and Sign Out links - adjusted positioning */}
+      {/* Header with Profile and Sign Out links - fixed positioning to match other pages */}
       {session && (
-        <div className="absolute top-4 right-4 z-50 flex gap-2">
+        <div className="absolute top-4 right-4 z-10 flex gap-2">
           <Button
             onClick={() => navigate("/profile")}
             variant="outline"
