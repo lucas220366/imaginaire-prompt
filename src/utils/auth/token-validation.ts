@@ -38,15 +38,48 @@ export const validateResetToken = async (resetParams: Record<string, string | nu
     
     // Use full URL to extract token if other methods failed
     let extractedToken = null;
+    
+    // Try to extract token from the URL using regex for various formats
     if (!token && fullUrl) {
-      // Try to extract token from the URL using regex
-      const tokenMatch = fullUrl.match(/[?&#]token=([^&#]*)/);
-      if (tokenMatch && tokenMatch[1]) {
-        extractedToken = tokenMatch[1];
+      const tokenMatches = [
+        fullUrl.match(/[?&#]token=([^&#]*)/),              // Standard token format
+        fullUrl.match(/[?&#]access_token=([^&#]*)/),      // OAuth access token format
+        fullUrl.match(/\/supabase\/auth\/callback\?(.*)/) // Supabase callback format
+      ];
+      
+      for (const match of tokenMatches) {
+        if (match && match[1]) {
+          extractedToken = match[1];
+          break;
+        }
+      }
+    }
+    
+    // Extract token from hash fragment 
+    if (!token && !extractedToken && fragment) {
+      try {
+        // Sometimes token may be in a different format in the hash
+        const hashData = JSON.parse(decodeURIComponent(fragment.substring(1)));
+        if (hashData.token) {
+          extractedToken = hashData.token;
+        } else if (hashData.access_token) {
+          extractedToken = hashData.access_token;
+        }
+      } catch (e) {
+        // Ignore parsing errors, we'll try other methods
       }
     }
     
     const finalToken = token || extractedToken;
+    
+    // Check if we're in a recovery flow through various means
+    const isRecoveryFlow = 
+      (type === 'recovery') || 
+      (fragment.includes('type=recovery')) || 
+      (search.includes('type=recovery')) || 
+      (fullUrl.includes('type=recovery')) ||
+      (resetParams?.type === 'recovery') ||
+      (fullUrl.includes('/auth/reset-password'));
     
     // Store token info for debugging
     const tokenInfo = {
@@ -60,6 +93,7 @@ export const validateResetToken = async (resetParams: Record<string, string | nu
       isHashRecovery: fragment.includes('type=recovery'),
       isQueryRecovery: search.includes('type=recovery'),
       isFullUrlRecovery: fullUrl.includes('type=recovery'),
+      isRecoveryFlow,
       resetParams: resetParams,
       supabaseConfig: {
         autoRefreshToken: true,
@@ -113,7 +147,7 @@ export const validateResetToken = async (resetParams: Record<string, string | nu
     }
     
     // Try with recovery token if available
-    if (finalToken && (type === 'recovery' || !type)) {
+    if (finalToken && (isRecoveryFlow || !type)) {
       try {
         console.log("Attempting to verify recovery token:", finalToken);
         const { data, error } = await supabase.auth.verifyOtp({

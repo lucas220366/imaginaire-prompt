@@ -17,6 +17,7 @@ const Auth = () => {
     const fragment = window.location.hash;
     const search = window.location.search;
     const fullUrl = window.location.href;
+    const pathname = window.location.pathname;
     
     // Parse parameters from both hash and query
     const fragmentParams = new URLSearchParams(fragment.substring(1));
@@ -33,7 +34,13 @@ const Auth = () => {
       (token && type === 'recovery') ||
       fragment.includes('type=recovery') ||
       search.includes('type=recovery') ||
-      fullUrl.includes('type=recovery')
+      fullUrl.includes('type=recovery') ||
+      pathname.includes('/reset-password') ||
+      // Check if URL is a Supabase auth callback URL
+      fullUrl.includes('/supabase/auth/callback') ||
+      // Look for "reset_password" or "recovery" in query parameters
+      search.includes('reset_password') ||
+      search.includes('recovery')
     );
     
     if (isRecovery) {
@@ -46,7 +53,8 @@ const Auth = () => {
         type,
         hash: fragment,
         search,
-        fullUrl
+        fullUrl,
+        pathname
       };
       setResetParams(params);
     }
@@ -56,6 +64,7 @@ const Auth = () => {
       currentUrl: fullUrl,
       urlHash: fragment,
       urlSearch: search,
+      pathname: pathname,
       hasSession: !!session,
       hasAccessToken: !!accessToken,
       hasToken: !!token,

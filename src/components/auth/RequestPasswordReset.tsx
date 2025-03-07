@@ -20,11 +20,13 @@ export const RequestPasswordReset = ({ onBackToSignIn }: RequestPasswordResetPro
     try {
       // Ensure we have the correct reset URL with the origin
       const currentOrigin = window.location.origin;
-      const redirectUrl = `${currentOrigin}/auth`;
+      
+      // Use the exact same structure as the current URL to ensure consistent behavior
+      const resetUrl = `${currentOrigin}/auth`;
       
       console.log("Password reset request:", {
         email: email,
-        redirectUrl: redirectUrl,
+        redirectUrl: resetUrl,
         currentOrigin: currentOrigin,
         currentUrl: window.location.href,
         supabaseConfig: {
@@ -34,7 +36,7 @@ export const RequestPasswordReset = ({ onBackToSignIn }: RequestPasswordResetPro
       });
       
       const { error, data } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: redirectUrl,
+        redirectTo: resetUrl,
       });
       
       console.log("Password reset response:", { error, data });
