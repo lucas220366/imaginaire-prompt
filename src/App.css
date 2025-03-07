@@ -1,5 +1,5 @@
 
-/* Removing the width constraint that's causing different page sizes */
+/* Remove all width constraints and padding to ensure consistent page sizing */
 #root {
   margin: 0 auto;
   text-align: center;
