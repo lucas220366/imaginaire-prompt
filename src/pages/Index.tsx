@@ -60,7 +60,7 @@ const Index = () => {
         {/* Hero Section */}
         <div className="text-center space-y-4">
           <div className="flex flex-col items-center gap-2">
-            <Rocket className="w-8 h-8 text-[#0FA0CE]" />
+            <Rocket className="w-8 h-8 text-[#0FA0CE] animate-bounce" />
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800">
               Transform Your Ideas Into Art
             </h1>
