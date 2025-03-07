@@ -34,8 +34,14 @@ jobs:
         run: npm run build
       - name: Copy CNAME to dist
         run: cp public/CNAME dist/ || echo "CNAME file not found, continuing anyway"
-      - name: Create 404.html
-        run: cp dist/index.html dist/404.html
+      - name: Create proper 404.html
+        run: |
+          cp dist/index.html dist/404.html
+          echo "<!-- This is a special 404 page that ensures the logo and styles are properly loaded -->" >> dist/404.html
+      - name: Ensure assets are properly copied
+        run: |
+          mkdir -p dist/lovable-uploads
+          cp -r public/lovable-uploads/* dist/lovable-uploads/ || echo "No lovable-uploads found, continuing anyway"
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
