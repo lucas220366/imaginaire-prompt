@@ -6,6 +6,7 @@ import SampleImages from "@/components/image-generator/SampleImages";
 import { useAuth } from "@/components/AuthProvider";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import Logo from "@/components/Logo";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -32,10 +33,8 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Rocket positioned at top left */}
-      <div className="absolute top-4 left-4 z-10">
-        <Rocket className="w-16 h-16 text-[#0FA0CE] animate-bounce" />
-      </div>
+      {/* Logo component */}
+      <Logo />
 
       {/* Header with Profile and Sign Out links */}
       {session && (
@@ -61,10 +60,10 @@ const Index = () => {
         </div>
       )}
 
-      <div className="p-6 animate-fade-in">
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Hero Section */}
         <div className="text-center space-y-4 mb-12">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mt-16">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mt-8">
             Transform Your Ideas Into Art
           </h1>
           <p className="text-base text-gray-600 max-w-xl mx-auto">
