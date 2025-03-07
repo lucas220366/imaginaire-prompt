@@ -4,7 +4,7 @@ import { Sparkles } from "lucide-react";
 
 const sampleImages = [
   {
-    url: "/lovable-uploads/92ae765a-7e64-4821-9c09-035aa901f97d.png",
+    url: "/lovable-uploads/5ad55131-4ba5-477c-8599-87bb47c60725.png",
     style: "Realistic Style"
   },
   {
