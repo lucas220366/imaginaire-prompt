@@ -20,7 +20,9 @@ const Index = () => {
   }, [session, isLoading]);
 
   return (
-    <div className="min-h-screen p-6 animate-fade-in">
+    <div className="min-h-screen p-6 animate-fade-in" style={{
+      backgroundImage: "radial-gradient(circle at center, rgba(255, 255, 255, 0.8) 0%, rgba(240, 240, 240, 0.6) 100%)"
+    }}>
       <div className="max-w-6xl mx-auto pt-16 space-y-16">
         {/* Hero Section */}
         <div className="text-center space-y-6">
