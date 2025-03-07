@@ -25,18 +25,25 @@ export const AuthForm = ({ onResetPassword }: AuthFormProps) => {
 
     try {
       if (isResetMode) {
-        // Ensure we have the correct reset URL - use current origin and path
+        // Ensure we have the correct reset URL with the origin
         const redirectUrl = `${window.location.origin}/auth`;
         
         console.log("Password reset request:", {
           email: email,
           redirectUrl: redirectUrl,
-          currentOrigin: window.location.origin
+          currentOrigin: window.location.origin,
+          currentUrl: window.location.href,
+          supabaseConfig: {
+            autoRefreshToken: true,
+            detectSessionInUrl: true
+          }
         });
         
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        const { error, data } = await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: redirectUrl,
         });
+        
+        console.log("Password reset response:", { error, data });
         
         if (error) throw error;
         

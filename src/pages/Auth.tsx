@@ -9,10 +9,11 @@ const Auth = () => {
   const navigate = useNavigate();
   const { session } = useAuth();
   const [showResetForm, setShowResetForm] = useState(false);
+  const [resetParams, setResetParams] = useState<Record<string, string | null>>({});
 
   // Check if we're in a password reset flow
   useEffect(() => {
-    // Enhanced detection for various password reset URL formats
+    // Get parameters from both hash and query
     const fragment = new URLSearchParams(window.location.hash.substring(1));
     const query = new URLSearchParams(window.location.search);
     
@@ -31,6 +32,17 @@ const Auth = () => {
     
     if (isRecovery) {
       setShowResetForm(true);
+      
+      // Store all parameters for debugging and use
+      const params: Record<string, string | null> = {
+        accessToken,
+        token,
+        type,
+        hash: window.location.hash,
+        search: window.location.search,
+        fullUrl: window.location.href
+      };
+      setResetParams(params);
     }
     
     // Log current state for debugging
@@ -43,7 +55,9 @@ const Auth = () => {
       hasToken: !!token,
       type: type,
       isRecovery: isRecovery,
-      showResetForm: isRecovery
+      showResetForm: isRecovery,
+      allParams: Object.fromEntries(new URLSearchParams(window.location.search)),
+      allHashParams: Object.fromEntries(new URLSearchParams(window.location.hash.substring(1)))
     });
   }, []);
 
@@ -57,7 +71,7 @@ const Auth = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-blue-50">
       {showResetForm ? (
-        <PasswordResetForm />
+        <PasswordResetForm resetParams={resetParams} />
       ) : (
         <AuthForm onResetPassword={() => setShowResetForm(true)} />
       )}

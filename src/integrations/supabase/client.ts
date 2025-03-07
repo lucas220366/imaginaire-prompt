@@ -19,3 +19,15 @@ export const supabase = createClient<Database>(
     }
   }
 );
+
+// Log Supabase client initialization
+console.log("Supabase client initialized with config:", {
+  url: SUPABASE_URL,
+  hasKey: !!SUPABASE_ANON_KEY,
+  authConfig: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true,
+    flowType: 'pkce'
+  }
+});
