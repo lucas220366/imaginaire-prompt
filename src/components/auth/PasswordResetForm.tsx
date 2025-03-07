@@ -5,9 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Lock } from "lucide-react";
 
 export const PasswordResetForm = () => {
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isTokenValid, setIsTokenValid] = useState(true);
   const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -59,7 +61,7 @@ export const PasswordResetForm = () => {
             setUserEmail(user.email);
             setIsTokenValid(true);
           }
-        } else {
+        } else if (!accessToken) {
           setIsTokenValid(false);
           toast.error("Invalid reset link");
         }
@@ -75,6 +77,12 @@ export const PasswordResetForm = () => {
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (password !== confirmPassword) {
+      toast.error("Passwords don't match");
+      return;
+    }
+    
     setIsLoading(true);
 
     try {
@@ -88,9 +96,6 @@ export const PasswordResetForm = () => {
       
       // Clear URL parameters
       window.history.replaceState({}, '', '/auth');
-      
-      // Sign out user
-      await supabase.auth.signOut();
       
       // Redirect to login
       navigate("/auth");
@@ -125,8 +130,11 @@ export const PasswordResetForm = () => {
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
+          <Lock className="h-8 w-8 mx-auto text-blue-500 mb-2" />
           <h2 className="text-2xl font-bold">Reset Password</h2>
-          <p className="text-gray-600 mt-2">Enter your new password</p>
+          <p className="text-gray-600 mt-2">
+            {userEmail ? `For ${userEmail}` : 'Enter your new password'}
+          </p>
         </div>
 
         <form onSubmit={handleUpdatePassword} className="space-y-4">
@@ -136,6 +144,17 @@ export const PasswordResetForm = () => {
               placeholder="New Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={6}
+              disabled={isLoading}
+            />
+          </div>
+          <div>
+            <Input
+              type="password"
+              placeholder="Confirm New Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               required
               minLength={6}
               disabled={isLoading}
