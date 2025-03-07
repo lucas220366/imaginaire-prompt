@@ -32,7 +32,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen animate-fade-in">
+    <div className="min-h-screen">
       {/* Add Logo */}
       <Logo />
       
@@ -58,30 +58,30 @@ const Index = () => {
         </div>
       )}
 
-      <div className="container mx-auto px-4 py-12 space-y-12">
+      <div className="max-w-4xl mx-auto p-4 sm:p-6 md:p-8 space-y-8">
         {/* Hero Section */}
         <div className="text-center space-y-6">
           <div className="flex flex-col items-center gap-2">
-            <Rocket className="w-12 h-12 text-[#0FA0CE] animate-bounce" />
-            <h1 className="text-5xl font-bold text-gray-800 animate-fade-up">
+            <Rocket className="w-10 h-10 text-[#0FA0CE]" />
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800">
               Transform Your Ideas Into Art
             </h1>
           </div>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto animate-fade-up">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Create stunning, unique images in seconds using the power of AI. 
             Perfect for artists, designers, and creative minds.
           </p>
           {session ? (
             <Button
               onClick={() => navigate("/generator")}
-              className="text-lg px-8 py-6 h-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 animate-fade-up"
+              className="text-lg px-6 py-4 h-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
             >
               Go to Generator <ArrowRight className="ml-2" />
             </Button>
           ) : (
             <Button
               onClick={() => navigate("/auth")}
-              className="text-lg px-8 py-6 h-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 animate-fade-up"
+              className="text-lg px-6 py-4 h-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
             >
               Get Started <ArrowRight className="ml-2" />
             </Button>
@@ -92,8 +92,8 @@ const Index = () => {
         <SampleImages />
 
         {/* Features Section */}
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="bg-white/60 backdrop-blur-lg rounded-xl p-6 shadow-lg border border-gray-100 animate-fade-up">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white/60 backdrop-blur-lg rounded-xl p-6 shadow-lg border border-gray-100">
             <div className="h-12 w-12 rounded-lg bg-blue-100 flex items-center justify-center mb-4">
               <Sparkles className="h-6 w-6 text-blue-600" />
             </div>
@@ -103,7 +103,7 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="bg-white/60 backdrop-blur-lg rounded-xl p-6 shadow-lg border border-gray-100 animate-fade-up">
+          <div className="bg-white/60 backdrop-blur-lg rounded-xl p-6 shadow-lg border border-gray-100">
             <div className="h-12 w-12 rounded-lg bg-purple-100 flex items-center justify-center mb-4">
               <Palette className="h-6 w-6 text-purple-600" />
             </div>
@@ -113,7 +113,7 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="bg-white/60 backdrop-blur-lg rounded-xl p-6 shadow-lg border border-gray-100 animate-fade-up">
+          <div className="bg-white/60 backdrop-blur-lg rounded-xl p-6 shadow-lg border border-gray-100">
             <div className="h-12 w-12 rounded-lg bg-pink-100 flex items-center justify-center mb-4">
               <Wand2 className="h-6 w-6 text-pink-600" />
             </div>
@@ -133,7 +133,7 @@ const Index = () => {
             <Button
               onClick={() => navigate("/auth")}
               variant="outline"
-              className="text-lg animate-fade-up"
+              className="text-lg"
             >
               Sign Up Now <ArrowRight className="ml-2" />
             </Button>
