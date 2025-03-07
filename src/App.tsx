@@ -12,6 +12,8 @@ import Profile from './pages/Profile';
 import ImageGenerator from './components/ImageGenerator';
 import NotFound from './pages/NotFound';
 import Footer from './components/Footer';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfUse from './pages/TermsOfUse';
 import './App.css';
 
 const queryClient = new QueryClient();
@@ -43,6 +45,8 @@ function App() {
                       </ProtectedRoute>
                     } 
                   />
+                  <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                  <Route path="/terms-of-use" element={<TermsOfUse />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </div>
