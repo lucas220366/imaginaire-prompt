@@ -11,6 +11,7 @@ import Index from './pages/Index';
 import Profile from './pages/Profile';
 import ImageGenerator from './components/ImageGenerator';
 import NotFound from './pages/NotFound';
+import Footer from './components/Footer';
 import './App.css';
 
 const queryClient = new QueryClient();
@@ -21,27 +22,32 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <AuthProvider>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route 
-                path="/generator" 
-                element={
-                  <ProtectedRoute>
-                    <ImageGenerator />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/profile" 
-                element={
-                  <ProtectedRoute>
-                    <Profile />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <div className="flex flex-col min-h-screen">
+              <div className="flex-grow">
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route 
+                    path="/generator" 
+                    element={
+                      <ProtectedRoute>
+                        <ImageGenerator />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/profile" 
+                    element={
+                      <ProtectedRoute>
+                        <Profile />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </div>
+              <Footer />
+            </div>
             <Toaster position="top-center" />
           </AuthProvider>
         </TooltipProvider>
