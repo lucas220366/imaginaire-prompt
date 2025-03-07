@@ -24,7 +24,7 @@ const SampleImages = () => {
         <Sparkles className="h-5 w-5 text-blue-500" />
         <h2 className="text-xl font-semibold text-gray-800">Example Creations</h2>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {sampleImages.map((sample, index) => (
           <div 
             key={index}

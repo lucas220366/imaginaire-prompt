@@ -32,13 +32,11 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen p-6 animate-fade-in" style={{
-      backgroundImage: "radial-gradient(circle at center, rgba(255, 255, 255, 0.8) 0%, rgba(240, 240, 240, 0.6) 100%)"
-    }}>
+    <div className="min-h-screen animate-fade-in">
       {/* Add Logo */}
       <Logo />
       
-      {/* Header with Profile and Sign Out links - fixed positioning to match other pages */}
+      {/* Header with Profile and Sign Out links */}
       {session && (
         <div className="absolute top-4 right-4 z-10 flex gap-2">
           <Button
@@ -60,7 +58,7 @@ const Index = () => {
         </div>
       )}
 
-      <div className="max-w-6xl mx-auto pt-16 space-y-16">
+      <div className="container mx-auto px-4 py-12 space-y-12">
         {/* Hero Section */}
         <div className="text-center space-y-6">
           <div className="flex flex-col items-center gap-2">
@@ -88,13 +86,13 @@ const Index = () => {
               Get Started <ArrowRight className="ml-2" />
             </Button>
           )}
-          
-          {/* Example Creations Section */}
-          <SampleImages />
         </div>
+          
+        {/* Example Creations Section */}
+        <SampleImages />
 
         {/* Features Section */}
-        <div className="grid md:grid-cols-3 gap-8 pt-8">
+        <div className="grid md:grid-cols-3 gap-8">
           <div className="bg-white/60 backdrop-blur-lg rounded-xl p-6 shadow-lg border border-gray-100 animate-fade-up">
             <div className="h-12 w-12 rounded-lg bg-blue-100 flex items-center justify-center mb-4">
               <Sparkles className="h-6 w-6 text-blue-600" />
@@ -127,7 +125,7 @@ const Index = () => {
         </div>
 
         {/* Call to Action */}
-        <div className="text-center pt-8">
+        <div className="text-center">
           <p className="text-gray-600 mb-6">
             Ready to start creating? Join now and bring your ideas to life!
           </p>
