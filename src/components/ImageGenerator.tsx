@@ -51,7 +51,7 @@ const ImageGenerator = () => {
   };
 
   return (
-    <div className="min-h-screen p-6 animate-fade-in">
+    <div className="min-h-screen p-6 animate-fade-in relative">
       <Logo />
       <Header onSignOut={handleSignOut} />
       <APIKeyValidator 
