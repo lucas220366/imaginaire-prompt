@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Sparkles, Palette, Wand2, ArrowRight, Rocket } from "lucide-react";
+import { Sparkles, Palette, Wand2, ArrowRight, Rocket, User, LogOut } from "lucide-react";
 import SampleImages from "@/components/image-generator/SampleImages";
 import { useAuth } from "@/components/AuthProvider";
 import { useEffect } from "react";
@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 const Index = () => {
   const navigate = useNavigate();
-  const { session, isLoading } = useAuth();
+  const { session, isLoading, signOut } = useAuth();
 
   useEffect(() => {
     console.log("Index page - Auth state:", {
@@ -19,10 +19,43 @@ const Index = () => {
     });
   }, [session, isLoading]);
 
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      toast.success("Signed out successfully");
+      navigate('/');
+    } catch (error) {
+      console.error("Sign out error:", error);
+      toast.error("Failed to sign out");
+    }
+  };
+
   return (
     <div className="min-h-screen p-6 animate-fade-in" style={{
       backgroundImage: "radial-gradient(circle at center, rgba(255, 255, 255, 0.8) 0%, rgba(240, 240, 240, 0.6) 100%)"
     }}>
+      {/* Header with Profile and Sign Out links */}
+      {session && (
+        <div className="absolute top-4 right-4 flex gap-2">
+          <Button
+            onClick={() => navigate("/profile")}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <User className="h-4 w-4" />
+            Profile
+          </Button>
+          <Button
+            onClick={handleSignOut}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <LogOut className="h-4 w-4" />
+            Sign Out
+          </Button>
+        </div>
+      )}
+
       <div className="max-w-6xl mx-auto pt-16 space-y-16">
         {/* Hero Section */}
         <div className="text-center space-y-6">
