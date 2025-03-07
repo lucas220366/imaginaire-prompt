@@ -12,37 +12,42 @@ const Auth = () => {
 
   // Check if we're in a password reset flow
   useEffect(() => {
-    // Look for password reset token in URL
+    // Enhanced detection for various password reset URL formats
     const fragment = new URLSearchParams(window.location.hash.substring(1));
     const query = new URLSearchParams(window.location.search);
+    
+    // Extract tokens and types from different sources
     const accessToken = fragment.get('access_token');
     const token = fragment.get('token') || query.get('token');
     const type = fragment.get('type') || query.get('type');
     
-    // Show reset form if we have recovery token or recovery type
-    if ((accessToken && type === 'recovery') || 
-        (token && type === 'recovery') ||
-        // Also check for recovery in hash fragment without type parameter
-        (window.location.hash.includes('type=recovery'))) {
+    // Check for recovery flow
+    const isRecovery = (
+      (accessToken && type === 'recovery') || 
+      (token && type === 'recovery') ||
+      window.location.hash.includes('type=recovery') ||
+      window.location.search.includes('type=recovery')
+    );
+    
+    if (isRecovery) {
       setShowResetForm(true);
     }
     
     // Log current state for debugging
-    console.log("Auth page - Current URL:", window.location.href);
-    console.log("Auth page - URL hash:", window.location.hash);
-    console.log("Auth page - URL search:", window.location.search);
-    console.log("Auth page - session:", session);
-    console.log("Auth page - URL params:", {
-      hasToken: !!(query.get('token') || fragment.get('token')),
-      type: type,
+    console.log("Auth page - Reset password detection:", {
+      currentUrl: window.location.href,
+      urlHash: window.location.hash,
+      urlSearch: window.location.search,
+      hasSession: !!session,
       hasAccessToken: !!accessToken,
-      showResetForm: ((accessToken && type === 'recovery') || 
-        (token && type === 'recovery') ||
-        (window.location.hash.includes('type=recovery')))
+      hasToken: !!token,
+      type: type,
+      isRecovery: isRecovery,
+      showResetForm: isRecovery
     });
   }, []);
 
-  // Redirect if we have a session
+  // Redirect if we have a session and not in password reset mode
   useEffect(() => {
     if (session && !showResetForm) {
       navigate("/generator");

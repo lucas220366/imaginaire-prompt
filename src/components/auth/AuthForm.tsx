@@ -25,11 +25,17 @@ export const AuthForm = ({ onResetPassword }: AuthFormProps) => {
 
     try {
       if (isResetMode) {
-        console.log("Requesting password reset for:", email);
-        console.log("Redirect URL:", `${window.location.origin}/auth`);
+        // Ensure we have the correct reset URL - use current origin and path
+        const redirectUrl = `${window.location.origin}/auth`;
+        
+        console.log("Password reset request:", {
+          email: email,
+          redirectUrl: redirectUrl,
+          currentOrigin: window.location.origin
+        });
         
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/auth`,
+          redirectTo: redirectUrl,
         });
         
         if (error) throw error;

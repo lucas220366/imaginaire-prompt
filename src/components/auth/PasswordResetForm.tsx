@@ -11,74 +11,101 @@ export const PasswordResetForm = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isTokenValid, setIsTokenValid] = useState(true);
+  const [isTokenValid, setIsTokenValid] = useState(false);
+  const [isValidating, setIsValidating] = useState(true);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [tokenInfo, setTokenInfo] = useState<any>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const validateToken = async () => {
+      setIsValidating(true);
       try {
-        // Get the recovery token from the URL
+        // Get current URL parameters from hash and search
         const fragment = new URLSearchParams(window.location.hash.substring(1));
         const query = new URLSearchParams(window.location.search);
+        
+        // Extract access token, token, and type from URL
         const accessToken = fragment.get('access_token');
         const token = fragment.get('token') || query.get('token');
         const type = fragment.get('type') || query.get('type');
-
+        
         // Store token info for debugging
-        setTokenInfo({
+        const info = {
+          currentUrl: window.location.href,
+          urlHash: window.location.hash,
+          urlSearch: window.location.search,
           hasAccessToken: !!accessToken,
           hasToken: !!token,
           type: type,
-          currentUrl: window.location.href,
-          hash: window.location.hash,
-          search: window.location.search
+          isHashRecovery: window.location.hash.includes('type=recovery'),
+          isQueryRecovery: window.location.search.includes('type=recovery')
+        };
+        
+        setTokenInfo(info);
+        console.log("Password reset validation attempt:", info);
+        
+        // First, try to get the current user from the session
+        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        console.log("Current auth state:", {
+          hasSession: !!session,
+          hasUser: !!user,
+          email: user?.email
         });
         
-        console.log("Recovery flow params:", {
-          hasAccessToken: !!accessToken,
-          hasToken: !!token,
-          type: type,
-          currentUrl: window.location.href,
-          hash: window.location.hash,
-          search: window.location.search
-        });
-
-        if (accessToken) {
-          // Handle direct access token case
+        if (user && user.email) {
+          // User is already authenticated, good to proceed
+          setUserEmail(user.email);
+          setIsTokenValid(true);
+          console.log("User already authenticated:", user.email);
+          setIsValidating(false);
+          return;
+        }
+        
+        // If we have access token in the URL but no user yet, try to use it
+        if (accessToken && type === 'recovery') {
           try {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user?.email) {
-              setUserEmail(user.email);
+            // This might be a direct auth link with an access token
+            const { data, error } = await supabase.auth.getUser(accessToken);
+            
+            if (!error && data && data.user) {
+              setUserEmail(data.user.email);
               setIsTokenValid(true);
+              console.log("Valid user from access token:", data.user.email);
+              setIsValidating(false);
               return;
             }
-          } catch (error) {
-            console.error("Error getting user with access token:", error);
+          } catch (accessError) {
+            console.error("Error getting user with access token:", accessError);
           }
         }
-
-        // First try to use the token via a recovery flow
+        
+        // Try to verify the token if we have one
         if (token && type === 'recovery') {
           try {
-            const { error } = await supabase.auth.verifyOtp({
+            console.log("Attempting to verify recovery token...");
+            const { data, error } = await supabase.auth.verifyOtp({
               token_hash: token,
               type: 'recovery'
             });
-
+            
+            console.log("Token verification result:", { data, error });
+            
             if (error) {
               console.error("Token verification failed:", error);
-              setIsTokenValid(false);
-              toast.error("Invalid or expired reset link");
-              return;
+              setIsValidating(false);
+              throw error;
             }
-
+            
             // Get user after verification
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user?.email) {
-              setUserEmail(user.email);
+            const { data: userData } = await supabase.auth.getUser();
+            if (userData.user?.email) {
+              setUserEmail(userData.user.email);
               setIsTokenValid(true);
+              console.log("Valid user from token verification:", userData.user.email);
+              setIsValidating(false);
               return;
             }
           } catch (verifyError) {
@@ -86,36 +113,25 @@ export const PasswordResetForm = () => {
           }
         }
         
-        // As a fallback, try to check the current session
-        try {
-          const { data: { session } } = await supabase.auth.getSession();
-          const { data: { user } } = await supabase.auth.getUser();
-          
-          console.log("Current session:", {
-            hasSession: !!session,
-            hasUser: !!user,
-            email: user?.email
-          });
-          
-          if (user && user.email) {
-            setUserEmail(user.email);
-            setIsTokenValid(true);
-            return;
-          }
-        } catch (sessionError) {
-          console.error("Error getting session:", sessionError);
-        }
-
         // If we got here, no valid token or session was found
+        console.error("No valid token or session found");
         setIsTokenValid(false);
-        if (!type || !token) {
-          toast.error("Missing reset parameters");
+        setIsValidating(false);
+        
+        // Show appropriate error message
+        if (!type && !token && !accessToken) {
+          toast.error("Missing password reset parameters", {
+            description: "The password reset link is incomplete"
+          });
         } else {
-          toast.error("Invalid reset link");
+          toast.error("Invalid or expired reset link", {
+            description: "Please request a new password reset email"
+          });
         }
       } catch (error) {
         console.error("Token validation error:", error);
         setIsTokenValid(false);
+        setIsValidating(false);
         toast.error("Error validating reset link");
       }
     };
@@ -160,6 +176,18 @@ export const PasswordResetForm = () => {
     }
   };
 
+  if (isValidating) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="w-full max-w-md space-y-8 text-center">
+          <h2 className="text-2xl font-bold">Validating Reset Link</h2>
+          <p className="text-gray-600">Please wait while we validate your password reset link...</p>
+          <div className="w-12 h-12 border-4 border-t-blue-500 border-blue-200 rounded-full animate-spin mx-auto"></div>
+        </div>
+      </div>
+    );
+  }
+
   if (!isTokenValid) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
@@ -167,18 +195,29 @@ export const PasswordResetForm = () => {
           <div className="text-center">
             <h2 className="text-2xl font-bold">Invalid Reset Link</h2>
             <p className="text-gray-600 mt-2">This password reset link is invalid or has expired.</p>
+            
             {tokenInfo && (
-              <div className="mt-4 p-4 bg-gray-100 rounded text-left text-xs overflow-auto max-h-32">
+              <div className="mt-4 p-4 bg-gray-100 rounded text-left text-xs overflow-auto max-h-44">
+                <p className="font-semibold mb-2">Debug Information:</p>
                 <pre>{JSON.stringify(tokenInfo, null, 2)}</pre>
               </div>
             )}
           </div>
-          <Button
-            onClick={() => navigate("/auth")}
-            className="w-full"
-          >
-            Back to Sign In
-          </Button>
+          
+          <div className="space-y-4">
+            <Button
+              onClick={() => navigate("/auth")}
+              className="w-full"
+            >
+              Back to Sign In
+            </Button>
+            
+            <div className="text-center">
+              <p className="text-gray-600 text-sm">
+                If you need to reset your password, please request a new reset link from the sign in page.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     );
