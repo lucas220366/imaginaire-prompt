@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthProvider";
@@ -7,6 +8,7 @@ import Header from "./image-generator/Header";
 import ImageGeneratorContent from "./image-generator/ImageGeneratorContent";
 import APIKeyValidator from "./image-generator/APIKeyValidator";
 import ImageGenerationHandler from "./image-generator/ImageGenerationHandler";
+import Logo from "./Logo";
 import { toast } from "sonner";
 
 const ImageGenerator = () => {
@@ -50,6 +52,7 @@ const ImageGenerator = () => {
 
   return (
     <div className="min-h-screen p-6 animate-fade-in">
+      <Logo />
       <Header onSignOut={handleSignOut} />
       <APIKeyValidator 
         apiKey={apiKey}
