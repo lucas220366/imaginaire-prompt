@@ -21,7 +21,7 @@ export const InvalidResetToken = ({ errorMessage, tokenInfo }: InvalidResetToken
         </p>
         
         <div className="mt-6 p-4 bg-gray-100 rounded text-left text-sm overflow-auto max-h-60">
-          <p className="font-semibold mb-2">Debugging Information:</p>
+          <p className="font-semibold mb-2">Technical Information:</p>
           <details>
             <summary className="cursor-pointer text-blue-500 hover:text-blue-700">
               Show Details (Click to expand)

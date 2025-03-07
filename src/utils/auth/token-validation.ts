@@ -22,25 +22,44 @@ export interface TokenParams {
  */
 export const validateResetToken = async (resetParams: Record<string, string | null> = {}): Promise<TokenValidationResult> => {
   try {
-    // Get parameters from both props, hash and query
-    const fragment = new URLSearchParams(window.location.hash.substring(1));
-    const query = new URLSearchParams(window.location.search);
+    // Get parameters from both props and URL
+    const fragment = window.location.hash;
+    const search = window.location.search;
+    const fullUrl = window.location.href;
+    
+    // Parse parameters
+    const fragmentParams = new URLSearchParams(fragment.substring(1));
+    const queryParams = new URLSearchParams(search);
     
     // Extract tokens and types from different sources
-    const accessToken = resetParams?.accessToken || fragment.get('access_token');
-    const token = resetParams?.token || fragment.get('token') || query.get('token');
-    const type = resetParams?.type || fragment.get('type') || query.get('type');
+    const accessToken = resetParams?.accessToken || fragmentParams.get('access_token');
+    const token = resetParams?.token || fragmentParams.get('token') || queryParams.get('token');
+    const type = resetParams?.type || fragmentParams.get('type') || queryParams.get('type');
+    
+    // Use full URL to extract token if other methods failed
+    let extractedToken = null;
+    if (!token && fullUrl) {
+      // Try to extract token from the URL using regex
+      const tokenMatch = fullUrl.match(/[?&#]token=([^&#]*)/);
+      if (tokenMatch && tokenMatch[1]) {
+        extractedToken = tokenMatch[1];
+      }
+    }
+    
+    const finalToken = token || extractedToken;
     
     // Store token info for debugging
     const tokenInfo = {
-      currentUrl: window.location.href,
-      urlHash: window.location.hash,
-      urlSearch: window.location.search,
+      currentUrl: fullUrl,
+      urlHash: fragment,
+      urlSearch: search,
       accessToken: accessToken ? "present" : null,
-      token: token ? "present" : null,
+      token: finalToken ? "present" : null,
+      extractedToken: extractedToken ? "extracted from URL" : null,
       type: type,
-      isHashRecovery: window.location.hash.includes('type=recovery'),
-      isQueryRecovery: window.location.search.includes('type=recovery'),
+      isHashRecovery: fragment.includes('type=recovery'),
+      isQueryRecovery: search.includes('type=recovery'),
+      isFullUrlRecovery: fullUrl.includes('type=recovery'),
       resetParams: resetParams,
       supabaseConfig: {
         autoRefreshToken: true,
@@ -87,30 +106,18 @@ export const validateResetToken = async (resetParams: Record<string, string | nu
           };
         } else {
           console.error("Error getting user with access token:", error);
-          return {
-            isValid: false,
-            userEmail: null,
-            error: "Access token is invalid or expired",
-            tokenInfo
-          };
         }
       } catch (accessError: any) {
-        console.error("Error getting user with access token:", accessError);
-        return {
-          isValid: false,
-          userEmail: null,
-          error: "Error processing access token",
-          tokenInfo
-        };
+        console.error("Error processing access token:", accessError);
       }
     }
     
     // Try with recovery token if available
-    if (token && (type === 'recovery' || !type)) {
+    if (finalToken && (type === 'recovery' || !type)) {
       try {
-        console.log("Attempting to verify recovery token:", token);
+        console.log("Attempting to verify recovery token:", finalToken);
         const { data, error } = await supabase.auth.verifyOtp({
-          token_hash: token,
+          token_hash: finalToken,
           type: 'recovery'
         });
         
@@ -151,10 +158,10 @@ export const validateResetToken = async (resetParams: Record<string, string | nu
     // If we got here, no valid token or session was found
     console.error("No valid token or session found");
     
-    // Set appropriate error message
+    // Set appropriate error message with detailed debugging info
     let errorMessage = "Invalid or expired reset link";
-    if (!type && !token && !accessToken) {
-      errorMessage = "Missing password reset parameters";
+    if (!type && !finalToken && !accessToken) {
+      errorMessage = "Missing password reset parameters. No token found in URL.";
     }
     
     return {

@@ -13,51 +13,57 @@ const Auth = () => {
 
   // Check if we're in a password reset flow
   useEffect(() => {
-    // Get parameters from both hash and query
-    const fragment = new URLSearchParams(window.location.hash.substring(1));
-    const query = new URLSearchParams(window.location.search);
+    // Get all URL parts - including fragment, search, and complete URL
+    const fragment = window.location.hash;
+    const search = window.location.search;
+    const fullUrl = window.location.href;
+    
+    // Parse parameters from both hash and query
+    const fragmentParams = new URLSearchParams(fragment.substring(1));
+    const queryParams = new URLSearchParams(search);
     
     // Extract tokens and types from different sources
-    const accessToken = fragment.get('access_token');
-    const token = fragment.get('token') || query.get('token');
-    const type = fragment.get('type') || query.get('type');
+    const accessToken = fragmentParams.get('access_token');
+    const token = fragmentParams.get('token') || queryParams.get('token');
+    const type = fragmentParams.get('type') || queryParams.get('type');
     
-    // Check for recovery flow
+    // Check for recovery flow - using multiple detection methods
     const isRecovery = (
       (accessToken && type === 'recovery') || 
       (token && type === 'recovery') ||
-      window.location.hash.includes('type=recovery') ||
-      window.location.search.includes('type=recovery')
+      fragment.includes('type=recovery') ||
+      search.includes('type=recovery') ||
+      fullUrl.includes('type=recovery')
     );
     
     if (isRecovery) {
       setShowResetForm(true);
       
-      // Store all parameters for debugging and use
+      // Store all parameters for debugging
       const params: Record<string, string | null> = {
         accessToken,
         token,
         type,
-        hash: window.location.hash,
-        search: window.location.search,
-        fullUrl: window.location.href
+        hash: fragment,
+        search,
+        fullUrl
       };
       setResetParams(params);
     }
     
-    // Log current state for debugging
+    // Enhanced logging for debugging
     console.log("Auth page - Reset password detection:", {
-      currentUrl: window.location.href,
-      urlHash: window.location.hash,
-      urlSearch: window.location.search,
+      currentUrl: fullUrl,
+      urlHash: fragment,
+      urlSearch: search,
       hasSession: !!session,
       hasAccessToken: !!accessToken,
       hasToken: !!token,
       type: type,
       isRecovery: isRecovery,
       showResetForm: isRecovery,
-      allParams: Object.fromEntries(new URLSearchParams(window.location.search)),
-      allHashParams: Object.fromEntries(new URLSearchParams(window.location.hash.substring(1)))
+      allParams: Object.fromEntries(queryParams),
+      allHashParams: Object.fromEntries(fragmentParams)
     });
   }, []);
 

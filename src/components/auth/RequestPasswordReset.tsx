@@ -19,12 +19,13 @@ export const RequestPasswordReset = ({ onBackToSignIn }: RequestPasswordResetPro
 
     try {
       // Ensure we have the correct reset URL with the origin
-      const redirectUrl = `${window.location.origin}/auth`;
+      const currentOrigin = window.location.origin;
+      const redirectUrl = `${currentOrigin}/auth`;
       
       console.log("Password reset request:", {
         email: email,
         redirectUrl: redirectUrl,
-        currentOrigin: window.location.origin,
+        currentOrigin: currentOrigin,
         currentUrl: window.location.href,
         supabaseConfig: {
           autoRefreshToken: true,
@@ -40,7 +41,7 @@ export const RequestPasswordReset = ({ onBackToSignIn }: RequestPasswordResetPro
       
       if (error) throw error;
       
-      toast.success("Password reset email sent! Check your inbox.");
+      toast.success("Password reset email sent! Check your inbox and spam folder.");
       onBackToSignIn();
     } catch (error: any) {
       console.error("Auth error:", error);
