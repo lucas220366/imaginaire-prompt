@@ -56,7 +56,7 @@ const Index = () => {
         </div>
       )}
 
-      <div className="container px-4 py-6 mx-auto">
+      <div className="container mx-auto p-6">
         {/* Hero Section */}
         <div className="text-center space-y-4">
           <div className="flex flex-col items-center gap-2">
