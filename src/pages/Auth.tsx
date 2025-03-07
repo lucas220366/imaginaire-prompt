@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/components/AuthProvider";
@@ -86,9 +85,6 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-blue-50">
-      {/* Add Logo */}
-      <Logo />
-      
       {showResetForm ? (
         <PasswordResetForm resetParams={resetParams} />
       ) : (

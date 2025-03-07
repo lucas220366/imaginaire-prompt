@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Sparkles, Palette, Wand2, ArrowRight, Rocket, User, LogOut } from "lucide-react";
@@ -6,7 +5,6 @@ import SampleImages from "@/components/image-generator/SampleImages";
 import { useAuth } from "@/components/AuthProvider";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import Logo from "@/components/Logo";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -33,9 +31,6 @@ const Index = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-blue-50">
-      {/* Add Logo */}
-      <Logo />
-      
       {/* Header with Profile and Sign Out links */}
       {session && (
         <div className="absolute top-4 right-4 z-10 flex gap-2">

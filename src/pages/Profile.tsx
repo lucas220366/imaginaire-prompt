@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
@@ -6,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { LogOut, ArrowLeft, Download, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import Logo from "@/components/Logo";
 import type { Database } from '@/integrations/supabase/types';
 
 type GeneratedImage = Database['public']['Tables']['generated_images']['Row'];
@@ -102,9 +100,6 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen p-6">
-      {/* Add Logo */}
-      <Logo />
-      
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-end items-center mb-8 gap-2">
           <Button
