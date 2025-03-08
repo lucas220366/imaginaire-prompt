@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Sparkles, Palette, Wand2, ArrowRight, Rocket, User, LogOut } from "lucide-react";
 import SampleImages from "@/components/image-generator/SampleImages";
+import MoreExamples from "@/components/image-generator/MoreExamples";
 import { useAuth } from "@/components/AuthProvider";
 import { useEffect } from "react";
 import { toast } from "sonner";
@@ -89,6 +90,9 @@ const Index = () => {
 
         {/* Example Creations Section */}
         <SampleImages />
+
+        {/* Additional Examples Section */}
+        <MoreExamples />
 
         {/* Features Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
