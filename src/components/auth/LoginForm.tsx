@@ -5,14 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Mail } from "lucide-react";
 
 interface LoginFormProps {
   onSwitchToSignUp: () => void;
-  onResetPassword: () => void;
 }
 
-export const LoginForm = ({ onSwitchToSignUp, onResetPassword }: LoginFormProps) => {
+export const LoginForm = ({ onSwitchToSignUp }: LoginFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -69,7 +67,7 @@ export const LoginForm = ({ onSwitchToSignUp, onResetPassword }: LoginFormProps)
         </Button>
       </form>
 
-      <div className="text-center space-y-2">
+      <div className="text-center">
         <button
           type="button"
           onClick={onSwitchToSignUp}
@@ -77,17 +75,6 @@ export const LoginForm = ({ onSwitchToSignUp, onResetPassword }: LoginFormProps)
         >
           Need an account? Sign up
         </button>
-        
-        <div>
-          <button
-            type="button"
-            onClick={onResetPassword}
-            className="text-blue-500 hover:text-blue-600 flex items-center justify-center mx-auto mt-2"
-          >
-            <Mail className="h-4 w-4 mr-1" />
-            Forgot password?
-          </button>
-        </div>
       </div>
     </div>
   );
