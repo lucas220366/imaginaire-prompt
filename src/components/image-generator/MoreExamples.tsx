@@ -8,8 +8,8 @@ const moreExamples = [
     style: "Anime Style"
   },
   {
-    url: "/lovable-uploads/5ad55131-4ba5-477c-8599-87bb47c60725.png",
-    style: "Watercolor Style"
+    url: "/lovable-uploads/77125e86-7cfa-4ce5-95c4-c241ff3c0868.png",
+    style: "Pixar Style"
   },
   {
     url: "/lovable-uploads/61e17058-8f03-496d-ad0d-24fc8a03b176.png",
