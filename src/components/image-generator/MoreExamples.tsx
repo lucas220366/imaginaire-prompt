@@ -12,8 +12,8 @@ const moreExamples = [
     style: "Pixar Style"
   },
   {
-    url: "/lovable-uploads/61e17058-8f03-496d-ad0d-24fc8a03b176.png",
-    style: "Futuristic Style"
+    url: "/lovable-uploads/2d733314-16fe-421d-b7be-ff1c54bf4d37.png",
+    style: "Gothic Style"
   }
 ];
 
