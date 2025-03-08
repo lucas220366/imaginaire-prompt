@@ -18,21 +18,17 @@ export const RequestPasswordReset = ({ onBackToSignIn }: RequestPasswordResetPro
     setIsLoading(true);
 
     try {
-      // Ensure we have the correct reset URL with the origin
+      // Get the full origin, including protocol
       const currentOrigin = window.location.origin;
       
-      // Use the exact same structure as the current URL to ensure consistent behavior
-      const resetUrl = `${currentOrigin}/auth`;
+      // Use a specific reset callback URL format that Supabase expects
+      const resetUrl = `${currentOrigin}/auth#type=recovery`;
       
       console.log("Password reset request:", {
         email: email,
         redirectUrl: resetUrl,
         currentOrigin: currentOrigin,
-        currentUrl: window.location.href,
-        supabaseConfig: {
-          autoRefreshToken: true,
-          detectSessionInUrl: true
-        }
+        currentUrl: window.location.href
       });
       
       const { error, data } = await supabase.auth.resetPasswordForEmail(email, {
