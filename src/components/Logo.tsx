@@ -1,8 +1,14 @@
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Logo = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Don't show the logo on the home page
+  if (location.pathname === '/') {
+    return null;
+  }
   
   return (
     <div 
