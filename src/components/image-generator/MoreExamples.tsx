@@ -4,8 +4,8 @@ import { GalleryHorizontal } from "lucide-react";
 
 const moreExamples = [
   {
-    url: "/lovable-uploads/4ebc59bb-a636-4a8c-91a8-e3ce16727be9.png",
-    style: "Abstract Style"
+    url: "/lovable-uploads/6f5819e1-0091-438c-9641-c99629c7fb29.png",
+    style: "Anime Style"
   },
   {
     url: "/lovable-uploads/5ad55131-4ba5-477c-8599-87bb47c60725.png",
