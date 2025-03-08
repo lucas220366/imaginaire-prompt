@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
@@ -23,17 +24,22 @@ const Profile = () => {
       if (!session?.user?.id) return;
       
       try {
+        setIsLoading(true);
+        console.log("Fetching images for user:", session.user.id);
+        
         const { data, error } = await supabase
           .from('generated_images')
-          .select()
+          .select('*')
           .eq('user_id', session.user.id)
           .order('created_at', { ascending: false });
 
-        if (error) throw error;
-        
-        if (data) {
-          setImages(data);
+        if (error) {
+          console.error('Error fetching images:', error);
+          throw error;
         }
+        
+        console.log("Fetched images:", data);
+        setImages(data || []);
       } catch (error) {
         console.error('Error fetching images:', error);
         toast.error("Failed to load your images");
@@ -42,10 +48,12 @@ const Profile = () => {
       }
     };
 
-    if (session?.user.id) {
+    if (session?.user?.id) {
       fetchImages();
+    } else {
+      setIsLoading(false);
     }
-  }, [session?.user.id]);
+  }, [session?.user?.id]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
