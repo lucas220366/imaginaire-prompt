@@ -6,7 +6,7 @@ const Title = () => {
   return (
     <div className="relative">
       {/* Rocket positioned at top left, adjusted for mobile */}
-      <div className="absolute top-0 left-0 -translate-y-16 md:-translate-y-16 translate-y-0">
+      <div className="absolute top-0 left-0 -translate-y-16 md:-translate-y-16 translate-y-8">
         <Rocket className="w-16 h-16 text-[#0FA0CE] animate-bounce" />
       </div>
       
