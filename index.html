@@ -45,8 +45,32 @@
     });
 </script>
     <style>
-      /* Hide the GatekeeperConsent button/widget while preserving functionality */
-      .gdpr-cmp-ui, .ccpa-standalone-ui {
+      /* More aggressive hiding of GatekeeperConsent button/widget */
+      .gdpr-cmp-ui, 
+      .ccpa-standalone-ui,
+      #gdpr-consent-tool-wrapper, 
+      #ccpa-consent-tool-wrapper,
+      [class*="gdpr-"], 
+      [class*="ccpa-"],
+      [id*="gdpr-"],
+      [id*="ccpa-"] {
+        opacity: 0 !important;
+        visibility: hidden !important;
+        display: none !important;
+        pointer-events: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        position: absolute !important;
+        top: -9999px !important;
+        left: -9999px !important;
+        z-index: -9999 !important;
+        transform: scale(0) !important;
+      }
+
+      /* Target any iframe that might be used by the consent tools */
+      iframe[src*="gatekeeper"],
+      iframe[src*="consent"],
+      iframe[src*="privacy"] {
         display: none !important;
       }
     </style>
