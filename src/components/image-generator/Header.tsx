@@ -5,6 +5,7 @@ import { LogOut, User, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthProvider";
 import { toast } from "sonner";
+import Logo from '@/components/Logo';
 
 interface HeaderProps {
   onSignOut: () => Promise<void>;
@@ -36,31 +37,34 @@ const Header = ({ onSignOut }: HeaderProps) => {
   };
 
   return (
-    <div className="absolute top-4 left-0 right-0 flex justify-center md:justify-end md:right-4 px-4">
-      <div className="flex gap-2">
-        <Button
-          onClick={handleHomeClick}
-          variant="outline"
-        >
-          <Home className="mr-2 h-4 w-4" />
-          Home
-        </Button>
-        <Button
-          onClick={() => navigate("/profile")}
-          variant="outline"
-        >
-          <User className="mr-2 h-4 w-4" />
-          My Images
-        </Button>
-        <Button
-          onClick={handleSignOut}
-          variant="outline"
-        >
-          <LogOut className="mr-2 h-4 w-4" />
-          Sign Out
-        </Button>
+    <>
+      <Logo />
+      <div className="absolute top-4 left-0 right-0 flex justify-center md:justify-end md:right-4 px-4">
+        <div className="flex gap-2">
+          <Button
+            onClick={handleHomeClick}
+            variant="outline"
+          >
+            <Home className="mr-2 h-4 w-4" />
+            Home
+          </Button>
+          <Button
+            onClick={() => navigate("/profile")}
+            variant="outline"
+          >
+            <User className="mr-2 h-4 w-4" />
+            My Images
+          </Button>
+          <Button
+            onClick={handleSignOut}
+            variant="outline"
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            Sign Out
+          </Button>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

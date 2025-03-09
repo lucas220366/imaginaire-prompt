@@ -1,10 +1,12 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Logo from '@/components/Logo';
 
 const PrivacyPolicy = () => {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl mt-16">
+      <Logo />
       <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
       <div className="prose prose-gray max-w-none">
         <p className="mb-4">Last updated: March 1, 2025</p>

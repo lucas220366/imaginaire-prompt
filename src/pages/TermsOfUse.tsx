@@ -1,10 +1,12 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Logo from '@/components/Logo';
 
 const TermsOfUse = () => {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl mt-16">
+      <Logo />
       <h1 className="text-3xl font-bold mb-6">Terms of Use</h1>
       
       <div className="prose prose-gray max-w-none">

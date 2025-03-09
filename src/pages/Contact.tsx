@@ -2,6 +2,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import ContactForm from '@/components/contact/ContactForm';
+import Logo from '@/components/Logo';
 
 const Contact = () => {
   return (
@@ -9,6 +10,7 @@ const Contact = () => {
       <Helmet>
         <title>Contact Us | AI Image Generator</title>
       </Helmet>
+      <Logo />
       {/* Added pt-12 md:pt-8 for more top padding on mobile */}
       <div className="text-center mb-8 pt-12 md:pt-8">
         <h1 className="text-3xl font-bold mb-2">Contact Us</h1>
