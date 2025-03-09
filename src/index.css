@@ -45,11 +45,11 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
-    background-color: #f8f9fc;
+    background-color: #f8faff;
     background-image: 
-      linear-gradient(rgba(220, 220, 250, 0.1) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(220, 220, 250, 0.1) 1px, transparent 1px);
-    background-size: 20px 20px;
+      linear-gradient(rgba(200, 210, 255, 0.25) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200, 210, 255, 0.25) 1px, transparent 1px);
+    background-size: 16px 16px;
   }
 }
 
