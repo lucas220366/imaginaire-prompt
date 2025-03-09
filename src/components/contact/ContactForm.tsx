@@ -7,8 +7,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Home } from 'lucide-react';
 import { useAuth } from '@/components/AuthProvider';
+import { useNavigate } from 'react-router-dom';
 
 // Form validation schema
 const contactFormSchema = z.object({
@@ -21,7 +22,9 @@ type ContactFormValues = z.infer<typeof contactFormSchema>;
 
 const ContactForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const { session } = useAuth();
+  const navigate = useNavigate();
   
   const {
     register,
@@ -56,6 +59,7 @@ const ContactForm = () => {
       
       toast.success('Your message has been sent successfully!');
       reset({ message: '' }); // Only reset the message field
+      setIsSubmitted(true);
     } catch (error: any) {
       console.error('Error submitting form:', error);
       toast.error(error.message || 'Failed to send message. Please try again.');
@@ -131,6 +135,20 @@ const ContactForm = () => {
           </Button>
         </div>
       </form>
+      
+      {isSubmitted && (
+        <div className="mt-6 text-center">
+          <p className="text-green-600 mb-4">Your message has been sent successfully!</p>
+          <Button 
+            onClick={() => navigate('/')} 
+            variant="outline" 
+            className="flex items-center gap-2"
+          >
+            <Home className="h-4 w-4" />
+            Back to Home
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
