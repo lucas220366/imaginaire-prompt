@@ -5,155 +5,51 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vraho - The Best Free AI Image Generator</title>
-    <meta name="description" content="Create stunning AI-generated images instantly with Vraho. Free AI image generation with unlimited creativity." />
+   <meta name="description" content="Create stunning AI-generated images instantly with Vraho. Free AI image generation with unlimited creativity." />
     <meta name="author" content="Vraho" />
     <meta property="og:image" content="/og-image.png" />
-    <script>
-      // Add the debugger query parameter
-      if (window.location.href.indexOf('codeez_js_debugger=1') === -1) {
-        const separator = window.location.href.indexOf('?') !== -1 ? '&' : '?';
-        window.history.replaceState(null, '', window.location.href + separator + 'codeez_js_debugger=1');
-      }
-    </script>
+    <script src="https://cmp.gatekeeperconsent.com/min.js" data-cfasync="false"></script>
+    <script src="https://the.gatekeeperconsent.com/ccpa/v2/standalone.js" async></script>
     <script async src="//www.ezojs.com/ezoic/sa.min.js"></script>
-    <script>
-      window.ezstandalone = window.ezstandalone || {};
-      ezstandalone.cmd = ezstandalone.cmd || [];
-    </script>
+<script>
+  window.ezstandalone = window.ezstandalone || {};
+  ezstandalone.cmd = ezstandalone.cmd || [];
+</script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1923399504913887"
      crossorigin="anonymous"></script>
     <div id="ezoic-pub-ad-placeholder-101"></div>
+<script>
+    ezstandalone.cmd.push(function() {
+        ezstandalone.showAds(101)
+    });
+</script>
     <script>
-        ezstandalone.cmd.push(function() {
-            ezstandalone.showAds(101)
-        });
-    </script>
+    ezstandalone.cmd.push(function() {
+        // call new placeholders
+        ezstandalone.showAds(104, 105);
+    });
+</script>
     <script>
-        ezstandalone.cmd.push(function() {
-            // call new placeholders
-            ezstandalone.showAds(104, 105);
-        });
-    </script>
+    window.ezstandalone.cmd.push(function() {
+        ezstandalone.showAds();
+    });
+</script>
+    <script src="https://the.gatekeeperconsent.com/cmp.min.js" data-cfasync="false"></script>
+    <script src="https://the.gatekeeperconsent.com/ccpa/v2/standalone.js" async></script>
     <script>
-        window.ezstandalone.cmd.push(function() {
-            ezstandalone.showAds();
-        });
-    </script>
+    var ezstandalone = window.ezstandalone || {};
+    ezstandalone.cmd = ezstandalone.cmd || [];
+    ezstandalone.cmd.push(function() {
+        ezstandalone.enableConsent();
+        ezstandalone.showAds(101, 102);
+    });
+</script>
     <style>
-      /* Complete removal of ANY consent-related UI elements */
-      .gdpr-cmp-ui, 
-      .ccpa-standalone-ui,
-      #gdpr-consent-tool-wrapper, 
-      #ccpa-consent-tool-wrapper,
-      [class*="gdpr-"], 
-      [class*="ccpa-"],
-      [id*="gdpr-"],
-      [id*="ccpa-"],
-      #privacy-center-button,
-      .privacy-center-button,
-      [id*="privacy-"],
-      [class*="privacy-"],
-      #gatekeeperConsent,
-      .gatekeeperConsent,
-      [id*="consent-"],
-      [class*="consent-"],
-      [id^="consent"],
-      [class^="consent"],
-      [id^="privacy"],
-      [class^="privacy"],
-      body > div:not(#root):last-child,
-      .cmp-widget-wrapper,
-      .cmpbox,
-      div[id*="cmp"],
-      #__cmpGdprUi,
-      #appconsent,
-      [class*="cookiePolicy"],
-      [id*="cookiePolicy"],
-      [class*="cookie-policy"],
-      [id*="cookie-policy"],
-      [class*="cookie-banner"],
-      [id*="cookie-banner"],
-      [class*="cookie-consent"],
-      [id*="cookie-consent"] {
-        opacity: 0 !important;
-        visibility: hidden !important;
-        display: none !important;
-        pointer-events: none !important;
-        width: 0 !important;
-        height: 0 !important;
-        position: absolute !important;
-        top: -9999px !important;
-        left: -9999px !important;
-        z-index: -9999 !important;
-        transform: scale(0) !important;
-        max-height: 0 !important;
-        overflow: hidden !important;
-        clip: rect(0, 0, 0, 0) !important;
-        margin: -1px !important;
-        padding: 0 !important;
-        border: 0 !important;
-      }
-
-      /* Target any iframe or fixed position element that might be related to consent */
-      iframe[src*="gatekeeper"],
-      iframe[src*="consent"],
-      iframe[src*="privacy"],
-      iframe[src*="cookie"],
-      iframe[title*="privacy"],
-      iframe[title*="consent"],
-      iframe[title*="cookie"],
-      iframe:not([src]),
-      body > iframe:last-child,
-      div[style*="position: fixed"][style*="bottom"],
-      div[style*="position:fixed"][style*="bottom"],
-      div[style*="position: fixed"][style*="z-index: 2147483647"],
-      div[style*="position:fixed"][style*="z-index: 2147483647"] {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        width: 0 !important;
-        height: 0 !important;
-        position: absolute !important;
-        pointer-events: none !important;
-      }
-      
-      /* Hide all fixed position elements at the bottom of the page */
-      body > div[style*="position: fixed"][style*="bottom"],
-      body > div[style*="position:fixed"][style*="bottom"] {
+      /* Hide the GatekeeperConsent button/widget while preserving functionality */
+      .gdpr-cmp-ui, .ccpa-standalone-ui {
         display: none !important;
       }
     </style>
-    <script>
-      // Remove any dynamically added consent elements
-      window.addEventListener('DOMContentLoaded', function() {
-        function removeConsentElements() {
-          const selectors = [
-            '[id*="privacy"]', '[class*="privacy"]',
-            '[id*="consent"]', '[class*="consent"]',
-            '[id*="cookie"]', '[class*="cookie"]',
-            '[id*="gdpr"]', '[class*="gdpr"]',
-            '[id*="ccpa"]', '[class*="ccpa"]'
-          ];
-          
-          selectors.forEach(selector => {
-            const elements = document.querySelectorAll(selector);
-            elements.forEach(el => {
-              if (el.id !== 'root' && !el.closest('#root')) {
-                el.remove();
-              }
-            });
-          });
-          
-          // Also remove fixed position elements at bottom
-          const fixedElements = document.querySelectorAll('body > div[style*="position: fixed"][style*="bottom"]');
-          fixedElements.forEach(el => el.remove());
-        }
-        
-        // Run immediately and periodically
-        removeConsentElements();
-        setInterval(removeConsentElements, 500);
-      });
-    </script>
   </head>
 
   <body>
