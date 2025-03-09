@@ -105,7 +105,7 @@ const Index = () => {
               onClick={() => navigate("/auth")}
               className="text-base px-4 py-2 h-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
             >
-              Get Started <ArrowRight className="ml-2" />
+              Get Started, It's Free! <ArrowRight className="ml-2" />
             </Button>
           )}
         </div>
