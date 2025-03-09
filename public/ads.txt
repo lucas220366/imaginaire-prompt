@@ -1,2 +1,131 @@
-# Ezoic ads.txt file
-Redirect 301 /ads.txt https://srv.adstxtmanager.com/19390/vraho.com
+
+# Ezoic ads.txt entries
+ezoic.ai, 19390, DIRECT
+google.com, pub-4301669123161329, RESELLER, f08c47fec0942fa0
+google.com, pub-7439041255533808, RESELLER, f08c47fec0942fa0
+google.com, pub-9685734445476814, RESELLER, f08c47fec0942fa0
+google.com, pub-1636075443907055, RESELLER, f08c47fec0942fa0
+google.com, pub-5995202563537249, RESELLER, f08c47fec0942fa0
+google.com, pub-3565385483761681, RESELLER, f08c47fec0942fa0
+google.com, pub-5781505893171514, RESELLER, f08c47fec0942fa0
+google.com, pub-9378724246417115, RESELLER, f08c47fec0942fa0
+google.com, pub-2610964203515025, RESELLER, f08c47fec0942fa0
+google.com, pub-2393320645055022, RESELLER, f08c47fec0942fa0
+indexexchange.com, 183920, RESELLER, 50b1c356f2c5c8fc
+indexexchange.com, 184665, RESELLER, 50b1c356f2c5c8fc
+indexexchange.com, 195756, RESELLER, 50b1c356f2c5c8fc
+indexexchange.com, 194558, RESELLER, 50b1c356f2c5c8fc
+indexexchange.com, 193091, RESELLER, 50b1c356f2c5c8fc
+indexexchange.com, 194590, RESELLER, 50b1c356f2c5c8fc
+indexexchange.com, 196862, RESELLER, 50b1c356f2c5c8fc
+indexexchange.com, 186684, RESELLER, 50b1c356f2c5c8fc
+openx.com, 537153278, RESELLER, 6a698e2ec38604c6
+openx.com, 537143344, RESELLER, 6a698e2ec38604c6
+openx.com, 539078156, RESELLER, 6a698e2ec38604c6
+openx.com, 538959099, RESELLER, 6a698e2ec38604c6
+openx.com, 539339894, RESELLER, 6a698e2ec38604c6
+openx.com, 541176582, RESELLER, 6a698e2ec38604c6
+openx.com, 540104539, RESELLER, 6a698e2ec38604c6
+sovrn.com, 257429, RESELLER, fafdf38b16bf6b2b
+sovrn.com, 231317, RESELLER, fafdf38b16bf6b2b
+sovrn.com, 373124, RESELLER, fafdf38b16bf6b2b
+sovrn.com, 376972, RESELLER, fafdf38b16bf6b2b
+sovrn.com, 400737, RESELLER, fafdf38b16bf6b2b
+lijit.com, 257429, RESELLER, fafdf38b16bf6b2b
+lijit.com, 231317, RESELLER, fafdf38b16bf6b2b
+lijit.com, 373124, RESELLER, fafdf38b16bf6b2b
+lijit.com, 376972, RESELLER, fafdf38b16bf6b2b
+lijit.com, 400737, RESELLER, fafdf38b16bf6b2b
+pubmatic.com, 157185, RESELLER, 5d62403b186f2ace
+pubmatic.com, 160006, RESELLER, 5d62403b186f2ace
+pubmatic.com, 160096, RESELLER, 5d62403b186f2ace
+pubmatic.com, 159855, RESELLER, 5d62403b186f2ace
+pubmatic.com, 157897, RESELLER, 5d62403b186f2ace
+pubmatic.com, 156971, RESELLER, 5d62403b186f2ace
+pubmatic.com, 161056, RESELLER, 5d62403b186f2ace
+rubiconproject.com, 19724, RESELLER, 0bfd66d529a55807
+rubiconproject.com, 17960, RESELLER, 0bfd66d529a55807
+rubiconproject.com, 23644, RESELLER, 0bfd66d529a55807
+rubiconproject.com, 23986, RESELLER, 0bfd66d529a55807
+rhythmone.com, 3948367200, RESELLER, a670c89d4a324e47
+rhythmone.com, 1886307810, RESELLER, a670c89d4a324e47
+rhythmone.com, 4201299756, RESELLER, a670c89d4a324e47
+video.unrulymedia.com, 3948367200, RESELLER
+video.unrulymedia.com, 1886307810, RESELLER
+video.unrulymedia.com, 4201299756, RESELLER
+appnexus.com, 1908, RESELLER, f5ab79cb980f11d1
+appnexus.com, 3663, RESELLER, f5ab79cb980f11d1
+appnexus.com, 12223, RESELLER, f5ab79cb980f11d1
+appnexus.com, 13181, RESELLER, f5ab79cb980f11d1
+aps.amazon.com, 93aec77c-f6d2-45bd-affc-a85ab5a72683, DIRECT
+pubmatic.com, 157150, RESELLER, 5d62403b186f2ace
+openx.com, 540191398, RESELLER, 6a698e2ec38604c6
+rubiconproject.com, 18020, RESELLER, 0bfd66d529a55807
+appnexus.com, 1908, RESELLER, f5ab79cb980f11d1
+adtech.com, 12068, RESELLER, e1a5b5b6e3255540
+districtm.io, 100962, RESELLER, 3fd707be9c4527c3
+33across.com, 0010b00002Mq2FYAAZ, DIRECT, bbea06d9c4d2853c
+rubiconproject.com, 16414, RESELLER, 0bfd66d529a55807
+pubmatic.com, 156423, RESELLER, 5d62403b186f2ace
+appnexus.com, 10239, RESELLER, f5ab79cb980f11d1
+appnexus.com, 1001, RESELLER, f5ab79cb980f11d1
+appnexus.com, 3135, RESELLER, f5ab79cb980f11d1
+openx.com, 537120563, RESELLER, 6a698e2ec38604c6
+openx.com, 539392223, RESELLER, 6a698e2ec38604c6
+rhythmone.com, 2439829435, RESELLER, a670c89d4a324e47
+emxdgt.com, 326, RESELLER, 1e1d41537f7cad7f
+gumgum.com, 13318, RESELLER, ffdef49475d318a9
+adtech.com, 12094, RESELLER, e1a5b5b6e3255540
+adtech.com, 9993, RESELLER, e1a5b5b6e3255540
+advangelists.com, 8d3bba7425e7c98c50f52ca1b52d3735, RESELLER, 60d26397ec060f98
+sonobi.com, 7f5fa520f8, RESELLER, d1a215d9eb5aee9e
+onetag.com, 598ce3ddaee8c90, RESELLER
+media.net, 8CUZ1MK22, DIRECT
+media.net, 8CUZ1MK22, RESELLER
+triplelift.com, 12507, RESELLER, 6c33edb13117fd86
+sharethrough.com, 7144eb80, RESELLER
+33across.com, 0010b00002K8oHAAS, DIRECT, bbea06d9c4d2853c
+indexexchange.com, 191973, RESELLER, 50b1c356f2c5c8fc
+lijit.com, 268252, RESELLER, fafdf38b16bf6b2b
+sovrn.com, 268252, RESELLER, fafdf38b16bf6b2b
+appnexus.com, 9994, RESELLER, f5ab79cb980f11d1
+adyoulike.com, 4465379957489f2efe210400afba4f92, RESELLER
+inmobi.com, 12a9a79d5af84ba5b3106649a75bb9ee, RESELLER, 83e75a7ae333ca9d
+yahoo.com, 59627, RESELLER
+krushmedia.com, AJxF6R69a9M8CyG1X, DIRECT
+advertising.com, 19623, RESELLER
+appnexus.com, 10824, RESELLER
+onetag.com, 5d1628750185ace, RESELLER
+improve-digital.com, 1243, RESELLER
+pubmatic.com, 159630, RESELLER, 5d62403b186f2ace
+rubiconproject.com, 20616, RESELLER, 0bfd66d529a55807
+themediagrid.com, DJQVCM, DIRECT, 35d5010d7789b49d
+themediagrid.com, DJQVCM, RESELLER, 35d5010d7789b49d
+conversantmedia.com, 40795, RESELLER, 03113cd04947736d
+smartadserver.com, 3447, RESELLER
+improvedigital.com, 1532, RESELLER
+aps.amazon.com, 0a383920-c1fa-4201-8d8a-80161b23eac5, RESELLER
+appnexus.com, 9623, RESELLER, f5ab79cb980f11d1
+contextweb.com, 562541, RESELLER, 89ff185a4c4e857c
+openx.com, 537153067, RESELLER, 6a698e2ec38604c6
+rubiconproject.com, 22324, RESELLER, 0bfd66d529a55807
+adpone.com, cfa0b7ae302a9728, RESELLER
+e-planning.net, 948a31221e4142eb, RESELLER, c1ba615865ed87b2
+freewheel.tv, 1500870, RESELLER
+Media.net, 8CUCB0790, RESELLER
+Media.net, 8CUDHP1OI, RESELLER
+themediagrid.com, PLTXTR, RESELLER, 35d5010d7789b49d
+aps.amazon.com, 93aec77c-f6d2-45bd-affc-a85ab5a72683, DIRECT
+contextweb.com, 563175, RESELLER, 89ff185a4c4e857c
+conversantmedia.com, 100032, RESELLER, 03113cd04947736d
+yahoo.com, 59507, RESELLER
+aol.com, 58905, RESELLER, e1a5b5b6e3255540
+yahoo.com, 58905, RESELLER, e1a5b5b6e3255540
+outbrain.com, 004e1e1a40656ae01b51eee3ed95d0d619, RESELLER
+appnexus.com, 9316, RESELLER, f5ab79cb980f11d1
+indexexchange.com, 192401, RESELLER, 50b1c356f2c5c8fc
+rubiconproject.com, 17250, RESELLER, 0bfd66d529a55807
+spotim.market, 4246618, RESELLER, 077e5f709d15bdbb
+
+# Original redirect information - keeping for reference
+# Redirect 301 /ads.txt https://srv.adstxtmanager.com/19390/vraho.com
