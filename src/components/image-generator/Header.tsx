@@ -50,7 +50,7 @@ const Header = ({ onSignOut }: HeaderProps) => {
           variant="outline"
         >
           <User className="mr-2 h-4 w-4" />
-          Profile
+          My Images
         </Button>
         <Button
           onClick={handleSignOut}

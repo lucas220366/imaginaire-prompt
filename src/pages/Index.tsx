@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Sparkles, Palette, Wand2, ArrowRight, Rocket, User, LogOut, MessageCircle } from "lucide-react";
@@ -57,7 +58,7 @@ const Index = () => {
               size="sm"
             >
               <User className="h-4 w-4" />
-              Profile
+              My Images
             </Button>
             <Button
               onClick={handleSignOut}
