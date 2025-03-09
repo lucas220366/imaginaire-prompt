@@ -10,7 +10,7 @@ const Logo = () => {
       className="absolute top-4 left-4 z-50 cursor-pointer"
       onClick={() => navigate("/")}
     >
-      <span className="text-[#33C3F0] text-[18px] font-medium italic hover:text-[#1EAEDB] transition-colors">
+      <span className="text-[#33C3F0] text-[22px] font-medium italic hover:text-[#1EAEDB] transition-colors">
         vraho.com
       </span>
     </div>
