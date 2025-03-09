@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -9,46 +10,6 @@
     <meta property="og:image" content="/og-image.png" />
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1923399504913887"
      crossorigin="anonymous"></script>
-     
-    <style>
-      /* Hide the green settings/gear button */
-      .ez-cog-btn,
-      #ez-cookie-dialog-wrapper,
-      .ez-privacy-center-wrapper,
-      [class*="ez-privacy"],
-      [id*="ez-privacy"],
-      [class*="ez-consent"],
-      [id*="ez-consent"],
-      [class*="ez-cog"],
-      [id*="ez-cog"] {
-        display: none !important;
-        opacity: 0 !important;
-        visibility: hidden !important;
-        pointer-events: none !important;
-        width: 0 !important;
-        height: 0 !important;
-        max-width: 0 !important;
-        max-height: 0 !important;
-        overflow: hidden !important;
-        position: absolute !important;
-        left: -9999px !important;
-        top: -9999px !important;
-        z-index: -9999 !important;
-      }
-
-      /* Additional selectors to target the specific element */
-      .ez-btn,
-      [data-ez-modal-open],
-      [class*="cog-btn"],
-      [id*="cog-btn"],
-      div[style*="position: fixed"][style*="bottom"],
-      div[style*="position: fixed"][style*="right"] {
-        display: none !important;
-        opacity: 0 !important;
-        visibility: hidden !important;
-        pointer-events: none !important;
-      }
-    </style>
   </head>
 
   <body>
@@ -56,74 +17,5 @@
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
-    
-    <script>
-      // Script to continuously remove the problematic elements
-      (function() {
-        function removeElements() {
-          // Target elements by various potential selectors
-          const selectors = [
-            '.ez-cog-btn',
-            '[class*="ez-privacy"]',
-            '[id*="ez-privacy"]',
-            '[class*="ez-consent"]',
-            '[id*="ez-consent"]',
-            '[class*="ez-cog"]',
-            '[id*="ez-cog"]',
-            '.ez-btn',
-            '[data-ez-modal-open]',
-            '[class*="cog-btn"]',
-            '[id*="cog-btn"]'
-          ];
-          
-          // Also target elements by their style and position
-          const elements = document.querySelectorAll('*');
-          elements.forEach(el => {
-            const style = window.getComputedStyle(el);
-            if (
-              style.position === 'fixed' && 
-              (
-                (style.bottom === '0px' || style.bottom.startsWith('0') || parseInt(style.bottom) < 100) &&
-                (style.right === '0px' || style.right.startsWith('0') || parseInt(style.right) < 100)
-              ) &&
-              (
-                el.innerHTML.includes('settings') || 
-                el.innerHTML.includes('cog') || 
-                el.innerHTML.includes('gear') ||
-                el.querySelector('svg') // Target elements with SVG icons
-              )
-            ) {
-              el.style.display = 'none';
-              el.style.opacity = '0';
-              el.style.visibility = 'hidden';
-              el.style.pointerEvents = 'none';
-            }
-          });
-          
-          // Remove elements matching selectors
-          selectors.forEach(selector => {
-            document.querySelectorAll(selector).forEach(el => {
-              el.style.display = 'none';
-              el.style.opacity = '0';
-              el.style.visibility = 'hidden';
-              el.style.pointerEvents = 'none';
-            });
-          });
-        }
-        
-        // Run immediately
-        removeElements();
-        
-        // Then keep checking periodically
-        setInterval(removeElements, 500);
-        
-        // Also run on DOM changes
-        const observer = new MutationObserver(removeElements);
-        observer.observe(document.body, { 
-          childList: true, 
-          subtree: true 
-        });
-      })();
-    </script>
   </body>
 </html>
