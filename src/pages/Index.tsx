@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Sparkles, Palette, Wand2, ArrowRight, Rocket, User, LogOut, MessageCircle } from "lucide-react";
@@ -157,11 +156,9 @@ const Index = () => {
           {!session && (
             <Button
               onClick={() => navigate("/auth")}
-              variant="outline"
-              className="text-sm"
-              size="sm"
+              className="text-base px-4 py-2 h-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
             >
-              Sign Up Now <ArrowRight className="ml-2" />
+              Sign Up Now, It's Free! <ArrowRight className="ml-2" />
             </Button>
           )}
           
