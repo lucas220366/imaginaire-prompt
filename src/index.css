@@ -1,4 +1,5 @@
 
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 
 @tailwind base;
@@ -47,9 +48,9 @@
     @apply bg-background text-foreground antialiased;
     background-color: #f8faff;
     background-image: 
-      linear-gradient(rgba(200, 210, 255, 0.25) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(200, 210, 255, 0.25) 1px, transparent 1px);
-    background-size: 16px 16px;
+      linear-gradient(rgba(150, 170, 255, 0.5) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(150, 170, 255, 0.5) 1px, transparent 1px);
+    background-size: 12px 12px;
   }
 }
 
@@ -80,3 +81,4 @@
     transform: translateY(0);
   }
 }
+
