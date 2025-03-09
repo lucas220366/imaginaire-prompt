@@ -64,9 +64,19 @@ const ImageGenerationHandler = async ({
     
     console.log("Starting image generation with prompt:", prompt);
     console.log("Using dimensions:", dimensions);
-    console.log("Current session user ID:", session.user.id);
-
-    const runware = new RunwareService(apiKey);
+    
+    let runware: RunwareService;
+    try {
+      runware = new RunwareService(apiKey);
+    } catch (err) {
+      console.error("API service initialization error:", err);
+      toast.error("Could not initialize the image generation service. Please try again later.");
+      onError();
+      clearTimeout(timeoutId);
+      onFinishGenerating();
+      isGenerating = false;
+      return;
+    }
     
     const result = await runware.generateImage({ 
       positivePrompt: prompt,

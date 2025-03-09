@@ -3,19 +3,19 @@ import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthProvider";
 import { ImageSettings } from "@/types/image-generator";
-import ApiKeySetup from "./image-generator/ApiKeySetup";
 import Header from "./image-generator/Header";
 import ImageGeneratorContent from "./image-generator/ImageGeneratorContent";
-import APIKeyValidator from "./image-generator/APIKeyValidator";
 import ImageGenerationHandler from "./image-generator/ImageGenerationHandler";
 import { toast } from "sonner";
+import { RunwareService } from '@/lib/runware';
+
+// Default API key for development/testing environments
+const DEFAULT_API_KEY = process.env.RUNWARE_API_KEY || "runware_demo_key";
 
 const ImageGenerator = () => {
   const [prompt, setPrompt] = useState("");
   const [image, setImage] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [apiKey, setApiKey] = useState(() => localStorage.getItem('runwareApiKey') || "");
-  const [isApiKeySet, setIsApiKeySet] = useState(() => Boolean(localStorage.getItem('runwareApiKey')));
   const navigate = useNavigate();
   const { session, signOut } = useAuth();
   const [settings, setSettings] = useState<ImageSettings>({
@@ -38,7 +38,7 @@ const ImageGenerator = () => {
 
   const handleGenerate = async () => {
     await ImageGenerationHandler({
-      apiKey,
+      apiKey: DEFAULT_API_KEY,
       prompt,
       settings,
       session,
@@ -52,34 +52,16 @@ const ImageGenerator = () => {
   return (
     <div className="min-h-screen p-6 animate-fade-in relative">
       <Header onSignOut={handleSignOut} />
-      <APIKeyValidator 
-        apiKey={apiKey}
-        onInvalidKey={() => {
-          setApiKey("");
-          setIsApiKeySet(false);
-        }}
+      
+      <ImageGeneratorContent
+        settings={settings}
+        onSettingsChange={setSettings}
+        prompt={prompt}
+        isGenerating={isGenerating}
+        onPromptChange={setPrompt}
+        onGenerate={handleGenerate}
+        generatedImage={image}
       />
-
-      {!isApiKeySet ? (
-        <ApiKeySetup
-          apiKey={apiKey}
-          onApiKeyChange={setApiKey}
-          onApiKeySubmit={async () => {
-            localStorage.setItem('runwareApiKey', apiKey);
-            setIsApiKeySet(true);
-          }}
-        />
-      ) : (
-        <ImageGeneratorContent
-          settings={settings}
-          onSettingsChange={setSettings}
-          prompt={prompt}
-          isGenerating={isGenerating}
-          onPromptChange={setPrompt}
-          onGenerate={handleGenerate}
-          generatedImage={image}
-        />
-      )}
     </div>
   );
 };
