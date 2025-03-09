@@ -23,11 +23,12 @@ const Header = ({ onSignOut }: HeaderProps) => {
     try {
       console.log("Starting sign out process");
       await signOut();
-      await onSignOut();
       console.log("Sign out successful, navigating to auth page");
       toast.success("Signed out successfully");
-      // Use navigate instead of direct URL change for better state management
-      navigate('/auth', { replace: true });
+      // Navigate first, then call the prop function to avoid timing issues
+      navigate('/', { replace: true });
+      // Call onSignOut as a final cleanup step
+      await onSignOut();
     } catch (error: any) {
       console.error("Sign out error:", error);
       toast.error("Failed to sign out");

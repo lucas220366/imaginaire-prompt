@@ -57,20 +57,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (event === 'PASSWORD_RECOVERY') {
         console.log("Password recovery flow detected");
       }
-      
-      if (event === 'SIGNED_OUT') {
-        console.log("Starting sign out cleanup...");
-        // Clear all Supabase-related items from localStorage
-        Object.keys(localStorage).forEach(key => {
-          if (key.startsWith('sb-')) {
-            localStorage.removeItem(key);
-            console.log("Cleared localStorage item:", key);
-          }
-        });
-        
-        // Use window.location.href instead of replace to ensure proper navigation
-        window.location.href = '/';
-      }
     });
 
     return () => {
@@ -103,10 +89,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setSession(null);
       
       console.log("Sign out complete");
-      toast.success("Signed out successfully");
       
-      // Navigate to home page using window.location.href for complete page refresh
-      window.location.href = '/';
+      // We'll let the component handle navigation instead of doing it here
+      // This prevents the home page from being "messed up"
     } catch (error) {
       console.error("Error signing out:", error);
       throw error;
