@@ -41,9 +41,14 @@ const ContactForm = () => {
     setIsSubmitting(true);
     
     try {
+      // Fixed insertion to match the correct type expected by Supabase
       const { error } = await supabase
         .from('contact_submissions')
-        .insert([data]);
+        .insert({
+          name: data.name,
+          email: data.email,
+          message: data.message
+        });
       
       if (error) {
         throw error;
