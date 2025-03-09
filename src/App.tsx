@@ -1,6 +1,6 @@
 
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './components/AuthProvider';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Toaster } from "sonner";
@@ -13,7 +13,6 @@ import Contact from './pages/Contact';
 import ImageGenerator from './components/ImageGenerator';
 import NotFound from './pages/NotFound';
 import Footer from './components/Footer';
-import Logo from './components/Logo';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfUse from './pages/TermsOfUse';
 import './App.css';
@@ -22,12 +21,11 @@ const queryClient = new QueryClient();
 
 function App() {
   return (
-    <Router>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <AuthProvider>
+          <Router>
             <div className="flex flex-col min-h-screen">
-              <Logo />
               <div className="flex-grow">
                 <Routes>
                   <Route path="/" element={<Index />} />
@@ -57,10 +55,10 @@ function App() {
               <Footer />
             </div>
             <Toaster position="top-center" />
-          </AuthProvider>
-        </TooltipProvider>
-      </QueryClientProvider>
-    </Router>
+          </Router>
+        </AuthProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
   );
 }
 
