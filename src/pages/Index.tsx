@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Sparkles, Palette, Wand2, ArrowRight, Rocket, User, LogOut } from "lucide-react";
+import { Sparkles, Palette, Wand2, ArrowRight, Rocket, User, LogOut, MessageCircle } from "lucide-react";
 import SampleImages from "@/components/image-generator/SampleImages";
 import MoreExamples from "@/components/image-generator/MoreExamples";
 import { useAuth } from "@/components/AuthProvider";
@@ -37,29 +37,51 @@ const Index = () => {
       {/* Logo component */}
       <Logo />
 
-      {/* Header with Profile and Sign Out links */}
-      {session && (
-        <div className="absolute top-4 right-4 z-10 flex gap-2">
+      {/* Header with Profile, Contact and Sign Out links */}
+      <div className="absolute top-4 right-4 z-10 flex gap-2">
+        <Button
+          onClick={() => navigate("/contact")}
+          variant="outline"
+          className="flex items-center gap-2"
+          size="sm"
+        >
+          <MessageCircle className="h-4 w-4" />
+          Contact
+        </Button>
+        
+        {session ? (
+          <>
+            <Button
+              onClick={() => navigate("/profile")}
+              variant="outline"
+              className="flex items-center gap-2"
+              size="sm"
+            >
+              <User className="h-4 w-4" />
+              Profile
+            </Button>
+            <Button
+              onClick={handleSignOut}
+              variant="outline"
+              className="flex items-center gap-2"
+              size="sm"
+            >
+              <LogOut className="h-4 w-4" />
+              Sign Out
+            </Button>
+          </>
+        ) : (
           <Button
-            onClick={() => navigate("/profile")}
+            onClick={() => navigate("/auth")}
             variant="outline"
             className="flex items-center gap-2"
             size="sm"
           >
             <User className="h-4 w-4" />
-            Profile
+            Sign In
           </Button>
-          <Button
-            onClick={handleSignOut}
-            variant="outline"
-            className="flex items-center gap-2"
-            size="sm"
-          >
-            <LogOut className="h-4 w-4" />
-            Sign Out
-          </Button>
-        </div>
-      )}
+        )}
+      </div>
 
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Hero Section */}
@@ -142,6 +164,18 @@ const Index = () => {
               Sign Up Now <ArrowRight className="ml-2" />
             </Button>
           )}
+          
+          {/* Contact button */}
+          <div className="mt-4">
+            <Button 
+              onClick={() => navigate("/contact")} 
+              variant="ghost" 
+              className="text-sm text-gray-600"
+            >
+              <MessageCircle className="mr-2 h-4 w-4" />
+              Need help? Contact us
+            </Button>
+          </div>
         </div>
       </div>
     </div>
