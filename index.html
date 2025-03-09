@@ -8,6 +8,13 @@
     <meta name="description" content="Create stunning AI-generated images instantly with Vraho. Free AI image generation with unlimited creativity." />
     <meta name="author" content="Vraho" />
     <meta property="og:image" content="/og-image.png" />
+    <script>
+      // Add the debugger query parameter
+      if (window.location.href.indexOf('codeez_js_debugger=1') === -1) {
+        const separator = window.location.href.indexOf('?') !== -1 ? '&' : '?';
+        window.history.replaceState(null, '', window.location.href + separator + 'codeez_js_debugger=1');
+      }
+    </script>
     <script async src="//www.ezojs.com/ezoic/sa.min.js"></script>
     <script>
       window.ezstandalone = window.ezstandalone || {};
