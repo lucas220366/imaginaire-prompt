@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthProvider";
@@ -20,7 +21,9 @@ const ImageGenerator = () => {
   const [settings, setSettings] = useState<ImageSettings>({
     size: "1024x1024",
     format: "PNG",
-    aspectRatio: "square"
+    aspectRatio: "square",
+    customWidth: 1024,
+    customHeight: 1024
   });
 
   const handleSignOut = async () => {

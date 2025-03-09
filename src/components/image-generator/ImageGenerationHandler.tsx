@@ -60,7 +60,17 @@ const ImageGenerationHandler = async ({
   }, 120000);
 
   try {
-    const dimensions = getImageDimensions(settings.size, settings.aspectRatio);
+    let dimensions;
+    
+    if (settings.size === "custom" && settings.customWidth && settings.customHeight) {
+      dimensions = {
+        width: settings.customWidth,
+        height: settings.customHeight
+      };
+    } else {
+      dimensions = getImageDimensions(settings.size, settings.aspectRatio);
+    }
+    
     const runware = new RunwareService(apiKey);
     
     console.log("Starting image generation with prompt:", prompt);
