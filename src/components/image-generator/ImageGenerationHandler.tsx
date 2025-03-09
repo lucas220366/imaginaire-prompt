@@ -47,32 +47,6 @@ const ImageGenerationHandler = async ({
     return;
   }
 
-  // Validate custom dimensions if using custom size
-  if (settings.size === "custom") {
-    const width = settings.customWidth || 0;
-    const height = settings.customHeight || 0;
-    
-    if (width < 128 || height < 128) {
-      toast.error("Width and height must be at least 128 pixels");
-      onError();
-      return;
-    }
-    
-    // Ensure dimensions are multiples of 64
-    if (width % 64 !== 0 || height % 64 !== 0) {
-      toast.error("Width and height must be multiples of 64");
-      onError();
-      return;
-    }
-    
-    // Check max dimensions
-    if (width > 2048 || height > 2048) {
-      toast.error("Maximum dimension is 2048 pixels");
-      onError();
-      return;
-    }
-  }
-
   isGenerating = true;
   onStartGenerating();
   
@@ -86,23 +60,14 @@ const ImageGenerationHandler = async ({
   }, 120000);
 
   try {
-    let dimensions;
-    
-    if (settings.size === "custom" && settings.customWidth && settings.customHeight) {
-      dimensions = {
-        width: settings.customWidth,
-        height: settings.customHeight
-      };
-    } else {
-      dimensions = getImageDimensions(settings.size, settings.aspectRatio);
-    }
-    
-    const runware = new RunwareService(apiKey);
+    const dimensions = getImageDimensions(settings.size, settings.aspectRatio);
     
     console.log("Starting image generation with prompt:", prompt);
     console.log("Using dimensions:", dimensions);
     console.log("Current session user ID:", session.user.id);
 
+    const runware = new RunwareService(apiKey);
+    
     const result = await runware.generateImage({ 
       positivePrompt: prompt,
       outputFormat: settings.format || "PNG",

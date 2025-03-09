@@ -21,9 +21,7 @@ const ImageGenerator = () => {
   const [settings, setSettings] = useState<ImageSettings>({
     size: "1024x1024",
     format: "PNG",
-    aspectRatio: "square",
-    customWidth: 1024,
-    customHeight: 1024
+    aspectRatio: "square"
   });
 
   const handleSignOut = async () => {

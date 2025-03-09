@@ -1,10 +1,5 @@
 
 export const getImageDimensions = (baseSize: string, aspectRatio: string) => {
-  // If it's a custom size, we'll handle it in the ImageGenerationHandler
-  if (baseSize === "custom") {
-    return { width: 512, height: 512 }; // Default fallback
-  }
-  
   const [size] = baseSize.split('x').map(Number);
   
   const roundToMultipleOf64 = (num: number) => {
