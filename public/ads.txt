@@ -1,2 +1,2 @@
-# Ezoic ads.txt file
+Ezoic ads.txt file
 Redirect 301 /ads.txt https://srv.adstxtmanager.com/19390/vraho.com
