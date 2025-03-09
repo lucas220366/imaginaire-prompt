@@ -8,6 +8,7 @@ import type { Database } from '@/integrations/supabase/types';
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import ImageGrid from "@/components/profile/ImageGrid";
 import ProfilePagination from "@/components/profile/ProfilePagination";
+import Logo from "@/components/Logo";
 
 type GeneratedImage = Database['public']['Tables']['generated_images']['Row'];
 
@@ -91,6 +92,7 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen p-6">
+      <Logo />
       <div className="max-w-6xl mx-auto">
         <ProfileHeader onSignOut={handleSignOut} />
         
