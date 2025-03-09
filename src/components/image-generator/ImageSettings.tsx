@@ -18,13 +18,15 @@ interface ImageSettingsProps {
 const ImageSettingsControl = ({ settings, onSettingsChange }: ImageSettingsProps) => {
   const handleCustomDimensionChange = (dimension: "width" | "height", value: string) => {
     const numValue = parseInt(value, 10);
-    // Ensure the value is a number, at least 128, and a multiple of 64
-    const validValue = !isNaN(numValue) ? Math.max(128, Math.round(numValue / 64) * 64) : 512;
     
+    // Allow any value, including empty (which will be 0)
+    const inputValue = isNaN(numValue) ? 0 : numValue;
+    
+    // Only apply minimum and rounding when submitting, store raw input value
     if (dimension === "width") {
-      onSettingsChange({ ...settings, customWidth: validValue });
+      onSettingsChange({ ...settings, customWidth: inputValue });
     } else {
-      onSettingsChange({ ...settings, customHeight: validValue });
+      onSettingsChange({ ...settings, customHeight: inputValue });
     }
   };
 
@@ -40,10 +42,10 @@ const ImageSettingsControl = ({ settings, onSettingsChange }: ImageSettingsProps
             onSettingsChange({ 
               ...settings, 
               size: value,
-              // Set default values for custom dimensions when switching to custom
+              // Initialize custom dimensions to empty when switching to custom
               ...(value === "custom" && { 
-                customWidth: settings.customWidth || 512, 
-                customHeight: settings.customHeight || 512 
+                customWidth: settings.customWidth || 0, 
+                customHeight: settings.customHeight || 0 
               })
             })
           }
@@ -70,11 +72,11 @@ const ImageSettingsControl = ({ settings, onSettingsChange }: ImageSettingsProps
             <Input
               id="customWidth"
               type="number"
-              min="128"
-              step="64"
-              value={settings.customWidth || 512}
+              min="0"
+              value={settings.customWidth || ""}
               onChange={(e) => handleCustomDimensionChange("width", e.target.value)}
               className="w-full"
+              placeholder="Enter width"
             />
           </div>
           <div>
@@ -84,11 +86,11 @@ const ImageSettingsControl = ({ settings, onSettingsChange }: ImageSettingsProps
             <Input
               id="customHeight"
               type="number"
-              min="128"
-              step="64"
-              value={settings.customHeight || 512}
+              min="0"
+              value={settings.customHeight || ""}
               onChange={(e) => handleCustomDimensionChange("height", e.target.value)}
               className="w-full"
+              placeholder="Enter height"
             />
           </div>
         </div>
