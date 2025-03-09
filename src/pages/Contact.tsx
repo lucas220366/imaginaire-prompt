@@ -9,7 +9,8 @@ const Contact = () => {
       <Helmet>
         <title>Contact Us | AI Image Generator</title>
       </Helmet>
-      <div className="text-center mb-8">
+      {/* Added pt-12 md:pt-8 for more top padding on mobile */}
+      <div className="text-center mb-8 pt-12 md:pt-8">
         <h1 className="text-3xl font-bold mb-2">Contact Us</h1>
         <p className="text-gray-600">
           Have a question or feedback? We'd love to hear from you.
