@@ -9,7 +9,7 @@
     <meta name="author" content="Vraho" />
     <meta property="og:image" content="/og-image.png" />
     <script src="https://cmp.gatekeeperconsent.com/min.js" data-cfasync="false"></script>
-<script src="https://the.gatekeeperconsent.com/ccpa/v2/standalone.js" async></script>
+    <script src="https://the.gatekeeperconsent.com/ccpa/v2/standalone.js" async></script>
     <script async src="//www.ezojs.com/ezoic/sa.min.js"></script>
 <script>
   window.ezstandalone = window.ezstandalone || {};
@@ -35,7 +35,7 @@
     });
 </script>
     <script src="https://the.gatekeeperconsent.com/cmp.min.js" data-cfasync="false"></script>
-<script src="https://the.gatekeeperconsent.com/ccpa/v2/standalone.js" async></script>
+    <script src="https://the.gatekeeperconsent.com/ccpa/v2/standalone.js" async></script>
     <script>
     var ezstandalone = window.ezstandalone || {};
     ezstandalone.cmd = ezstandalone.cmd || [];
@@ -44,6 +44,12 @@
         ezstandalone.showAds(101, 102);
     });
 </script>
+    <style>
+      /* Hide the GatekeeperConsent button/widget while preserving functionality */
+      .gdpr-cmp-ui, .ccpa-standalone-ui {
+        display: none !important;
+      }
+    </style>
   </head>
 
   <body>
