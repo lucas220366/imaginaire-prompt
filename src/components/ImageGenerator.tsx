@@ -50,7 +50,7 @@ const ImageGenerator = () => {
   };
 
   return (
-    <div className="min-h-screen p-6 animate-fade-in relative">
+    <div className="min-h-screen p-6 animate-fade-in">
       <Header onSignOut={handleSignOut} />
       
       <ImageGeneratorContent
