@@ -5,14 +5,9 @@ const Logo = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Don't show the logo on the home page
-  if (location.pathname === '/') {
-    return null;
-  }
-  
   return (
     <div 
-      className="absolute top-4 left-24 z-50 cursor-pointer"
+      className="absolute top-4 left-4 z-50 flex items-center gap-2 cursor-pointer"
       onClick={() => navigate("/")}
     >
       <img 
@@ -20,6 +15,9 @@ const Logo = () => {
         alt="Rocket Logo" 
         className="h-16 w-16 hover:scale-110 transition-transform duration-200"
       />
+      <span className="text-[#33C3F0] text-[14px] font-medium hover:text-[#1EAEDB] transition-colors">
+        vraho.com
+      </span>
     </div>
   );
 };

@@ -13,6 +13,7 @@ import Contact from './pages/Contact';
 import ImageGenerator from './components/ImageGenerator';
 import NotFound from './pages/NotFound';
 import Footer from './components/Footer';
+import Logo from './components/Logo';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfUse from './pages/TermsOfUse';
 import './App.css';
@@ -26,6 +27,7 @@ function App() {
         <TooltipProvider>
           <AuthProvider>
             <div className="flex flex-col min-h-screen">
+              <Logo />
               <div className="flex-grow">
                 <Routes>
                   <Route path="/" element={<Index />} />
