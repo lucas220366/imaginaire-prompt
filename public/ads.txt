@@ -1,4 +1,3 @@
 
 # Ezoic ads.txt file
-ezoic.com, 123456, DIRECT
-google.com, pub-1234567890123456, RESELLER, f08c47fec0942fa0
+Redirect 301 /ads.txt https://srv.adstxtmanager.com/19390/[YOUR_DOMAIN].com
