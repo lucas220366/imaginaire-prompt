@@ -6,7 +6,6 @@ const PrivacyPolicy = () => {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl mt-16">
       <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
-      
       <div className="prose prose-gray max-w-none">
         <p className="mb-4">Last updated: March 1, 2025</p>
         
@@ -14,7 +13,7 @@ const PrivacyPolicy = () => {
         <p className="mb-4">
           Welcome to vraho.com. We respect your privacy and are committed to protecting your personal data.
           This privacy policy will inform you about how we look after your personal data when you visit our website
-          and tell you about your privacy rights and how the law protects you.
+          and tell you about your privacy rights and how the law protects you.Vraho.com website uses adsense advertisements from google and ezoic
         </p>
         
         <h2 className="text-2xl font-semibold mt-8 mb-4">2. Data We Collect</h2>
