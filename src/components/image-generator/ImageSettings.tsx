@@ -34,6 +34,7 @@ const ImageSettingsControl = ({ settings, onSettingsChange }: ImageSettingsProps
             <SelectItem value="512x512">512 x 512</SelectItem>
             <SelectItem value="1024x1024">1024 x 1024</SelectItem>
             <SelectItem value="1536x1536">1536 x 1536</SelectItem>
+            <SelectItem value="2048x2048">2048 x 2048</SelectItem>
           </SelectContent>
         </Select>
       </div>
