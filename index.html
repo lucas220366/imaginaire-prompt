@@ -45,7 +45,7 @@
     });
 </script>
     <style>
-      /* More aggressive hiding of GatekeeperConsent button/widget */
+      /* Extremely aggressive hiding of ANY consent-related UI elements */
       .gdpr-cmp-ui, 
       .ccpa-standalone-ui,
       #gdpr-consent-tool-wrapper, 
@@ -53,7 +53,20 @@
       [class*="gdpr-"], 
       [class*="ccpa-"],
       [id*="gdpr-"],
-      [id*="ccpa-"] {
+      [id*="ccpa-"],
+      #privacy-center-button,
+      .privacy-center-button,
+      [id*="privacy-"],
+      [class*="privacy-"],
+      #gatekeeperConsent,
+      .gatekeeperConsent,
+      [id*="consent-"],
+      [class*="consent-"],
+      [id^="consent"],
+      [class^="consent"],
+      [id^="privacy"],
+      [class^="privacy"],
+      body > div:not(#root):last-child {
         opacity: 0 !important;
         visibility: hidden !important;
         display: none !important;
@@ -65,13 +78,29 @@
         left: -9999px !important;
         z-index: -9999 !important;
         transform: scale(0) !important;
+        max-height: 0 !important;
+        overflow: hidden !important;
+        clip: rect(0, 0, 0, 0) !important;
+        margin: -1px !important;
+        padding: 0 !important;
+        border: 0 !important;
       }
 
       /* Target any iframe that might be used by the consent tools */
       iframe[src*="gatekeeper"],
       iframe[src*="consent"],
-      iframe[src*="privacy"] {
+      iframe[src*="privacy"],
+      iframe[title*="privacy"],
+      iframe[title*="consent"],
+      iframe:not([src]),
+      body > iframe:last-child {
         display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+        position: absolute !important;
+        pointer-events: none !important;
       }
     </style>
   </head>
