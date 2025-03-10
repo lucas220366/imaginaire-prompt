@@ -5,13 +5,14 @@ import { Sparkles, Palette, Wand2, ArrowRight, Rocket, User, LogOut, MessageCirc
 import SampleImages from "@/components/image-generator/SampleImages";
 import MoreExamples from "@/components/image-generator/MoreExamples";
 import { useAuth } from "@/components/AuthProvider";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import Logo from "@/components/Logo";
 
 const Index = () => {
   const navigate = useNavigate();
   const { session, isLoading, signOut } = useAuth();
+  const [authReady, setAuthReady] = useState(false);
 
   useEffect(() => {
     console.log("Index page - Auth state:", {
@@ -19,6 +20,11 @@ const Index = () => {
       isAuthenticated: !!session,
       userId: session?.user?.id
     });
+    
+    // Only set authReady to true once we're sure about the auth state
+    if (!isLoading) {
+      setAuthReady(true);
+    }
   }, [session, isLoading]);
 
   const handleSignOut = async () => {
@@ -49,7 +55,7 @@ const Index = () => {
           Contact
         </Button>
         
-        {session ? (
+        {authReady && session ? (
           <>
             <Button
               onClick={() => navigate("/profile")}
@@ -70,7 +76,7 @@ const Index = () => {
               Sign Out
             </Button>
           </>
-        ) : (
+        ) : authReady && !session ? (
           <Button
             onClick={() => navigate("/auth")}
             variant="outline"
@@ -80,7 +86,7 @@ const Index = () => {
             <User className="h-4 w-4" />
             Sign In
           </Button>
-        )}
+        ) : null}
       </div>
 
       <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -93,21 +99,21 @@ const Index = () => {
             Create stunning, unique images in seconds using the power of AI. 
             Perfect for artists, designers, and creative minds.
           </p>
-          {session ? (
+          {authReady && session ? (
             <Button
               onClick={() => navigate("/generator")}
               className="text-base px-4 py-2 h-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
             >
               Go to Generator <ArrowRight className="ml-2" />
             </Button>
-          ) : (
+          ) : authReady && !session ? (
             <Button
               onClick={() => navigate("/auth")}
               className="text-base px-4 py-2 h-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
             >
               Get Started, It's Free! <ArrowRight className="ml-2" />
             </Button>
-          )}
+          ) : null}
         </div>
 
         {/* Example Creations Section */}
@@ -156,7 +162,7 @@ const Index = () => {
           </p>
           
           {/* Go to Generator button for logged in users */}
-          {session && (
+          {authReady && session && (
             <Button
               onClick={() => navigate("/generator")}
               className="text-base px-6 py-3 h-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 mb-4"
@@ -166,7 +172,7 @@ const Index = () => {
           )}
           
           {/* Sign Up button for non-logged in users */}
-          {!session && (
+          {authReady && !session && (
             <Button
               onClick={() => navigate("/auth")}
               className="text-base px-4 py-2 h-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
