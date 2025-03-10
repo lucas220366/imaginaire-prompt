@@ -79,10 +79,10 @@ const ImageGenerator = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background animate-fade-in">
+    <div className="min-h-screen flex flex-col bg-background animate-fade-in w-full overflow-x-hidden">
       <Header onSignOut={handleSignOut} />
       
-      <main className="flex-grow p-6">
+      <main className="flex-grow p-4 sm:p-6 w-full">
         <ImageGeneratorContent
           settings={settings}
           onSettingsChange={setSettings}
