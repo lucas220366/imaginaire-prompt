@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { LogOut, User, Home } from "lucide-react";
+import { LogOut, User, Home, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthProvider";
 import { toast } from "sonner";
@@ -47,6 +47,13 @@ const Header = ({ onSignOut }: HeaderProps) => {
           >
             <Home className="mr-2 h-4 w-4" />
             Home
+          </Button>
+          <Button
+            onClick={() => navigate("/contact")}
+            variant="outline"
+          >
+            <MessageCircle className="mr-2 h-4 w-4" />
+            Contact
           </Button>
           <Button
             onClick={() => navigate("/profile")}
