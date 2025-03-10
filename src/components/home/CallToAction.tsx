@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Rocket, MessageCircle } from "lucide-react";
+import { ArrowRight, Rocket } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface CallToActionProps {
@@ -12,7 +12,7 @@ const CallToAction = ({ isAuthenticated, authReady }: CallToActionProps) => {
   const navigate = useNavigate();
 
   return (
-    <div className="text-center mt-8 md:mt-12 space-y-4 md:space-y-6 px-4">
+    <div className="text-center mt-8 md:mt-12 space-y-4 md:space-y-6 px-4 mb-8">
       <p className="text-sm md:text-base text-gray-600 mb-4">
         Ready to start creating? Join now and bring your ideas to life!
       </p>
@@ -33,18 +33,6 @@ const CallToAction = ({ isAuthenticated, authReady }: CallToActionProps) => {
           Sign Up Now, It's Free! <ArrowRight className="ml-2" />
         </Button>
       )}
-      
-      {/* Contact button */}
-      <div className="mt-4">
-        <Button 
-          onClick={() => navigate("/contact")} 
-          variant="ghost" 
-          className="text-xs md:text-sm text-gray-600"
-        >
-          <MessageCircle className="mr-2 h-3 md:h-4 w-3 md:w-4" />
-          Need help? Contact us
-        </Button>
-      </div>
     </div>
   );
 };

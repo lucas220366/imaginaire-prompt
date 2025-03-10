@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -11,6 +10,7 @@ import FeaturesSection from "@/components/home/FeaturesSection";
 import TestimonialSection from "@/components/home/TestimonialSection";
 import CallToAction from "@/components/home/CallToAction";
 import HomeHeader from "@/components/home/HomeHeader";
+import Footer from "@/components/Footer";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -44,9 +44,9 @@ const Index = () => {
       toast.error("Failed to sign out");
     }
   };
-
+  
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col">
       {/* Logo component */}
       <Logo />
 
@@ -57,7 +57,7 @@ const Index = () => {
         onSignOut={handleSignOut} 
       />
 
-      <div className="container mx-auto px-4 py-6 md:py-8 max-w-4xl">
+      <div className="container mx-auto px-4 py-6 md:py-8 max-w-4xl flex-grow">
         {/* Hero Section */}
         <HeroSection isAuthenticated={isAuthenticated} authReady={authReady} />
 
@@ -76,6 +76,9 @@ const Index = () => {
         {/* Call to Action */}
         <CallToAction isAuthenticated={isAuthenticated} authReady={authReady} />
       </div>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
