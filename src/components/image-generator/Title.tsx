@@ -8,7 +8,7 @@ const Title = () => {
   const isHomePage = location.pathname === '/';
   
   return (
-    <div className="relative">
+    <div className="relative mt-12 md:mt-4">
       {/* Rocket only shown on homepage with smaller size */}
       {isHomePage && (
         <div className="absolute top-0 left-0 -translate-y-16 md:-translate-y-16 -translate-y-8">
