@@ -6,6 +6,7 @@ import { AuthForm } from "@/components/auth/AuthForm";
 import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Home } from "lucide-react";
+import MobileNav from "@/components/MobileNav";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -23,14 +24,17 @@ const Auth = () => {
       <div className="container mx-auto px-4 py-6">
         <div className="flex justify-between items-center">
           <Logo />
+          {/* Only show on desktop */}
           <Button
             variant="outline"
             onClick={() => navigate("/")}
-            className="flex items-center gap-2"
+            className="hidden md:flex items-center gap-2"
           >
             <Home className="h-4 w-4" />
             Home
           </Button>
+          {/* Mobile navigation */}
+          <MobileNav />
         </div>
       </div>
       <AuthForm />

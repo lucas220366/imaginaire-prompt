@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthProvider";
 import { toast } from "sonner";
 import Logo from '@/components/Logo';
+import MobileNav from '@/components/MobileNav';
 
 interface HeaderProps {
   onSignOut: () => Promise<void>;
@@ -39,7 +40,11 @@ const Header = ({ onSignOut }: HeaderProps) => {
   return (
     <>
       <Logo />
-      <div className="absolute top-4 left-0 right-0 flex justify-center md:justify-end md:right-4 px-4">
+      {/* Mobile menu */}
+      <MobileNav onSignOut={onSignOut} />
+      
+      {/* Desktop menu */}
+      <div className="absolute top-4 left-0 right-0 hidden md:flex justify-center md:justify-end md:right-4 px-4">
         <div className="flex gap-2">
           <Button
             onClick={handleHomeClick}

@@ -7,7 +7,7 @@ const Logo = () => {
   
   return (
     <div 
-      className="absolute top-4 left-4 z-50 cursor-pointer"
+      className="absolute top-4 left-4 z-30 cursor-pointer"
       onClick={() => navigate("/")}
     >
       <span className="text-black text-[22px] font-bold hover:text-gray-800 transition-colors">

@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { LogOut, ArrowLeft, Home, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import MobileNav from "@/components/MobileNav";
 
 interface ProfileHeaderProps {
   onSignOut: () => Promise<void>;
@@ -13,7 +13,11 @@ const ProfileHeader = ({ onSignOut }: ProfileHeaderProps) => {
 
   return (
     <>
-      <div className="flex justify-end items-center mb-8 gap-2">
+      {/* Mobile navigation */}
+      <MobileNav onSignOut={onSignOut} />
+      
+      {/* Desktop navigation - visible only on md and up */}
+      <div className="flex justify-end items-center mb-8 gap-2 hidden md:flex">
         <Button
           variant="outline"
           onClick={() => navigate("/generator")}
@@ -47,7 +51,8 @@ const ProfileHeader = ({ onSignOut }: ProfileHeaderProps) => {
         </Button>
       </div>
 
-      <div className="bg-white/50 backdrop-blur-lg rounded-lg p-6 shadow-lg border border-gray-100 mb-8">
+      {/* Content header - shows on all screens */}
+      <div className="bg-white/50 backdrop-blur-lg rounded-lg p-6 shadow-lg border border-gray-100 mb-8 mt-8 md:mt-0">
         <h1 className="text-2xl font-semibold text-gray-800">Your Generated Images</h1>
         <p className="text-gray-600 mt-2">
           View and download all your previously generated images
