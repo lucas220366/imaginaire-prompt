@@ -67,6 +67,7 @@ const ImageGenerationHandler = async ({
     
     console.log("Starting image generation with prompt:", prompt);
     console.log("Using dimensions:", dimensions);
+    console.log("Using settings:", settings);
     
     // Call the edge function
     const { data, error } = await supabase.functions.invoke('generate-image', {

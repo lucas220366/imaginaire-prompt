@@ -21,6 +21,8 @@ serve(async (req) => {
       throw new Error("API key not configured on the server");
     }
 
+    console.log("API key found, starting processing");
+
     // Parse the request body
     const { prompt, settings } = await req.json();
     
@@ -32,14 +34,15 @@ serve(async (req) => {
     }
 
     console.log("Starting image generation with prompt:", prompt);
+    console.log("Settings:", JSON.stringify(settings));
     
     // Initialize Runware service
     const runware = new RunwareService(apiKey);
     
     // Get dimensions based on settings
     const dimensions = {
-      width: settings.size.split('x')[0],
-      height: settings.size.split('x')[1],
+      width: parseInt(settings.size.split('x')[0]),
+      height: parseInt(settings.size.split('x')[1]),
     };
     
     // Generate the image
@@ -56,6 +59,7 @@ serve(async (req) => {
     });
     
     if (!result?.imageURL) {
+      console.error("No image URL in response:", result);
       throw new Error("No image URL in response from Runware API");
     }
 

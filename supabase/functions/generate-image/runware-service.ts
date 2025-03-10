@@ -32,6 +32,7 @@ export class RunwareService {
     if (!apiKey) {
       throw new Error("API key not provided or is empty");
     }
+    console.log("Initializing RunwareService with valid API key");
     this.apiKey = apiKey;
     this.connectionPromise = this.connect();
   }
@@ -51,7 +52,7 @@ export class RunwareService {
         this.ws.onmessage = (event) => {
           try {
             const response = JSON.parse(event.data);
-            console.log("WebSocket received message:", response);
+            console.log("WebSocket received message type:", response.data?.[0]?.taskType);
             
             if (response.error || response.errors) {
               console.error("WebSocket error response:", response);
@@ -64,8 +65,11 @@ export class RunwareService {
               response.data.forEach((item: any) => {
                 const callback = this.messageCallbacks.get(item.taskUUID);
                 if (callback) {
+                  console.log(`Executing callback for taskUUID: ${item.taskUUID}`);
                   callback(item);
                   this.messageCallbacks.delete(item.taskUUID);
+                } else {
+                  console.log(`No callback found for taskUUID: ${item.taskUUID}`);
                 }
               });
             }
@@ -105,7 +109,39 @@ export class RunwareService {
     
     console.log("Sending authentication message");
     this.ws.send(JSON.stringify(authMessage));
-    return Promise.resolve();
+    
+    return new Promise((resolve, reject) => {
+      // Set up a one-time listener for the authentication response
+      const onMessage = (event: MessageEvent) => {
+        try {
+          const response = JSON.parse(event.data);
+          console.log("Authentication response received:", response.data?.[0]?.taskType);
+          
+          if (response.data?.[0]?.taskType === "authentication") {
+            this.ws?.removeEventListener("message", onMessage);
+            console.log("Authentication successful");
+            resolve();
+          } else if (response.error || response.errors) {
+            this.ws?.removeEventListener("message", onMessage);
+            const error = response.errorMessage || response.errors?.[0]?.message || "Authentication failed";
+            console.error("Authentication error:", error);
+            reject(new Error(error));
+          }
+        } catch (error) {
+          this.ws?.removeEventListener("message", onMessage);
+          console.error("Error parsing authentication response:", error);
+          reject(error);
+        }
+      };
+      
+      this.ws.addEventListener("message", onMessage);
+      
+      // Set a timeout for authentication
+      setTimeout(() => {
+        this.ws?.removeEventListener("message", onMessage);
+        reject(new Error("Authentication timed out"));
+      }, 10000);
+    });
   }
 
   // Generate UUID function 
