@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { LogOut, User, Home } from "lucide-react";
@@ -45,7 +44,7 @@ const Header = ({ onSignOut }: HeaderProps) => {
       <MobileNav onSignOut={onSignOut} />
       
       {/* Desktop menu */}
-      <div className="hidden md:flex items-center gap-2 mr-4">
+      <div className="hidden md:flex items-center gap-2">
         <Button
           onClick={handleHomeClick}
           variant="outline"

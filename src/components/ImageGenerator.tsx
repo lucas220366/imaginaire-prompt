@@ -82,13 +82,15 @@ const ImageGenerator = () => {
     <div className="min-h-screen flex flex-col bg-background animate-fade-in w-full overflow-x-hidden">
       {/* Fixed header */}
       <header className="fixed top-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm shadow-sm">
-        <div className="flex justify-between items-center h-16">
-          <Header onSignOut={handleSignOut} />
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center h-16">
+            <Header onSignOut={handleSignOut} />
+          </div>
         </div>
       </header>
       
       {/* Main content with padding for fixed header */}
-      <main className="flex-grow p-4 sm:p-6 w-full mt-16">
+      <main className="flex-grow p-4 sm:p-6 w-full mt-20">
         <ImageGeneratorContent
           settings={settings}
           onSettingsChange={setSettings}

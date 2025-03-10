@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Menu, X, Home, User, LogOut, MessageCircle } from 'lucide-react';
@@ -38,7 +37,7 @@ const MobileNav = ({ onSignOut }: MobileNavProps) => {
       <Button
         variant="outline"
         size="icon"
-        className="md:hidden mr-4"
+        className="md:hidden"
         onClick={toggleMenu}
       >
         {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}

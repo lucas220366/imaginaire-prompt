@@ -48,18 +48,20 @@ const Index = () => {
     <div className="min-h-screen w-full overflow-x-hidden">
       {/* Fixed header */}
       <header className="fixed top-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm shadow-sm">
-        <div className="flex justify-between items-center h-16">
-          <Logo />
-          <HomeHeader 
-            isAuthenticated={isAuthenticated} 
-            authReady={authReady} 
-            onSignOut={handleSignOut} 
-          />
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center h-16">
+            <Logo />
+            <HomeHeader 
+              isAuthenticated={isAuthenticated} 
+              authReady={authReady} 
+              onSignOut={handleSignOut} 
+            />
+          </div>
         </div>
       </header>
 
       {/* Main content with padding for fixed header */}
-      <main className="pt-20 pb-8 px-4 container mx-auto max-w-4xl">
+      <main className="pt-24 pb-8 px-4 container mx-auto max-w-4xl">
         {/* Hero Section */}
         <HeroSection isAuthenticated={isAuthenticated} authReady={authReady} />
 
