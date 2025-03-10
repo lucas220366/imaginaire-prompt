@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { LogOut, ArrowLeft, Home } from "lucide-react";
+import { LogOut, ArrowLeft, Home, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import MobileNav from "@/components/MobileNav";
 
@@ -33,6 +33,14 @@ const ProfileHeader = ({ onSignOut }: ProfileHeaderProps) => {
         >
           <Home className="h-4 w-4" />
           Home
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => navigate("/contact")}
+          className="flex items-center gap-2"
+        >
+          <MessageCircle className="h-4 w-4" />
+          Contact
         </Button>
         <Button
           onClick={onSignOut}

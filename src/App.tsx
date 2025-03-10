@@ -14,6 +14,7 @@ import NotFound from './pages/NotFound';
 import Footer from './components/Footer';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfUse from './pages/TermsOfUse';
+import Contact from './pages/Contact';
 import './App.css';
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ function App() {
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/auth" element={<Auth />} />
+                  <Route path="/contact" element={<Contact />} />
                   <Route 
                     path="/generator" 
                     element={
