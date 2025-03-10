@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -7,6 +8,7 @@ import SampleImages from "@/components/image-generator/SampleImages";
 import MoreExamples from "@/components/image-generator/MoreExamples";
 import HeroSection from "@/components/home/HeroSection";
 import FeaturesSection from "@/components/home/FeaturesSection";
+import TestimonialSection from "@/components/home/TestimonialSection";
 import CallToAction from "@/components/home/CallToAction";
 import HomeHeader from "@/components/home/HomeHeader";
 
@@ -67,6 +69,9 @@ const Index = () => {
 
         {/* Features Section */}
         <FeaturesSection />
+
+        {/* Testimonial Section */}
+        <TestimonialSection />
 
         {/* Call to Action */}
         <CallToAction isAuthenticated={isAuthenticated} authReady={authReady} />
