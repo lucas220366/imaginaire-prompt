@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { ImageSettings } from "@/types/image-generator";
-import { RunwareService } from '@/lib/runware';
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { getImageDimensions } from "@/utils/image-utils";
@@ -9,7 +8,6 @@ import { Session } from '@supabase/supabase-js';
 import type { Database } from '@/integrations/supabase/types';
 
 interface ImageGenerationHandlerProps {
-  apiKey: string;
   prompt: string;
   settings: ImageSettings;
   session: Session | null;
@@ -24,7 +22,6 @@ interface ImageGenerationHandlerProps {
 let isGenerating = false;
 
 const ImageGenerationHandler = async ({
-  apiKey,
   prompt,
   settings,
   session,
@@ -50,12 +47,6 @@ const ImageGenerationHandler = async ({
     return;
   }
 
-  if (!apiKey || apiKey === "runware_demo_key") {
-    toast.error("Please provide a valid Runware API key");
-    onError();
-    return;
-  }
-
   // Set generating flags and notify UI
   isGenerating = true;
   onStartGenerating();
@@ -76,49 +67,32 @@ const ImageGenerationHandler = async ({
     
     console.log("Starting image generation with prompt:", prompt);
     console.log("Using dimensions:", dimensions);
-    console.log("API key length:", apiKey?.length || 0);
     
-    // Initialize Runware service
-    let runware: RunwareService;
-    try {
-      console.log("Initializing RunwareService");
-      runware = new RunwareService(apiKey);
-    } catch (err: any) {
-      console.error("API service initialization error:", err);
-      toast.error(`Could not initialize the image generation service: ${err.message}`);
-      onError();
-      clearTimeout(timeoutId);
-      onFinishGenerating();
-      isGenerating = false;
-      return;
-    }
-    
-    // Generate the image
-    console.log("Calling generateImage method with params:", { 
-      positivePrompt: prompt,
-      outputFormat: settings.format,
-      ...dimensions
-    });
-    
-    const result = await runware.generateImage({ 
-      positivePrompt: prompt,
-      outputFormat: settings.format,
-      ...dimensions
+    // Call the edge function
+    const { data, error } = await supabase.functions.invoke('generate-image', {
+      body: {
+        prompt,
+        settings: {
+          ...settings,
+          ...dimensions
+        }
+      }
     });
     
     clearTimeout(timeoutId);
     
+    if (error) {
+      console.error("Edge function error:", error);
+      throw new Error(error.message || "Failed to generate image");
+    }
+    
     // Validate response
-    if (!result?.imageURL) {
-      console.error("No image URL in response:", result);
-      toast.error("Failed to generate image. Invalid response from API.");
-      onError();
-      onFinishGenerating();
-      isGenerating = false;
-      return;
+    if (!data?.imageURL) {
+      console.error("No image URL in response:", data);
+      throw new Error("Failed to generate image. Invalid response from API.");
     }
 
-    console.log("Image generation successful:", result);
+    console.log("Image generation successful:", data);
 
     // Save to database
     type GeneratedImageInsert = Database['public']['Tables']['generated_images']['Insert'];
@@ -129,7 +103,7 @@ const ImageGenerationHandler = async ({
       .insert([{
         user_id: session.user.id,
         prompt: prompt,
-        image_url: result.imageURL
+        image_url: data.imageURL
       } satisfies GeneratedImageInsert])
       .select()
       .single();
@@ -138,14 +112,14 @@ const ImageGenerationHandler = async ({
       console.error("Failed to save to database:", saveError);
       toast.error(`Failed to save to profile: ${saveError.message}`);
       // Still consider the generation successful even if saving failed
-      onSuccess(result.imageURL);
+      onSuccess(data.imageURL);
     } else if (!savedImage) {
       console.error("No data returned after save");
       toast.warning("Image generated successfully but may not have been saved to your profile");
-      onSuccess(result.imageURL);
+      onSuccess(data.imageURL);
     } else {
       console.log("Successfully saved image to database:", savedImage);
-      onSuccess(result.imageURL);
+      onSuccess(data.imageURL);
       toast.success("Image generated and saved successfully!");
     }
   } catch (error: any) {
