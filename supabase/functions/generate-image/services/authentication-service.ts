@@ -12,6 +12,8 @@ export class AuthenticationService {
       throw new Error("API key not provided or is empty");
     }
     
+    console.log(`API key received: ${apiKey.slice(0, 3)}...${apiKey.slice(-3)} (length: ${apiKey.length})`);
+    
     this.webSocketManager = webSocketManager;
     this.apiKey = apiKey;
   }
@@ -32,7 +34,7 @@ export class AuthenticationService {
       apiKey: this.apiKey
     }];
     
-    console.log("Sending authentication message");
+    console.log("Sending authentication message with API key");
     
     this.isAuthenticating = true;
     
@@ -53,6 +55,11 @@ export class AuthenticationService {
             const errorMessage = errorDetails.message || response.errorMessage || "Authentication failed";
             console.error("Authentication error details:", errorDetails);
             console.error("Authentication error message:", errorMessage);
+            console.error("API key validation failed. Please verify your Runware API key is correct.");
+            
+            if (errorDetails.connectionDetails) {
+              console.log("Connection details:", JSON.stringify(errorDetails.connectionDetails));
+            }
             
             this.webSocketManager.removeWebSocketEventListener("message", handleAuthResponse);
             this.isAuthenticating = false;
