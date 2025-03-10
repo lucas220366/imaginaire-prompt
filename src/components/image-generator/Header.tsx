@@ -1,10 +1,11 @@
 
 import React from 'react';
+import { Button } from "@/components/ui/button";
+import { LogOut, User, Home, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthProvider";
 import { toast } from "sonner";
 import Logo from '@/components/Logo';
-import NavigationMenu from '@/components/layout/NavigationMenu';
 
 interface HeaderProps {
   onSignOut: () => Promise<void>;
@@ -13,6 +14,11 @@ interface HeaderProps {
 const Header = ({ onSignOut }: HeaderProps) => {
   const navigate = useNavigate();
   const { signOut } = useAuth();
+
+  const handleHomeClick = () => {
+    console.log("Home button clicked");
+    navigate('/');
+  };
 
   const handleSignOut = async () => {
     try {
@@ -31,15 +37,41 @@ const Header = ({ onSignOut }: HeaderProps) => {
   };
 
   return (
-    <div className="flex justify-between items-center">
+    <>
       <Logo />
-      <div className="ml-auto">
-        <NavigationMenu 
-          isAuthenticated={true} 
-          onSignOut={handleSignOut} 
-        />
+      <div className="absolute top-4 left-0 right-0 flex justify-center md:justify-end md:right-4 px-4">
+        <div className="flex gap-2">
+          <Button
+            onClick={handleHomeClick}
+            variant="outline"
+          >
+            <Home className="mr-2 h-4 w-4" />
+            Home
+          </Button>
+          <Button
+            onClick={() => navigate("/contact")}
+            variant="outline"
+          >
+            <MessageCircle className="mr-2 h-4 w-4" />
+            Contact
+          </Button>
+          <Button
+            onClick={() => navigate("/profile")}
+            variant="outline"
+          >
+            <User className="mr-2 h-4 w-4" />
+            My Images
+          </Button>
+          <Button
+            onClick={handleSignOut}
+            variant="outline"
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            Sign Out
+          </Button>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
