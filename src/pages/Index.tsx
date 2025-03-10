@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -56,7 +55,7 @@ const Index = () => {
         onSignOut={handleSignOut} 
       />
 
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto px-4 py-6 md:py-8 max-w-4xl">
         {/* Hero Section */}
         <HeroSection isAuthenticated={isAuthenticated} authReady={authReady} />
 
