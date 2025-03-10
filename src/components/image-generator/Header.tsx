@@ -44,6 +44,7 @@ const Header = ({ onSignOut }: HeaderProps) => {
           <Button
             onClick={handleHomeClick}
             variant="outline"
+            className="hidden md:flex" // Hide on mobile, show on medium screens and up
           >
             <Home className="mr-2 h-4 w-4" />
             Home
