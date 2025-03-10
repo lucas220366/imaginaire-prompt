@@ -34,6 +34,7 @@ const MobileMenu = ({
         onClick={toggleMenu}
         variant="outline"
         size="icon"
+        className="ml-auto"
       >
         <Menu className="h-4 w-4" />
       </Button>

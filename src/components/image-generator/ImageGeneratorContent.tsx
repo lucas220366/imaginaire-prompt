@@ -27,7 +27,9 @@ const ImageGeneratorContent = ({
 }: ImageGeneratorContentProps) => {
   return (
     <div className="max-w-6xl mx-auto space-y-8 pt-16">
-      <Title />
+      <div className="text-center">
+        <Title />
+      </div>
 
       <div className="bg-white/50 backdrop-blur-lg rounded-lg p-6 shadow-lg border border-gray-100">
         <ImageSettingsControl
