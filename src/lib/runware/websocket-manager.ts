@@ -1,4 +1,3 @@
-
 import { WebSocketMessage } from "./types";
 
 export class WebSocketManager {

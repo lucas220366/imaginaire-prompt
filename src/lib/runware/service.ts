@@ -24,7 +24,7 @@ export class RunwareService {
 
   constructor(apiKey: string) {
     if (!apiKey) {
-      throw new Error("API key not set");
+      throw new Error("API key not provided or is empty");
     }
     console.log("Initializing RunwareService with API endpoint:", API_ENDPOINT);
     this.wsManager = new WebSocketManager(API_ENDPOINT, apiKey);
@@ -50,10 +50,16 @@ export class RunwareService {
     }];
 
     console.log("Starting image generation with params:", JSON.stringify(params, null, 2));
+    console.log("Full message to send:", JSON.stringify(message, null, 2));
     
     try {
       const result = await this.wsManager.sendMessage<GeneratedImage>(message);
       console.log("Image generation successful, received result:", result);
+      
+      if (!result.imageURL) {
+        throw new Error("No image URL returned from API");
+      }
+      
       return result;
     } catch (error) {
       console.error("Image generation failed:", error);

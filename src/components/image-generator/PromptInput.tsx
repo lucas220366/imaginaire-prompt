@@ -30,7 +30,7 @@ const PromptInput = ({ prompt, isGenerating, onPromptChange, onGenerate }: Promp
           {isGenerating ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Generating
+              Generating...
             </>
           ) : (
             "Generate"
@@ -38,7 +38,9 @@ const PromptInput = ({ prompt, isGenerating, onPromptChange, onGenerate }: Promp
         </Button>
       </div>
       <p className="text-sm text-gray-600 mt-2">
-        For optimal results try to be specific, include clear details about your subject, style, and your mood!
+        {isGenerating 
+          ? "Please wait while your image is being generated. This may take up to 30 seconds..." 
+          : "For optimal results try to be specific, include clear details about your subject, style, and your mood!"}
       </p>
     </div>
   );

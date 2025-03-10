@@ -50,6 +50,12 @@ const ImageGenerationHandler = async ({
     return;
   }
 
+  if (!apiKey || apiKey === "runware_demo_key") {
+    toast.error("Please provide a valid Runware API key");
+    onError();
+    return;
+  }
+
   // Set generating flags and notify UI
   isGenerating = true;
   onStartGenerating();
@@ -70,11 +76,12 @@ const ImageGenerationHandler = async ({
     
     console.log("Starting image generation with prompt:", prompt);
     console.log("Using dimensions:", dimensions);
+    console.log("API key length:", apiKey?.length || 0);
     
     // Initialize Runware service
     let runware: RunwareService;
     try {
-      console.log("Initializing RunwareService with API key length:", apiKey?.length || 0);
+      console.log("Initializing RunwareService");
       runware = new RunwareService(apiKey);
     } catch (err: any) {
       console.error("API service initialization error:", err);
@@ -130,24 +137,17 @@ const ImageGenerationHandler = async ({
     if (saveError) {
       console.error("Failed to save to database:", saveError);
       toast.error(`Failed to save to profile: ${saveError.message}`);
-      onError();
-      onFinishGenerating();
-      isGenerating = false;
-      return;
-    }
-
-    if (!savedImage) {
+      // Still consider the generation successful even if saving failed
+      onSuccess(result.imageURL);
+    } else if (!savedImage) {
       console.error("No data returned after save");
-      toast.error("Failed to verify image was saved");
-      onError();
-      onFinishGenerating();
-      isGenerating = false;
-      return;
+      toast.warning("Image generated successfully but may not have been saved to your profile");
+      onSuccess(result.imageURL);
+    } else {
+      console.log("Successfully saved image to database:", savedImage);
+      onSuccess(result.imageURL);
+      toast.success("Image generated and saved successfully!");
     }
-    
-    console.log("Successfully saved image to database:", savedImage);
-    onSuccess(result.imageURL);
-    toast.success("Image generated and saved successfully!");
   } catch (error: any) {
     clearTimeout(timeoutId);
     console.error("Image generation or save failed:", error);
