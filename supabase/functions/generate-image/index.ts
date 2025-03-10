@@ -19,8 +19,14 @@ serve(async (req) => {
     if (!apiKey) {
       console.error("RUNWARE_API_KEY not found in environment variables");
       return new Response(
-        JSON.stringify({ error: "API key not configured on the server" }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ 
+          error: "API key not configured on the server",
+          success: false 
+        }),
+        { 
+          status: 200, // Return 200 even for errors to avoid non-2xx status
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
       );
     }
 
@@ -31,8 +37,14 @@ serve(async (req) => {
     
     if (!prompt) {
       return new Response(
-        JSON.stringify({ error: "Prompt is required" }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ 
+          error: "Prompt is required",
+          success: false 
+        }),
+        { 
+          status: 200, // Return 200 even for errors
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
       );
     }
 
@@ -65,29 +77,53 @@ serve(async (req) => {
       if (!result?.imageURL) {
         console.error("No image URL in response:", result);
         return new Response(
-          JSON.stringify({ error: "No image URL in response from Runware API" }),
-          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          JSON.stringify({ 
+            error: "No image URL in response from Runware API",
+            success: false 
+          }),
+          { 
+            status: 200, // Return 200 even for errors
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
         );
       }
 
       console.log("Image generation successful, returning URL:", result.imageURL);
       
       return new Response(
-        JSON.stringify({ imageURL: result.imageURL }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ 
+          imageURL: result.imageURL,
+          success: true 
+        }),
+        { 
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
       );
     } catch (generationError) {
       console.error("Error in image generation:", generationError);
       return new Response(
-        JSON.stringify({ error: generationError.message || "Failed to generate image" }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ 
+          error: generationError.message || "Failed to generate image",
+          success: false 
+        }),
+        { 
+          status: 200, // Return 200 even for errors
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
       );
     }
   } catch (error) {
     console.error("Error processing request:", error);
     return new Response(
-      JSON.stringify({ error: error.message || "An error occurred processing the request" }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({ 
+        error: error.message || "An error occurred processing the request",
+        success: false 
+      }),
+      { 
+        status: 200, // Return 200 even for errors
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
     );
   }
 });

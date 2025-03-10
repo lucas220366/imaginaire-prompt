@@ -87,10 +87,16 @@ const ImageGenerationHandler = async ({
       throw new Error(error.message || "Failed to generate image");
     }
     
+    // Check if the response indicates an error
+    if (data?.error || !data?.success) {
+      console.error("Error from edge function:", data?.error);
+      throw new Error(data?.error || "Failed to generate image. Invalid response from API.");
+    }
+    
     // Validate response
     if (!data?.imageURL) {
       console.error("No image URL in response:", data);
-      throw new Error(data?.error || "Failed to generate image. Invalid response from API.");
+      throw new Error("Failed to generate image. No image URL returned.");
     }
 
     console.log("Image generation successful:", data);
