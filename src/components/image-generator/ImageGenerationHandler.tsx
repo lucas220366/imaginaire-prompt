@@ -49,14 +49,21 @@ const ImageGenerationHandler = async ({
   isGenerating = true;
   onStartGenerating();
   
-  const timeoutId = setTimeout(() => {
-    isGenerating = false;
-    onFinishGenerating();
-    onError();
-    toast.error("Image generation timed out. Please try again.");
-  }, 120000); // 2 minute timeout
-
+  let timeoutId: number | undefined;
+  
   try {
+    // Clear any previous timeouts first
+    if (timeoutId) clearTimeout(timeoutId);
+    
+    // Setup a new timeout
+    timeoutId = setTimeout(() => {
+      console.log("Image generation timed out after 2 minutes");
+      isGenerating = false;
+      onFinishGenerating();
+      onError();
+      toast.error("Image generation timed out. Please try again.");
+    }, 120000); // 2 minute timeout
+
     // Get dimensions based on settings
     const dimensions = getImageDimensions(settings.size, settings.aspectRatio);
     
@@ -66,82 +73,81 @@ const ImageGenerationHandler = async ({
     
     // Call the edge function with detailed error handling
     console.log("Invoking generate-image edge function");
-    try {
-      const response = await supabase.functions.invoke('generate-image', {
-        body: {
-          prompt,
-          settings: {
-            ...settings,
-            ...dimensions
-          }
+    
+    const response = await supabase.functions.invoke('generate-image', {
+      body: {
+        prompt,
+        settings: {
+          ...settings,
+          ...dimensions
         }
-      });
-      
-      clearTimeout(timeoutId);
-      
-      // Log the full response for debugging
-      console.log("Edge function response:", response);
-      
-      const { data, error } = response;
-      
-      if (error) {
-        console.error("Edge function error:", error);
-        throw new Error(error.message || "Failed to send a request to the Edge Function");
       }
-      
-      // Check if the response indicates an error
-      if (data?.error || !data?.success) {
-        console.error("Error from edge function:", data?.error);
-        throw new Error(data?.error || "Failed to generate image. Invalid response from API.");
-      }
-      
-      // Validate response
-      if (!data?.imageURL) {
-        console.error("No image URL in response:", data);
-        throw new Error("Failed to generate image. No image URL returned.");
-      }
-
-      console.log("Image generation successful:", data);
-
-      // Save to database
-      type GeneratedImageInsert = Database['public']['Tables']['generated_images']['Insert'];
-      
-      console.log("Saving image to database for user:", session.user.id);
-      const { data: savedImage, error: saveError } = await supabase
-        .from('generated_images')
-        .insert([{
-          user_id: session.user.id,
-          prompt: prompt,
-          image_url: data.imageURL
-        } satisfies GeneratedImageInsert])
-        .select()
-        .single();
-      
-      if (saveError) {
-        console.error("Failed to save to database:", saveError);
-        toast.error(`Failed to save to profile: ${saveError.message}`);
-        // Still consider the generation successful even if saving failed
-        onSuccess(data.imageURL);
-      } else if (!savedImage) {
-        console.error("No data returned after save");
-        toast.warning("Image generated successfully but may not have been saved to your profile");
-        onSuccess(data.imageURL);
-      } else {
-        console.log("Successfully saved image to database:", savedImage);
-        onSuccess(data.imageURL);
-        toast.success("Image generated and saved successfully!");
-      }
-    } catch (invokeError: any) {
-      console.error("Error invoking edge function:", invokeError);
-      throw new Error(`Failed to call Edge Function: ${invokeError.message}`);
+    });
+    
+    // Log the full response for debugging
+    console.log("Edge function response:", response);
+    
+    const { data, error } = response;
+    
+    if (error) {
+      console.error("Edge function error:", error);
+      throw new Error(error.message || "Failed to send a request to the Edge Function");
     }
+    
+    // Check if the response indicates an error
+    if (data?.error || !data?.success) {
+      console.error("Error from edge function:", data?.error);
+      throw new Error(data?.error || "Failed to generate image. Invalid response from API.");
+    }
+    
+    // Validate response
+    if (!data?.imageURL) {
+      console.error("No image URL in response:", data);
+      throw new Error("Failed to generate image. No image URL returned.");
+    }
+
+    console.log("Image generation successful:", data);
+
+    // Save to database
+    type GeneratedImageInsert = Database['public']['Tables']['generated_images']['Insert'];
+    
+    console.log("Saving image to database for user:", session.user.id);
+    const { data: savedImage, error: saveError } = await supabase
+      .from('generated_images')
+      .insert([{
+        user_id: session.user.id,
+        prompt: prompt,
+        image_url: data.imageURL
+      } satisfies GeneratedImageInsert])
+      .select()
+      .single();
+    
+    if (saveError) {
+      console.error("Failed to save to database:", saveError);
+      toast.error(`Failed to save to profile: ${saveError.message}`);
+      // Still consider the generation successful even if saving failed
+      onSuccess(data.imageURL);
+    } else if (!savedImage) {
+      console.error("No data returned after save");
+      toast.warning("Image generated successfully but may not have been saved to your profile");
+      onSuccess(data.imageURL);
+    } else {
+      console.log("Successfully saved image to database:", savedImage);
+      onSuccess(data.imageURL);
+      toast.success("Image generated and saved successfully!");
+    }
+    
+    // Clear the timeout on success
+    if (timeoutId) clearTimeout(timeoutId);
+    
   } catch (error: any) {
-    clearTimeout(timeoutId);
     console.error("Image generation or save failed:", error);
     const errorMessage = error?.message || "Failed to generate image. Please try again.";
     toast.error(errorMessage);
     onError();
   } finally {
+    // Clear any remaining timeout
+    if (timeoutId) clearTimeout(timeoutId);
     onFinishGenerating();
     isGenerating = false;
   }
