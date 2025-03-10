@@ -43,38 +43,7 @@ export class WebSocketManager {
           resolve();
         };
 
-        this.ws.onmessage = (event) => {
-          try {
-            const response = JSON.parse(event.data);
-            console.log("WebSocket received message type:", response.data?.[0]?.taskType);
-            
-            if (response.error || response.errors) {
-              console.error("WebSocket error response:", response);
-              const errorMessage = response.errorMessage || response.errors?.[0]?.message || "An error occurred";
-              console.error("WebSocket error:", errorMessage);
-              return;
-            }
-
-            if (this.onMessageCallback) {
-              this.onMessageCallback(response);
-            }
-
-            if (response.data) {
-              response.data.forEach((item: any) => {
-                const callback = this.messageCallbacks.get(item.taskUUID);
-                if (callback) {
-                  console.log(`Executing callback for taskUUID: ${item.taskUUID}`);
-                  callback(item);
-                  this.messageCallbacks.delete(item.taskUUID);
-                } else {
-                  console.log(`No callback found for taskUUID: ${item.taskUUID}`);
-                }
-              });
-            }
-          } catch (error) {
-            console.error("Error processing WebSocket message:", error);
-          }
-        };
+        this.ws.onmessage = this.handleMessage.bind(this);
 
         this.ws.onerror = (error) => {
           console.error("WebSocket error:", error);
@@ -102,6 +71,39 @@ export class WebSocketManager {
     return this.connectionPromise;
   }
 
+  private handleMessage(event: MessageEvent): void {
+    try {
+      const response = JSON.parse(event.data);
+      console.log("WebSocket received message type:", response.data?.[0]?.taskType);
+      
+      if (response.error || response.errors) {
+        console.error("WebSocket error response:", response);
+        const errorMessage = response.errorMessage || response.errors?.[0]?.message || "An error occurred";
+        console.error("WebSocket error:", errorMessage);
+        return;
+      }
+
+      if (this.onMessageCallback) {
+        this.onMessageCallback(response);
+      }
+
+      if (response.data) {
+        response.data.forEach((item: any) => {
+          const callback = this.messageCallbacks.get(item.taskUUID);
+          if (callback) {
+            console.log(`Executing callback for taskUUID: ${item.taskUUID}`);
+            callback(item);
+            this.messageCallbacks.delete(item.taskUUID);
+          } else {
+            console.log(`No callback found for taskUUID: ${item.taskUUID}`);
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Error processing WebSocket message:", error);
+    }
+  }
+
   public addMessageCallback(taskUUID: string, callback: (data: any) => void): void {
     this.messageCallbacks.set(taskUUID, callback);
   }
@@ -120,5 +122,22 @@ export class WebSocketManager {
 
   public isOpen(): boolean {
     return this.isConnected && this.ws?.readyState === WebSocket.OPEN;
+  }
+
+  // Method to add an event listener directly to the WebSocket instance
+  // This is used by the AuthenticationService for authentication responses
+  public addWebSocketEventListener(type: string, listener: EventListener): void {
+    if (this.ws) {
+      this.ws.addEventListener(type, listener);
+    } else {
+      throw new Error("WebSocket not initialized");
+    }
+  }
+
+  // Method to remove an event listener from the WebSocket instance
+  public removeWebSocketEventListener(type: string, listener: EventListener): void {
+    if (this.ws) {
+      this.ws.removeEventListener(type, listener);
+    }
   }
 }

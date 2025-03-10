@@ -52,19 +52,13 @@ export class AuthenticationService {
         this.webSocketManager.send(authMessage);
         
         // Temporarily add an event listener for authentication response
-        if (this.webSocketManager["ws"]) {
-          this.webSocketManager["ws"].addEventListener("message", handleAuthResponse);
-          
-          // Set a timeout for authentication
-          setTimeout(() => {
-            if (this.webSocketManager["ws"]) {
-              this.webSocketManager["ws"].removeEventListener("message", handleAuthResponse);
-            }
-            reject(new Error("Authentication timed out"));
-          }, 10000);
-        } else {
-          reject(new Error("WebSocket instance not available"));
-        }
+        this.webSocketManager.addWebSocketEventListener("message", handleAuthResponse);
+        
+        // Set a timeout for authentication
+        setTimeout(() => {
+          this.webSocketManager.removeWebSocketEventListener("message", handleAuthResponse);
+          reject(new Error("Authentication timed out"));
+        }, 10000);
       } catch (error) {
         reject(error);
       }
