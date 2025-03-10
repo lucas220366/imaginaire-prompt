@@ -4,6 +4,8 @@ import { WebSocketManager } from "./websocket-manager.ts";
 export class AuthenticationService {
   private webSocketManager: WebSocketManager;
   private apiKey: string;
+  private isAuthenticating: boolean = false;
+  private authPromise: Promise<void> | null = null;
   
   constructor(webSocketManager: WebSocketManager, apiKey: string) {
     if (!apiKey) {
@@ -15,6 +17,12 @@ export class AuthenticationService {
   }
   
   public authenticate(): Promise<void> {
+    // If we're already in the process of authenticating, return the existing promise
+    if (this.isAuthenticating && this.authPromise) {
+      console.log("Authentication already in progress, reusing existing promise");
+      return this.authPromise;
+    }
+    
     if (!this.webSocketManager.isOpen()) {
       return Promise.reject(new Error("WebSocket not ready for authentication"));
     }
@@ -26,7 +34,9 @@ export class AuthenticationService {
     
     console.log("Sending authentication message");
     
-    return new Promise((resolve, reject) => {
+    this.isAuthenticating = true;
+    
+    this.authPromise = new Promise((resolve, reject) => {
       // Set up a one-time listener for the authentication response
       const handleAuthResponse = (event: MessageEvent) => {
         try {
@@ -35,14 +45,20 @@ export class AuthenticationService {
           
           if (response.data?.[0]?.taskType === "authentication") {
             console.log("Authentication successful");
+            this.webSocketManager.removeWebSocketEventListener("message", handleAuthResponse);
+            this.isAuthenticating = false;
             resolve();
           } else if (response.error || response.errors) {
             const error = response.errorMessage || response.errors?.[0]?.message || "Authentication failed";
             console.error("Authentication error:", error);
+            this.webSocketManager.removeWebSocketEventListener("message", handleAuthResponse);
+            this.isAuthenticating = false;
             reject(new Error(error));
           }
         } catch (error) {
           console.error("Error parsing authentication response:", error);
+          this.webSocketManager.removeWebSocketEventListener("message", handleAuthResponse);
+          this.isAuthenticating = false;
           reject(error);
         }
       };
@@ -56,12 +72,18 @@ export class AuthenticationService {
         
         // Set a timeout for authentication
         setTimeout(() => {
-          this.webSocketManager.removeWebSocketEventListener("message", handleAuthResponse);
-          reject(new Error("Authentication timed out"));
+          if (this.isAuthenticating) {
+            this.webSocketManager.removeWebSocketEventListener("message", handleAuthResponse);
+            this.isAuthenticating = false;
+            reject(new Error("Authentication timed out"));
+          }
         }, 10000);
       } catch (error) {
+        this.isAuthenticating = false;
         reject(error);
       }
     });
+    
+    return this.authPromise;
   }
 }
