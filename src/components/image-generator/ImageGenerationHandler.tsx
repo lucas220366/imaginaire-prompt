@@ -90,7 +90,7 @@ const ImageGenerationHandler = async ({
     // Validate response
     if (!data?.imageURL) {
       console.error("No image URL in response:", data);
-      throw new Error("Failed to generate image. Invalid response from API.");
+      throw new Error(data?.error || "Failed to generate image. Invalid response from API.");
     }
 
     console.log("Image generation successful:", data);
@@ -126,7 +126,8 @@ const ImageGenerationHandler = async ({
   } catch (error: any) {
     clearTimeout(timeoutId);
     console.error("Image generation or save failed:", error);
-    toast.error(error?.message || "Failed to generate image. Please try again.");
+    const errorMessage = error?.message || "Failed to generate image. Please try again.";
+    toast.error(errorMessage);
     onError();
   } finally {
     onFinishGenerating();

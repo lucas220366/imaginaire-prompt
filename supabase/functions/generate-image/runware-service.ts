@@ -57,7 +57,8 @@ export class RunwareService {
             if (response.error || response.errors) {
               console.error("WebSocket error response:", response);
               const errorMessage = response.errorMessage || response.errors?.[0]?.message || "An error occurred";
-              reject(new Error(errorMessage));
+              // Don't reject here, just log the error and let the callback handle it
+              console.error("WebSocket error:", errorMessage);
               return;
             }
 
@@ -75,18 +76,18 @@ export class RunwareService {
             }
           } catch (error) {
             console.error("Error processing WebSocket message:", error);
-            reject(error);
+            // Don't reject here, just log the error
           }
         };
 
         this.ws.onerror = (error) => {
           console.error("WebSocket error:", error);
           this.isConnected = false;
-          reject(error);
+          reject(new Error("WebSocket connection error"));
         };
 
-        this.ws.onclose = () => {
-          console.log("WebSocket closed");
+        this.ws.onclose = (event) => {
+          console.log(`WebSocket closed with code ${event.code} and reason: ${event.reason}`);
           this.isConnected = false;
           this.connectionPromise = null;
         };
@@ -160,7 +161,7 @@ export class RunwareService {
         console.log("Connection established successfully");
       } catch (error) {
         console.error("Connection failed:", error);
-        throw new Error("Failed to establish WebSocket connection");
+        throw new Error(`Failed to establish WebSocket connection: ${error.message}`);
       }
     } else if (!this.isConnected) {
       console.log("No active connection, creating new connection...");
@@ -170,7 +171,7 @@ export class RunwareService {
         console.log("New connection established successfully");
       } catch (error) {
         console.error("Failed to create new connection:", error);
-        throw new Error("Failed to establish WebSocket connection");
+        throw new Error(`Failed to establish WebSocket connection: ${error.message}`);
       }
     }
 
@@ -201,7 +202,9 @@ export class RunwareService {
       this.messageCallbacks.set(taskUUID, (data) => {
         console.log(`Received callback data for taskUUID ${taskUUID}:`, data);
         if (data.error) {
-          reject(new Error(data.errorMessage));
+          reject(new Error(data.errorMessage || "Error generating image"));
+        } else if (!data.imageURL) {
+          reject(new Error("No image URL in response"));
         } else {
           resolve(data as GeneratedImage);
         }
