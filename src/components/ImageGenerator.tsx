@@ -77,18 +77,20 @@ const ImageGenerator = () => {
   };
 
   return (
-    <div className="min-h-screen p-6 animate-fade-in">
+    <div className="min-h-screen flex flex-col bg-background animate-fade-in">
       <Header onSignOut={handleSignOut} />
       
-      <ImageGeneratorContent
-        settings={settings}
-        onSettingsChange={setSettings}
-        prompt={prompt}
-        isGenerating={isGenerating}
-        onPromptChange={setPrompt}
-        onGenerate={handleGenerate}
-        generatedImage={image}
-      />
+      <main className="flex-grow p-6">
+        <ImageGeneratorContent
+          settings={settings}
+          onSettingsChange={setSettings}
+          prompt={prompt}
+          isGenerating={isGenerating}
+          onPromptChange={setPrompt}
+          onGenerate={handleGenerate}
+          generatedImage={image}
+        />
+      </main>
     </div>
   );
 };

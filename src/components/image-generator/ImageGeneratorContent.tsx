@@ -26,7 +26,7 @@ const ImageGeneratorContent = ({
   generatedImage
 }: ImageGeneratorContentProps) => {
   return (
-    <div className="max-w-6xl mx-auto space-y-8 pt-16">
+    <div className="max-w-6xl mx-auto space-y-8">
       <Title />
 
       <div className="bg-white/50 backdrop-blur-lg rounded-lg p-6 shadow-lg border border-gray-100">
@@ -43,10 +43,12 @@ const ImageGeneratorContent = ({
       </div>
 
       {generatedImage && (
-        <GeneratedImage
-          imageUrl={generatedImage}
-          prompt={prompt}
-        />
+        <div className="mt-8">
+          <GeneratedImage
+            imageUrl={generatedImage}
+            prompt={prompt}
+          />
+        </div>
       )}
     </div>
   );

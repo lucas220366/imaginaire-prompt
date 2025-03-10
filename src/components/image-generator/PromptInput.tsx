@@ -13,8 +13,8 @@ interface PromptInputProps {
 
 const PromptInput = ({ prompt, isGenerating, onPromptChange, onGenerate }: PromptInputProps) => {
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex gap-2">
+    <div className="flex flex-col gap-2 mt-4">
+      <div className="flex flex-col sm:flex-row gap-2">
         <Input
           placeholder="Describe the image you want to generate... (e.g., 'A serene mountain landscape at sunset')"
           value={prompt}
@@ -37,7 +37,7 @@ const PromptInput = ({ prompt, isGenerating, onPromptChange, onGenerate }: Promp
           )}
         </Button>
       </div>
-      <p className="text-sm text-gray-600 mt-2">
+      <p className="text-sm text-gray-600 mt-1">
         {isGenerating 
           ? "Please wait while your image is being generated. This may take up to 30 seconds..." 
           : "For optimal results try to be specific, include clear details about your subject, style, and your mood!"}
