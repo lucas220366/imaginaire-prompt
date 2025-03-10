@@ -1,8 +1,12 @@
 
-/* Remove all width constraints and padding to ensure consistent page sizing */
+/* Remove all width constraints and ensure full viewport width */
 #root {
-  margin: 0 auto;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
   text-align: center;
+  overflow-x: hidden;
 }
 
 /* Keep the remaining styles */

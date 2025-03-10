@@ -8,10 +8,10 @@ const Title = () => {
   const isHomePage = location.pathname === '/';
   
   return (
-    <div className="relative mt-20 md:mt-4">
+    <div className="relative mt-16 md:mt-4 px-4">
       {/* Rocket only shown on homepage with smaller size */}
       {isHomePage && (
-        <div className="absolute top-0 left-0 -translate-y-16 md:-translate-y-16 -translate-y-8">
+        <div className="absolute top-0 left-0 -translate-y-16 md:-translate-y-16 -translate-x-4 md:translate-x-0">
           <Rocket className="w-10 h-10 text-[#0FA0CE] animate-bounce" />
         </div>
       )}
