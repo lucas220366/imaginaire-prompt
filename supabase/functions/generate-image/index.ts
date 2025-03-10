@@ -23,39 +23,36 @@ serve(async (req) => {
       console.error("RUNWARE_API_KEY not found in environment variables");
       return new Response(
         JSON.stringify({ 
-          error: "API key not configured on the server. Please set the RUNWARE_API_KEY in Supabase secrets.",
+          error: "API key not configured. Please contact support.",
           success: false 
         }),
         { 
-          status: 200, // Return 200 even for errors to avoid non-2xx status
+          status: 200,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
         }
       );
     }
-
-    console.log(`API key found in environment variables, length: ${apiKey.length}`);
 
     // Parse the request body
     let requestBody;
     try {
       requestBody = await req.json();
-      console.log("Parsed request body successfully:", JSON.stringify(requestBody));
+      console.log("Request body:", JSON.stringify(requestBody));
     } catch (parseError) {
       console.error("Error parsing request body:", parseError);
       return new Response(
         JSON.stringify({ 
-          error: "Invalid request body: " + parseError.message,
+          error: "Invalid request format",
           success: false 
         }),
         { 
-          status: 200, // Return 200 even for errors
+          status: 200,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
         }
       );
     }
     
-    const prompt = requestBody?.prompt;
-    const settings = requestBody?.settings;
+    const { prompt, settings } = requestBody;
     
     if (!prompt) {
       console.error("Missing prompt in request");
@@ -65,7 +62,7 @@ serve(async (req) => {
           success: false 
         }),
         { 
-          status: 200, // Return 200 even for errors
+          status: 200,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
         }
       );
@@ -75,23 +72,8 @@ serve(async (req) => {
     console.log("Settings:", JSON.stringify(settings));
     
     // Initialize Runware service
-    let runware;
-    try {
-      runware = new RunwareService(apiKey);
-      console.log("RunwareService initialized successfully");
-    } catch (serviceError) {
-      console.error("Error creating Runware service:", serviceError);
-      return new Response(
-        JSON.stringify({ 
-          error: serviceError.message || "Failed to initialize Runware service",
-          success: false 
-        }),
-        { 
-          status: 200, // Return 200 even for errors
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
-      );
-    }
+    const runware = new RunwareService(apiKey);
+    console.log("RunwareService initialized successfully");
     
     // Get dimensions based on settings
     const dimensions = {
@@ -106,63 +88,49 @@ serve(async (req) => {
       ...dimensions
     });
     
-    try {
-      const result = await runware.generateImage({ 
-        positivePrompt: prompt,
-        outputFormat: settings?.format || "PNG",
-        ...dimensions
-      });
-      
-      console.log("Generation result:", JSON.stringify(result));
-      
-      if (!result?.imageURL) {
-        console.error("No image URL in response:", result);
-        return new Response(
-          JSON.stringify({ 
-            error: "No image URL in response from Runware API",
-            success: false 
-          }),
-          { 
-            status: 200, // Return 200 even for errors
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-          }
-        );
-      }
-
-      console.log("Image generation successful, returning URL:", result.imageURL);
-      
+    const result = await runware.generateImage({ 
+      positivePrompt: prompt,
+      outputFormat: settings?.format || "PNG",
+      ...dimensions
+    });
+    
+    console.log("Generation result:", JSON.stringify(result));
+    
+    if (!result?.imageURL) {
+      console.error("No image URL in response:", result);
       return new Response(
         JSON.stringify({ 
-          imageURL: result.imageURL,
-          success: true 
+          error: "Failed to generate image",
+          success: false 
         }),
         { 
           status: 200,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
         }
       );
-    } catch (generationError) {
-      console.error("Error in image generation:", generationError);
-      return new Response(
-        JSON.stringify({ 
-          error: generationError.message || "Failed to generate image",
-          success: false 
-        }),
-        { 
-          status: 200, // Return 200 even for errors
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
-      );
     }
-  } catch (error) {
-    console.error("Unhandled error processing request:", error);
+
+    console.log("Image generation successful, returning URL:", result.imageURL);
+    
     return new Response(
       JSON.stringify({ 
-        error: error.message || "An error occurred processing the request",
+        imageURL: result.imageURL,
+        success: true 
+      }),
+      { 
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
+    );
+  } catch (error) {
+    console.error('Unhandled error:', error);
+    return new Response(
+      JSON.stringify({ 
+        error: `An unexpected error occurred: ${error.message}`,
         success: false 
       }),
       { 
-        status: 200, // Return 200 even for errors
+        status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
       }
     );
