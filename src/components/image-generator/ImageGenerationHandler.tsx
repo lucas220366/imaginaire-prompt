@@ -17,8 +17,6 @@ interface ImageGenerationHandlerProps {
   onFinishGenerating: () => void;
 }
 
-// Use a module-level variable instead of a function-level one to avoid race conditions
-// when the function is called multiple times
 let isGenerating = false;
 
 const ImageGenerationHandler = async ({
@@ -51,14 +49,11 @@ const ImageGenerationHandler = async ({
   isGenerating = true;
   onStartGenerating();
   
-  // Create an abort controller for timeout handling
-  const abortController = new AbortController();
   const timeoutId = setTimeout(() => {
-    abortController.abort();
-    toast.error("Image generation timed out. Please try again.");
-    onError();
-    onFinishGenerating();
     isGenerating = false;
+    onFinishGenerating();
+    onError();
+    toast.error("Image generation timed out. Please try again.");
   }, 120000); // 2 minute timeout
 
   try {
@@ -79,8 +74,7 @@ const ImageGenerationHandler = async ({
             ...settings,
             ...dimensions
           }
-        },
-        signal: abortController.signal
+        }
       });
       
       clearTimeout(timeoutId);
