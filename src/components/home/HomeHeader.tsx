@@ -24,6 +24,7 @@ const HomeHeader = ({ isAuthenticated, authReady, onSignOut }: HomeHeaderProps) 
         Contact
       </Button>
       
+      {/* Always show one of the buttons regardless of authReady state */}
       {isAuthenticated ? (
         <>
           <Button
@@ -45,7 +46,7 @@ const HomeHeader = ({ isAuthenticated, authReady, onSignOut }: HomeHeaderProps) 
             Sign Out
           </Button>
         </>
-      ) : authReady && (
+      ) : (
         <Button
           onClick={() => navigate("/auth")}
           variant="outline"

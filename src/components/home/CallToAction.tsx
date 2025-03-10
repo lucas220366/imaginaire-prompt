@@ -17,7 +17,7 @@ const CallToAction = ({ isAuthenticated, authReady }: CallToActionProps) => {
         Ready to start creating? Join now and bring your ideas to life!
       </p>
       
-      {/* Always show the appropriate button based on authentication status */}
+      {/* Always show one of the buttons regardless of authReady state */}
       {isAuthenticated ? (
         <Button
           onClick={() => navigate("/generator")}
@@ -25,7 +25,7 @@ const CallToAction = ({ isAuthenticated, authReady }: CallToActionProps) => {
         >
           Go to Generator <Rocket className="ml-2 h-5 w-5" />
         </Button>
-      ) : authReady && (
+      ) : (
         <Button
           onClick={() => navigate("/auth")}
           className="text-base px-4 py-2 h-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"

@@ -24,10 +24,12 @@ const Index = () => {
       userId: session?.user?.id
     });
     
+    // Update authentication state regardless of loading state
+    setIsAuthenticated(!!session);
+    
     // Only set authReady to true once we're sure about the auth state
     if (!isLoading) {
       setAuthReady(true);
-      setIsAuthenticated(!!session);
     }
   }, [session, isLoading]);
 

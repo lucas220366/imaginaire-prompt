@@ -21,7 +21,7 @@ const HeroSection = ({ isAuthenticated, authReady }: HeroSectionProps) => {
         Perfect for artists, designers, and creative minds.
       </p>
       
-      {/* Don't hide when not authReady, just show appropriate button */}
+      {/* Always show one of the buttons regardless of authReady state */}
       {isAuthenticated ? (
         <Button
           onClick={() => navigate("/generator")}
@@ -29,7 +29,7 @@ const HeroSection = ({ isAuthenticated, authReady }: HeroSectionProps) => {
         >
           Go to Generator <ArrowRight className="ml-2" />
         </Button>
-      ) : authReady && (
+      ) : (
         <Button
           onClick={() => navigate("/auth")}
           className="text-base px-4 py-2 h-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
