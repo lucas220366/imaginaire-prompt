@@ -46,17 +46,18 @@ const Index = () => {
 
   return (
     <div className="min-h-screen w-full overflow-x-hidden">
-      {/* Logo component */}
-      <Logo />
+      {/* Logo and Header with fixed positioning */}
+      <div className="fixed top-0 left-0 right-0 z-40 h-16 bg-background/80 backdrop-blur-sm shadow-sm">
+        <Logo />
+        <HomeHeader 
+          isAuthenticated={isAuthenticated} 
+          authReady={authReady} 
+          onSignOut={handleSignOut} 
+        />
+      </div>
 
-      {/* Header with Profile, Contact and Sign Out links */}
-      <HomeHeader 
-        isAuthenticated={isAuthenticated} 
-        authReady={authReady} 
-        onSignOut={handleSignOut} 
-      />
-
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      {/* Main content with padding to prevent overlap */}
+      <div className="container mx-auto px-4 py-8 max-w-4xl pt-20">
         {/* Hero Section */}
         <HeroSection isAuthenticated={isAuthenticated} authReady={authReady} />
 
