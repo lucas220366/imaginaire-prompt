@@ -42,21 +42,25 @@ const ContactForm = () => {
 
   const onSubmit = async (data: ContactFormValues) => {
     setIsSubmitting(true);
+    console.log("Submitting contact form data:", data);
     
     try {
-      // Fixed insertion to match the correct type expected by Supabase
-      const { error } = await supabase
+      // Explicitly include all required fields for contact_submissions
+      const { error, data: insertedData } = await supabase
         .from('contact_submissions')
-        .insert({
+        .insert([{
           name: data.name,
           email: data.email,
           message: data.message
-        });
+        }])
+        .select();
       
       if (error) {
+        console.error("Supabase error details:", error);
         throw error;
       }
       
+      console.log("Successfully inserted contact submission:", insertedData);
       toast.success('Your message has been sent successfully!');
       reset({ message: '' }); // Only reset the message field
       setIsSubmitted(true);
