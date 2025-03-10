@@ -70,7 +70,7 @@ const ImageGenerationHandler = async ({
     console.log("Using settings:", settings);
     
     // Call the edge function
-    const { data, error } = await supabase.functions.invoke('generate-image', {
+    const response = await supabase.functions.invoke('generate-image', {
       body: {
         prompt,
         settings: {
@@ -81,6 +81,11 @@ const ImageGenerationHandler = async ({
     });
     
     clearTimeout(timeoutId);
+    
+    // Log the full response for debugging
+    console.log("Edge function response:", response);
+    
+    const { data, error } = response;
     
     if (error) {
       console.error("Edge function error:", error);
