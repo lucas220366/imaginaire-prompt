@@ -3,8 +3,6 @@ import { WebSocketManager } from "./websocket-manager.ts";
 import { AuthenticationService } from "./authentication-service.ts";
 import { ImageService, GenerateImageParams, GeneratedImage } from "./image-service.ts";
 
-export { GenerateImageParams, GeneratedImage } from "./image-service.ts";
-
 export class RunwareService {
   private webSocketManager: WebSocketManager;
   private authService: AuthenticationService;
@@ -75,3 +73,6 @@ export class RunwareService {
     return this.imageService.generateImage(params);
   }
 }
+
+// Re-export types from image-service.ts for consumers of this module
+export type { GenerateImageParams, GeneratedImage };
