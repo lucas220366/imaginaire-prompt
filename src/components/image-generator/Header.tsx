@@ -38,38 +38,40 @@ const Header = ({ onSignOut }: HeaderProps) => {
   };
 
   return (
-    <>
+    <div className="w-full flex justify-between items-center">
       <Logo />
+      
       {/* Mobile menu */}
       <MobileNav onSignOut={onSignOut} />
       
       {/* Desktop menu */}
-      <div className="fixed top-4 right-4 z-50 hidden md:flex gap-2 bg-background/80 backdrop-blur-sm py-1 px-2 rounded-md shadow-sm">
-        <div className="flex gap-2">
-          <Button
-            onClick={handleHomeClick}
-            variant="outline"
-          >
-            <Home className="mr-2 h-4 w-4" />
-            Home
-          </Button>
-          <Button
-            onClick={() => navigate("/profile")}
-            variant="outline"
-          >
-            <User className="mr-2 h-4 w-4" />
-            My Images
-          </Button>
-          <Button
-            onClick={handleSignOut}
-            variant="outline"
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            Sign Out
-          </Button>
-        </div>
+      <div className="hidden md:flex items-center gap-2 mr-4">
+        <Button
+          onClick={handleHomeClick}
+          variant="outline"
+          size="sm"
+        >
+          <Home className="mr-2 h-4 w-4" />
+          Home
+        </Button>
+        <Button
+          onClick={() => navigate("/profile")}
+          variant="outline"
+          size="sm"
+        >
+          <User className="mr-2 h-4 w-4" />
+          My Images
+        </Button>
+        <Button
+          onClick={handleSignOut}
+          variant="outline"
+          size="sm"
+        >
+          <LogOut className="mr-2 h-4 w-4" />
+          Sign Out
+        </Button>
       </div>
-    </>
+    </div>
   );
 };
 

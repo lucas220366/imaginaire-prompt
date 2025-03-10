@@ -38,7 +38,7 @@ const MobileNav = ({ onSignOut }: MobileNavProps) => {
       <Button
         variant="outline"
         size="icon"
-        className="absolute top-4 right-4 z-50 md:hidden"
+        className="md:hidden mr-4"
         onClick={toggleMenu}
       >
         {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -46,7 +46,7 @@ const MobileNav = ({ onSignOut }: MobileNavProps) => {
 
       {/* Mobile menu */}
       {isOpen && (
-        <div className="fixed inset-0 z-40 bg-white/95 md:hidden pt-16">
+        <div className="fixed inset-0 z-50 bg-white/95 md:hidden pt-16">
           <div className="flex flex-col items-center gap-4 p-4">
             <Button
               onClick={() => { 

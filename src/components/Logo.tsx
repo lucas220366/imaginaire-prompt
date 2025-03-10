@@ -7,7 +7,7 @@ const Logo = () => {
   
   return (
     <div 
-      className="absolute top-2 left-4 z-50 cursor-pointer"
+      className="flex items-center h-16 ml-4 cursor-pointer"
       onClick={() => navigate("/")}
     >
       <span className="text-black text-[22px] font-bold hover:text-gray-800 transition-colors">

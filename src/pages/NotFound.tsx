@@ -1,11 +1,14 @@
 
-import { Link } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import Logo from '@/components/Logo';
+import { Button } from "@/components/ui/button";
+import { Home } from "lucide-react";
+import MobileNav from "@/components/MobileNav";
 
 const NotFound = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.error(
@@ -15,14 +18,37 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="flex items-center justify-center bg-gray-100 flex-grow py-12">
-      <Logo />
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">404</h1>
-        <p className="text-xl text-gray-600 mb-4">Oops! Page not found</p>
-        <Link to="/" className="text-blue-500 hover:text-blue-700 underline">
-          Return to Home
-        </Link>
+    <div className="min-h-screen">
+      {/* Fixed header */}
+      <header className="fixed top-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm shadow-sm">
+        <div className="flex justify-between items-center h-16">
+          <Logo />
+          {/* Desktop navigation */}
+          <div className="hidden md:flex items-center gap-2 mr-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate("/")}
+              className="flex items-center gap-2"
+            >
+              <Home className="h-4 w-4" />
+              Home
+            </Button>
+          </div>
+          {/* Mobile navigation */}
+          <MobileNav />
+        </div>
+      </header>
+      
+      {/* Main content */}
+      <div className="flex items-center justify-center flex-grow py-12 pt-24">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold mb-4">404</h1>
+          <p className="text-xl text-gray-600 mb-4">Oops! Page not found</p>
+          <Link to="/" className="text-blue-500 hover:text-blue-700 underline">
+            Return to Home
+          </Link>
+        </div>
       </div>
     </div>
   );

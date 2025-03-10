@@ -14,20 +14,20 @@ const HomeHeader = ({ isAuthenticated, authReady, onSignOut }: HomeHeaderProps) 
   const navigate = useNavigate();
 
   return (
-    <>
+    <div className="flex justify-end items-center h-16">
       {/* Mobile navigation */}
       <MobileNav onSignOut={onSignOut} />
       
       {/* Desktop navigation */}
-      <div className="fixed top-4 right-4 z-50 hidden md:flex gap-2 bg-background/80 backdrop-blur-sm py-1 px-2 rounded-md shadow-sm">
+      <div className="hidden md:flex items-center gap-2 mr-4">
         {/* Always show one of the buttons regardless of authReady state */}
         {isAuthenticated ? (
           <>
             <Button
               onClick={() => navigate("/profile")}
               variant="outline"
-              className="flex items-center gap-2"
               size="sm"
+              className="flex items-center gap-2"
             >
               <User className="h-4 w-4" />
               My Images
@@ -35,8 +35,8 @@ const HomeHeader = ({ isAuthenticated, authReady, onSignOut }: HomeHeaderProps) 
             <Button
               onClick={onSignOut}
               variant="outline"
-              className="flex items-center gap-2"
               size="sm"
+              className="flex items-center gap-2"
             >
               <LogOut className="h-4 w-4" />
               Sign Out
@@ -46,15 +46,15 @@ const HomeHeader = ({ isAuthenticated, authReady, onSignOut }: HomeHeaderProps) 
           <Button
             onClick={() => navigate("/auth")}
             variant="outline"
-            className="flex items-center gap-2"
             size="sm"
+            className="flex items-center gap-2"
           >
             <User className="h-4 w-4" />
             Sign In
           </Button>
         )}
       </div>
-    </>
+    </div>
   );
 };
 
