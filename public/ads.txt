@@ -3,7 +3,7 @@
 ownerdomain=vraho.com
 contact=directsales@ezoic.com
 managerdomain=ezoic.ai
-
+google.com, pub-1923399504913887, DIRECT, f08c47fec0942fa0
 ezoic.ai, 5bf88760cc11c0fd4e477ab403d250e0, DIRECT
 # 35
 themediagrid.com, 4M5PGT, DIRECT, 35d5010d7789b49d
