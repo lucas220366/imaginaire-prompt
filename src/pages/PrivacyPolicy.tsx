@@ -15,7 +15,7 @@ const PrivacyPolicy = () => {
         <p className="mb-4">
           Welcome to vraho.com. We respect your privacy and are committed to protecting your personal data.
           This privacy policy will inform you about how we look after your personal data when you visit our website
-          and tell you about your privacy rights and how the law protects you.Vraho.com website uses adsense advertisements from google and ezoic
+          and tell you about your privacy rights and how the law protects you.Vraho.com website uses google adsense.
         </p>
         
         <h2 className="text-2xl font-semibold mt-8 mb-4">2. Data We Collect</h2>
