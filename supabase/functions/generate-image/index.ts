@@ -14,6 +14,9 @@ serve(async (req) => {
   }
 
   try {
+    console.log("Edge function called, method:", req.method);
+    console.log("Headers:", JSON.stringify(Object.fromEntries([...req.headers])));
+    
     // Get the Runware API key from environment variables
     const apiKey = Deno.env.get('RUNWARE_API_KEY');
     if (!apiKey) {
@@ -32,80 +35,23 @@ serve(async (req) => {
 
     console.log(`API key found in environment variables, length: ${apiKey.length}`);
 
-    // Parse the request body
-    const { prompt, settings } = await req.json();
-    
-    if (!prompt) {
-      return new Response(
-        JSON.stringify({ 
-          error: "Prompt is required",
-          success: false 
-        }),
-        { 
-          status: 200, // Return 200 even for errors
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
-      );
-    }
-
-    console.log("Starting image generation with prompt:", prompt);
-    console.log("Settings:", JSON.stringify(settings));
-    
-    // Initialize Runware service
     try {
-      const runware = new RunwareService(apiKey);
+      // Parse the request body
+      const requestText = await req.text();
+      console.log("Raw request body:", requestText);
       
-      // Get dimensions based on settings
-      const dimensions = {
-        width: parseInt(settings.size.split('x')[0]),
-        height: parseInt(settings.size.split('x')[1]),
-      };
-      
-      // Generate the image
-      console.log("Calling generateImage with params:", { 
-        positivePrompt: prompt,
-        outputFormat: settings.format,
-        ...dimensions
-      });
+      let prompt, settings;
       
       try {
-        const result = await runware.generateImage({ 
-          positivePrompt: prompt,
-          outputFormat: settings.format,
-          ...dimensions
-        });
-        
-        if (!result?.imageURL) {
-          console.error("No image URL in response:", result);
-          return new Response(
-            JSON.stringify({ 
-              error: "No image URL in response from Runware API",
-              success: false 
-            }),
-            { 
-              status: 200, // Return 200 even for errors
-              headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-            }
-          );
-        }
-
-        console.log("Image generation successful, returning URL:", result.imageURL);
-        
+        const requestData = JSON.parse(requestText);
+        prompt = requestData.prompt;
+        settings = requestData.settings;
+        console.log("Parsed request body successfully");
+      } catch (parseError) {
+        console.error("Error parsing request body:", parseError);
         return new Response(
           JSON.stringify({ 
-            imageURL: result.imageURL,
-            success: true 
-          }),
-          { 
-            status: 200,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-          }
-        );
-      } catch (generationError) {
-        console.error("Error in image generation:", generationError);
-        return new Response(
-          JSON.stringify({ 
-            error: generationError.message || "Failed to generate image",
+            error: "Invalid request body: " + parseError.message,
             success: false 
           }),
           { 
@@ -114,11 +60,104 @@ serve(async (req) => {
           }
         );
       }
-    } catch (serviceError) {
-      console.error("Error creating Runware service:", serviceError);
+      
+      if (!prompt) {
+        return new Response(
+          JSON.stringify({ 
+            error: "Prompt is required",
+            success: false 
+          }),
+          { 
+            status: 200, // Return 200 even for errors
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
+        );
+      }
+
+      console.log("Starting image generation with prompt:", prompt);
+      console.log("Settings:", JSON.stringify(settings));
+      
+      // Initialize Runware service
+      try {
+        const runware = new RunwareService(apiKey);
+        
+        // Get dimensions based on settings
+        const dimensions = {
+          width: parseInt(settings.size.split('x')[0]),
+          height: parseInt(settings.size.split('x')[1]),
+        };
+        
+        // Generate the image
+        console.log("Calling generateImage with params:", { 
+          positivePrompt: prompt,
+          outputFormat: settings.format,
+          ...dimensions
+        });
+        
+        try {
+          const result = await runware.generateImage({ 
+            positivePrompt: prompt,
+            outputFormat: settings.format,
+            ...dimensions
+          });
+          
+          if (!result?.imageURL) {
+            console.error("No image URL in response:", result);
+            return new Response(
+              JSON.stringify({ 
+                error: "No image URL in response from Runware API",
+                success: false 
+              }),
+              { 
+                status: 200, // Return 200 even for errors
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+              }
+            );
+          }
+
+          console.log("Image generation successful, returning URL:", result.imageURL);
+          
+          return new Response(
+            JSON.stringify({ 
+              imageURL: result.imageURL,
+              success: true 
+            }),
+            { 
+              status: 200,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+            }
+          );
+        } catch (generationError) {
+          console.error("Error in image generation:", generationError);
+          return new Response(
+            JSON.stringify({ 
+              error: generationError.message || "Failed to generate image",
+              success: false 
+            }),
+            { 
+              status: 200, // Return 200 even for errors
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+            }
+          );
+        }
+      } catch (serviceError) {
+        console.error("Error creating Runware service:", serviceError);
+        return new Response(
+          JSON.stringify({ 
+            error: serviceError.message || "Failed to initialize Runware service",
+            success: false 
+          }),
+          { 
+            status: 200, // Return 200 even for errors
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
+        );
+      }
+    } catch (bodyError) {
+      console.error("Error reading request body:", bodyError);
       return new Response(
         JSON.stringify({ 
-          error: serviceError.message || "Failed to initialize Runware service",
+          error: "Failed to read request body: " + bodyError.message,
           success: false 
         }),
         { 
@@ -128,7 +167,7 @@ serve(async (req) => {
       );
     }
   } catch (error) {
-    console.error("Error processing request:", error);
+    console.error("Unhandled error processing request:", error);
     return new Response(
       JSON.stringify({ 
         error: error.message || "An error occurred processing the request",

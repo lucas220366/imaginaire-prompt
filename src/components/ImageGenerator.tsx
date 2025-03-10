@@ -26,6 +26,8 @@ const ImageGenerator = () => {
       await signOut();
       console.log("Sign out successful");
       toast.success("Signed out successfully");
+      // Redirect to home page after sign out
+      navigate("/");
     } catch (error: any) {
       console.error("Sign out error:", error);
       toast.error("Failed to sign out");
