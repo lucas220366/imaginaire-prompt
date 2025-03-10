@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { User, LogOut, MessageCircle } from "lucide-react";
+import { User, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import MobileNav from "@/components/MobileNav";
 
@@ -20,16 +20,6 @@ const HomeHeader = ({ isAuthenticated, authReady, onSignOut }: HomeHeaderProps) 
       
       {/* Desktop navigation */}
       <div className="absolute top-4 right-4 z-10 hidden md:flex gap-2">
-        <Button
-          onClick={() => navigate("/contact")}
-          variant="outline"
-          className="flex items-center gap-2"
-          size="sm"
-        >
-          <MessageCircle className="h-4 w-4" />
-          Contact
-        </Button>
-        
         {/* Always show one of the buttons regardless of authReady state */}
         {isAuthenticated ? (
           <>

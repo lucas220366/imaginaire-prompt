@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Menu, X, Home, User, LogOut, MessageCircle } from 'lucide-react';
+import { Menu, X, Home, User, LogOut } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/components/AuthProvider";
 import { toast } from "sonner";
@@ -58,18 +58,6 @@ const MobileNav = ({ onSignOut }: MobileNavProps) => {
             >
               <Home className="mr-2 h-4 w-4" />
               Home
-            </Button>
-
-            <Button
-              onClick={() => { 
-                navigate("/contact");
-                setIsOpen(false);
-              }}
-              variant="ghost"
-              className="w-full justify-start"
-            >
-              <MessageCircle className="mr-2 h-4 w-4" />
-              Contact
             </Button>
 
             {session ? (

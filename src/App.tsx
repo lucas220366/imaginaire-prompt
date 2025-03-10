@@ -9,7 +9,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Auth from './pages/Auth';
 import Index from './pages/Index';
 import Profile from './pages/Profile';
-import Contact from './pages/Contact';
 import ImageGenerator from './components/ImageGenerator';
 import NotFound from './pages/NotFound';
 import Footer from './components/Footer';
@@ -30,7 +29,6 @@ function App() {
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/auth" element={<Auth />} />
-                  <Route path="/contact" element={<Contact />} />
                   <Route 
                     path="/generator" 
                     element={
