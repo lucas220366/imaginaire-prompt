@@ -17,7 +17,7 @@ const ProfileHeader = ({ onSignOut }: ProfileHeaderProps) => {
       <MobileNav onSignOut={onSignOut} />
       
       {/* Desktop navigation - visible only on md and up */}
-      <div className="flex justify-end items-center mb-8 gap-2 hidden md:flex">
+      <div className="fixed top-4 right-4 z-50 hidden md:flex gap-2 bg-background/80 backdrop-blur-sm py-1 px-2 rounded-md shadow-sm">
         <Button
           variant="outline"
           onClick={() => navigate("/generator")}
@@ -52,7 +52,7 @@ const ProfileHeader = ({ onSignOut }: ProfileHeaderProps) => {
       </div>
 
       {/* Content header - shows on all screens */}
-      <div className="bg-white/50 backdrop-blur-lg rounded-lg p-6 shadow-lg border border-gray-100 mb-8 mt-8 md:mt-0">
+      <div className="bg-white/50 backdrop-blur-lg rounded-lg p-6 shadow-lg border border-gray-100 mb-8 mt-20 md:mt-20">
         <h1 className="text-2xl font-semibold text-gray-800">Your Generated Images</h1>
         <p className="text-gray-600 mt-2">
           View and download all your previously generated images

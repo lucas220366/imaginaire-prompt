@@ -19,7 +19,7 @@ const HomeHeader = ({ isAuthenticated, authReady, onSignOut }: HomeHeaderProps) 
       <MobileNav onSignOut={onSignOut} />
       
       {/* Desktop navigation */}
-      <div className="absolute top-4 right-4 z-10 hidden md:flex gap-2">
+      <div className="fixed top-4 right-4 z-50 hidden md:flex gap-2 bg-background/80 backdrop-blur-sm py-1 px-2 rounded-md shadow-sm">
         {/* Always show one of the buttons regardless of authReady state */}
         {isAuthenticated ? (
           <>

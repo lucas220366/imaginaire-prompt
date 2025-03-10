@@ -50,6 +50,8 @@
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+    scroll-behavior: smooth;
+    scroll-padding-top: 60px; /* Add padding for fixed headers */
   }
   
   body {

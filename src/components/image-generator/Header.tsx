@@ -44,7 +44,7 @@ const Header = ({ onSignOut }: HeaderProps) => {
       <MobileNav onSignOut={onSignOut} />
       
       {/* Desktop menu */}
-      <div className="absolute top-4 left-0 right-0 hidden md:flex justify-center md:justify-end md:right-4 px-4">
+      <div className="fixed top-4 right-4 z-50 hidden md:flex gap-2 bg-background/80 backdrop-blur-sm py-1 px-2 rounded-md shadow-sm">
         <div className="flex gap-2">
           <Button
             onClick={handleHomeClick}
