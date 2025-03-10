@@ -75,67 +75,73 @@ const ImageGenerationHandler = async ({
     // Call the edge function with detailed error handling
     console.log("Invoking generate-image edge function");
     
-    const response = await supabase.functions.invoke('generate-image', {
-      body: {
-        prompt,
-        settings: {
-          ...settings,
-          ...dimensions
+    // Add better error handling for the supabase function call
+    try {
+      const response = await supabase.functions.invoke('generate-image', {
+        body: {
+          prompt,
+          settings: {
+            ...settings,
+            ...dimensions
+          }
         }
+      });
+      
+      // Log the full response for debugging
+      console.log("Edge function response:", response);
+      
+      const { data, error } = response;
+      
+      if (error) {
+        console.error("Edge function error:", error);
+        throw new Error(error.message || "Failed to send a request to the Edge Function");
       }
-    });
-    
-    // Log the full response for debugging
-    console.log("Edge function response:", response);
-    
-    const { data, error } = response;
-    
-    if (error) {
-      console.error("Edge function error:", error);
-      throw new Error(error.message || "Failed to send a request to the Edge Function");
-    }
-    
-    // Check if the response indicates an error
-    if (data?.error || !data?.success) {
-      console.error("Error from edge function:", data?.error);
-      throw new Error(data?.error || "Failed to generate image. Invalid response from API.");
-    }
-    
-    // Validate response
-    if (!data?.imageURL) {
-      console.error("No image URL in response:", data);
-      throw new Error("Failed to generate image. No image URL returned.");
-    }
+      
+      // Check if the response indicates an error
+      if (data?.error || !data?.success) {
+        console.error("Error from edge function:", data?.error);
+        throw new Error(data?.error || "Failed to generate image. Invalid response from API.");
+      }
+      
+      // Validate response
+      if (!data?.imageURL) {
+        console.error("No image URL in response:", data);
+        throw new Error("Failed to generate image. No image URL returned.");
+      }
 
-    console.log("Image generation successful:", data);
+      console.log("Image generation successful:", data);
 
-    // Save to database
-    type GeneratedImageInsert = Database['public']['Tables']['generated_images']['Insert'];
-    
-    console.log("Saving image to database for user:", session.user.id);
-    const { data: savedImage, error: saveError } = await supabase
-      .from('generated_images')
-      .insert([{
-        user_id: session.user.id,
-        prompt: prompt,
-        image_url: data.imageURL
-      } satisfies GeneratedImageInsert])
-      .select()
-      .single();
-    
-    if (saveError) {
-      console.error("Failed to save to database:", saveError);
-      toast.error(`Failed to save to profile: ${saveError.message}`);
-      // Still consider the generation successful even if saving failed
-      onSuccess(data.imageURL);
-    } else if (!savedImage) {
-      console.error("No data returned after save");
-      toast.warning("Image generated successfully but may not have been saved to your profile");
-      onSuccess(data.imageURL);
-    } else {
-      console.log("Successfully saved image to database:", savedImage);
-      onSuccess(data.imageURL);
-      toast.success("Image generated and saved successfully!");
+      // Save to database
+      type GeneratedImageInsert = Database['public']['Tables']['generated_images']['Insert'];
+      
+      console.log("Saving image to database for user:", session.user.id);
+      const { data: savedImage, error: saveError } = await supabase
+        .from('generated_images')
+        .insert([{
+          user_id: session.user.id,
+          prompt: prompt,
+          image_url: data.imageURL
+        } satisfies GeneratedImageInsert])
+        .select()
+        .single();
+      
+      if (saveError) {
+        console.error("Failed to save to database:", saveError);
+        toast.error(`Failed to save to profile: ${saveError.message}`);
+        // Still consider the generation successful even if saving failed
+        onSuccess(data.imageURL);
+      } else if (!savedImage) {
+        console.error("No data returned after save");
+        toast.warning("Image generated successfully but may not have been saved to your profile");
+        onSuccess(data.imageURL);
+      } else {
+        console.log("Successfully saved image to database:", savedImage);
+        onSuccess(data.imageURL);
+        toast.success("Image generated and saved successfully!");
+      }
+    } catch (invokeError: any) {
+      console.error("Error invoking edge function:", invokeError);
+      throw new Error(`Failed to invoke edge function: ${invokeError.message}`);
     }
     
     // Clear the timeout on success
