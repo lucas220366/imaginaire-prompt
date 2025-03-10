@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Menu, X, Home, User, LogOut, MessageCircle } from 'lucide-react';
@@ -43,9 +44,9 @@ const MobileNav = ({ onSignOut }: MobileNavProps) => {
         {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
       </Button>
 
-      {/* Mobile menu */}
+      {/* Mobile menu - moved to fixed position with higher z-index */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 bg-white/95 md:hidden pt-16">
+        <div className="fixed inset-0 z-50 bg-white/95 md:hidden pt-24">
           <div className="flex flex-col items-center gap-4 p-4">
             <Button
               onClick={() => { 

@@ -61,6 +61,17 @@
       linear-gradient(rgba(200, 210, 255, 0.05) 1px, transparent 1px),
       linear-gradient(90deg, rgba(200, 210, 255, 0.05) 1px, transparent 1px);
     background-size: 32px 32px;
+    position: relative; /* Ensure proper positioning context */
+  }
+  
+  /* Add z-index control for proper layering */
+  header {
+    z-index: 40;
+  }
+  
+  /* Mobile menu should appear above everything */
+  .mobile-menu {
+    z-index: 50;
   }
 }
 
