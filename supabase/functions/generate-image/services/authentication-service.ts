@@ -41,7 +41,7 @@ export class AuthenticationService {
       const handleAuthResponse = (event: MessageEvent) => {
         try {
           const response = JSON.parse(event.data);
-          console.log("Authentication response received:", response.data?.[0]?.taskType);
+          console.log("Authentication response received:", response);
           
           if (response.data?.[0]?.taskType === "authentication") {
             console.log("Authentication successful");
@@ -49,11 +49,20 @@ export class AuthenticationService {
             this.isAuthenticating = false;
             resolve();
           } else if (response.error || response.errors) {
-            const error = response.errorMessage || response.errors?.[0]?.message || "Authentication failed";
-            console.error("Authentication error:", error);
+            const errorDetails = response.errors?.[0] || {};
+            const errorMessage = errorDetails.message || response.errorMessage || "Authentication failed";
+            console.error("Authentication error details:", errorDetails);
+            console.error("Authentication error message:", errorMessage);
+            
             this.webSocketManager.removeWebSocketEventListener("message", handleAuthResponse);
             this.isAuthenticating = false;
-            reject(new Error(error));
+            
+            // Create a more descriptive error message for API key issues
+            if (errorDetails.code === "invalidApiKey") {
+              reject(new Error("Invalid Runware API key. Please check your RUNWARE_API_KEY in Supabase secrets."));
+            } else {
+              reject(new Error(errorMessage));
+            }
           }
         } catch (error) {
           console.error("Error parsing authentication response:", error);

@@ -84,7 +84,7 @@ const ImageGenerationHandler = async ({
     
     if (error) {
       console.error("Edge function error:", error);
-      throw new Error(error.message || "Failed to generate image");
+      throw new Error(error.message || "Failed to send a request to the Edge Function");
     }
     
     // Check if the response indicates an error

@@ -20,7 +20,7 @@ serve(async (req) => {
       console.error("RUNWARE_API_KEY not found in environment variables");
       return new Response(
         JSON.stringify({ 
-          error: "API key not configured on the server",
+          error: "API key not configured on the server. Please set the RUNWARE_API_KEY in Supabase secrets.",
           success: false 
         }),
         { 
