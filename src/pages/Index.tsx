@@ -154,6 +154,18 @@ const Index = () => {
           <p className="text-gray-600 mb-4">
             Ready to start creating? Join now and bring your ideas to life!
           </p>
+          
+          {/* Go to Generator button for logged in users */}
+          {session && (
+            <Button
+              onClick={() => navigate("/generator")}
+              className="text-base px-6 py-3 h-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 mb-4"
+            >
+              Go to Generator <ArrowRight className="ml-2" />
+            </Button>
+          )}
+          
+          {/* Sign Up button for non-logged in users */}
           {!session && (
             <Button
               onClick={() => navigate("/auth")}
