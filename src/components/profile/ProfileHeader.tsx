@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { LogOut, ArrowLeft } from "lucide-react";
+import { LogOut, ArrowLeft, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -21,6 +21,14 @@ const ProfileHeader = ({ onSignOut }: ProfileHeaderProps) => {
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Generator
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => navigate("/")}
+          className="flex items-center gap-2"
+        >
+          <Home className="h-4 w-4" />
+          Home
         </Button>
         <Button
           onClick={onSignOut}
