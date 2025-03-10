@@ -1,7 +1,12 @@
+
 /* Remove all width constraints and padding to ensure consistent page sizing */
 #root {
   margin: 0 auto;
   text-align: center;
+  width: 100%;
+  padding: 0;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 /* Keep the remaining styles */
