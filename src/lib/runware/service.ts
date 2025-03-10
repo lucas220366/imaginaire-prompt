@@ -26,6 +26,7 @@ export class RunwareService {
     if (!apiKey) {
       throw new Error("API key not set");
     }
+    console.log("Initializing RunwareService with API endpoint:", API_ENDPOINT);
     this.wsManager = new WebSocketManager(API_ENDPOINT, apiKey);
   }
 
@@ -36,19 +37,27 @@ export class RunwareService {
       taskType: "imageInference",
       taskUUID,
       positivePrompt: params.positivePrompt,
-      model: "runware:100@1",
+      model: params.model || "runware:100@1",
       width: params.width || 1024,
       height: params.height || 1024,
-      numberResults: 1,
-      steps: 20,
-      CFGScale: 7,
-      scheduler: "DPMSolverMultistepScheduler",
-      strength: 1.0,
-      lora: [],
+      numberResults: params.numberResults || 1,
+      steps: params.steps || 20,
+      CFGScale: params.CFGScale || 7,
+      scheduler: params.scheduler || "DPMSolverMultistepScheduler",
+      strength: params.strength || 1.0,
+      lora: params.lora || [],
       outputFormat: params.outputFormat || "WEBP"
     }];
 
     console.log("Starting image generation with params:", JSON.stringify(params, null, 2));
-    return this.wsManager.sendMessage<GeneratedImage>(message);
+    
+    try {
+      const result = await this.wsManager.sendMessage<GeneratedImage>(message);
+      console.log("Image generation successful, received result:", result);
+      return result;
+    } catch (error) {
+      console.error("Image generation failed:", error);
+      throw error;
+    }
   }
 }

@@ -7,7 +7,6 @@ import Header from "./image-generator/Header";
 import ImageGeneratorContent from "./image-generator/ImageGeneratorContent";
 import ImageGenerationHandler from "./image-generator/ImageGenerationHandler";
 import { toast } from "sonner";
-import { RunwareService } from '@/lib/runware';
 
 // Default API key for development/testing environments
 const DEFAULT_API_KEY = process.env.RUNWARE_API_KEY || "runware_demo_key";
@@ -37,15 +36,47 @@ const ImageGenerator = () => {
   };
 
   const handleGenerate = async () => {
+    console.log("Generate button clicked");
+    
+    if (isGenerating) {
+      console.log("Already generating an image, ignoring request");
+      toast.info("Already generating an image. Please wait.");
+      return;
+    }
+    
+    if (!prompt.trim()) {
+      console.log("Empty prompt, showing error");
+      toast.error("Please enter a prompt");
+      return;
+    }
+    
+    if (!session?.user?.id) {
+      console.log("User not logged in, showing error");
+      toast.error("Please log in to generate images");
+      return;
+    }
+    
+    console.log("Starting image generation process");
     await ImageGenerationHandler({
       apiKey: DEFAULT_API_KEY,
       prompt,
       settings,
       session,
-      onSuccess: setImage,
-      onError: () => {},
-      onStartGenerating: () => setIsGenerating(true),
-      onFinishGenerating: () => setIsGenerating(false)
+      onSuccess: (imageUrl) => {
+        console.log("Image generation successful, setting image URL:", imageUrl);
+        setImage(imageUrl);
+      },
+      onError: () => {
+        console.log("Image generation failed");
+      },
+      onStartGenerating: () => {
+        console.log("Setting generating state to true");
+        setIsGenerating(true);
+      },
+      onFinishGenerating: () => {
+        console.log("Setting generating state to false");
+        setIsGenerating(false);
+      }
     });
   };
 

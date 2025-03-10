@@ -20,6 +20,7 @@ const PromptInput = ({ prompt, isGenerating, onPromptChange, onGenerate }: Promp
           value={prompt}
           onChange={(e) => onPromptChange(e.target.value)}
           className="flex-1"
+          disabled={isGenerating}
         />
         <Button 
           onClick={onGenerate}
