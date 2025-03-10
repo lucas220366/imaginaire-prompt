@@ -1,4 +1,3 @@
-
 export interface GenerateImageParams {
   positivePrompt: string;
   model?: string;
@@ -12,6 +11,7 @@ export interface GenerateImageParams {
   lora?: string[];
   width?: number;
   height?: number;
+  steps?: number;
 }
 
 export interface GeneratedImage {
