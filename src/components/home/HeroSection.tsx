@@ -10,7 +10,7 @@ interface HeroSectionProps {
 
 const HeroSection = ({ isAuthenticated, authReady }: HeroSectionProps) => {
   const navigate = useNavigate();
-
+  
   return (
     <div className="text-center space-y-4 mb-12">
       <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mt-8">
@@ -20,21 +20,23 @@ const HeroSection = ({ isAuthenticated, authReady }: HeroSectionProps) => {
         Create stunning, unique images in seconds using the power of AI. 
         Perfect for artists, designers, and creative minds.
       </p>
-      {authReady && isAuthenticated ? (
+      
+      {/* Don't hide when not authReady, just show appropriate button */}
+      {isAuthenticated ? (
         <Button
           onClick={() => navigate("/generator")}
           className="text-base px-4 py-2 h-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
         >
           Go to Generator <ArrowRight className="ml-2" />
         </Button>
-      ) : authReady && !isAuthenticated ? (
+      ) : authReady && (
         <Button
           onClick={() => navigate("/auth")}
           className="text-base px-4 py-2 h-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
         >
           Get Started, It's Free! <ArrowRight className="ml-2" />
         </Button>
-      ) : null}
+      )}
     </div>
   );
 };

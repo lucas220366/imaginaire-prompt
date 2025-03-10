@@ -15,6 +15,7 @@ const Index = () => {
   const navigate = useNavigate();
   const { session, isLoading, signOut } = useAuth();
   const [authReady, setAuthReady] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     console.log("Index page - Auth state:", {
@@ -26,6 +27,7 @@ const Index = () => {
     // Only set authReady to true once we're sure about the auth state
     if (!isLoading) {
       setAuthReady(true);
+      setIsAuthenticated(!!session);
     }
   }, [session, isLoading]);
 
@@ -47,14 +49,14 @@ const Index = () => {
 
       {/* Header with Profile, Contact and Sign Out links */}
       <HomeHeader 
-        isAuthenticated={!!session} 
+        isAuthenticated={isAuthenticated} 
         authReady={authReady} 
         onSignOut={handleSignOut} 
       />
 
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Hero Section */}
-        <HeroSection isAuthenticated={!!session} authReady={authReady} />
+        <HeroSection isAuthenticated={isAuthenticated} authReady={authReady} />
 
         {/* Example Creations Section */}
         <SampleImages />
@@ -66,7 +68,7 @@ const Index = () => {
         <FeaturesSection />
 
         {/* Call to Action */}
-        <CallToAction isAuthenticated={!!session} authReady={authReady} />
+        <CallToAction isAuthenticated={isAuthenticated} authReady={authReady} />
       </div>
     </div>
   );

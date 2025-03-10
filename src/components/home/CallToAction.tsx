@@ -17,18 +17,15 @@ const CallToAction = ({ isAuthenticated, authReady }: CallToActionProps) => {
         Ready to start creating? Join now and bring your ideas to life!
       </p>
       
-      {/* Go to Generator button for logged in users */}
-      {authReady && isAuthenticated && (
+      {/* Always show the appropriate button based on authentication status */}
+      {isAuthenticated ? (
         <Button
           onClick={() => navigate("/generator")}
           className="text-base px-6 py-3 h-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
         >
           Go to Generator <Rocket className="ml-2 h-5 w-5" />
         </Button>
-      )}
-      
-      {/* Sign Up button for non-logged in users */}
-      {authReady && !isAuthenticated && (
+      ) : authReady && (
         <Button
           onClick={() => navigate("/auth")}
           className="text-base px-4 py-2 h-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"

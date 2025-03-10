@@ -24,7 +24,7 @@ const HomeHeader = ({ isAuthenticated, authReady, onSignOut }: HomeHeaderProps) 
         Contact
       </Button>
       
-      {authReady && isAuthenticated ? (
+      {isAuthenticated ? (
         <>
           <Button
             onClick={() => navigate("/profile")}
@@ -45,7 +45,7 @@ const HomeHeader = ({ isAuthenticated, authReady, onSignOut }: HomeHeaderProps) 
             Sign Out
           </Button>
         </>
-      ) : authReady && !isAuthenticated ? (
+      ) : authReady && (
         <Button
           onClick={() => navigate("/auth")}
           variant="outline"
@@ -55,7 +55,7 @@ const HomeHeader = ({ isAuthenticated, authReady, onSignOut }: HomeHeaderProps) 
           <User className="h-4 w-4" />
           Sign In
         </Button>
-      ) : null}
+      )}
     </div>
   );
 };
