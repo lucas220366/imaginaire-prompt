@@ -49,7 +49,8 @@ const ImageGenerationHandler = async ({
   isGenerating = true;
   onStartGenerating();
   
-  let timeoutId: number | undefined;
+  // Fix: Explicitly type timeoutId as NodeJS.Timeout | undefined
+  let timeoutId: NodeJS.Timeout | undefined;
   
   try {
     // Clear any previous timeouts first
