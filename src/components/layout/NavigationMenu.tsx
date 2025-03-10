@@ -28,13 +28,13 @@ const NavigationMenu = ({
   };
 
   return (
-    <div className="relative z-10 flex flex-col items-end">
+    <div className="relative z-10">
       {/* Mobile Menu Button */}
       <Button
         onClick={toggleMenu}
         variant="outline"
         size="icon"
-        className="md:hidden mb-2"
+        className="md:hidden"
       >
         <Menu className="h-4 w-4" />
       </Button>
@@ -106,7 +106,7 @@ const NavigationMenu = ({
       
       {/* Mobile Menu */}
       {menuOpen && (
-        <div className="md:hidden bg-white shadow-md rounded-md p-2 flex flex-col gap-2 w-36">
+        <div className="md:hidden absolute right-0 top-10 bg-white shadow-md rounded-md p-2 flex flex-col gap-2 w-36">
           {showBackToGenerator && (
             <Button
               onClick={() => {
@@ -165,10 +165,7 @@ const NavigationMenu = ({
               
               {onSignOut && (
                 <Button
-                  onClick={() => {
-                    handleSignOut();
-                    setMenuOpen(false);
-                  }}
+                  onClick={handleSignOut}
                   variant="ghost"
                   className="flex items-center justify-start gap-2 h-8"
                   size="sm"

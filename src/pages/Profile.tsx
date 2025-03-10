@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
@@ -92,7 +91,9 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen p-6">
-      <Logo />
+      <div className="container mx-auto mb-4">
+        <Logo />
+      </div>
       <div className="max-w-6xl mx-auto">
         <ProfileHeader onSignOut={handleSignOut} />
         

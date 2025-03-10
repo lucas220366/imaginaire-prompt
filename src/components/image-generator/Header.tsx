@@ -31,13 +31,13 @@ const Header = ({ onSignOut }: HeaderProps) => {
   };
 
   return (
-    <>
+    <div className="flex justify-between items-center">
       <Logo />
       <NavigationMenu 
         isAuthenticated={true} 
         onSignOut={handleSignOut} 
       />
-    </>
+    </div>
   );
 };
 
