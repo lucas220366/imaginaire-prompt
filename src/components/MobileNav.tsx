@@ -46,82 +46,84 @@ const MobileNav = ({ onSignOut }: MobileNavProps) => {
 
       {/* Mobile menu */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 bg-white/95 md:hidden pt-24">
-          <div className="flex flex-col items-center gap-4 p-4">
-            <Button
-              onClick={() => { 
-                navigate("/");
-                setIsOpen(false);
-              }}
-              variant="ghost"
-              className="w-full justify-start"
-            >
-              <Home className="mr-2 h-4 w-4" />
-              Home
-            </Button>
+        <div className="fixed inset-0 z-50 bg-white md:hidden pt-16">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col items-center gap-4 p-4 bg-white rounded-lg shadow-lg">
+              <Button
+                onClick={() => { 
+                  navigate("/");
+                  setIsOpen(false);
+                }}
+                variant="ghost"
+                className="w-full justify-start"
+              >
+                <Home className="mr-2 h-4 w-4" />
+                Home
+              </Button>
 
-            <Button
-              onClick={() => { 
-                navigate("/contact");
-                setIsOpen(false);
-              }}
-              variant="ghost"
-              className="w-full justify-start"
-            >
-              <MessageCircle className="mr-2 h-4 w-4" />
-              Contact
-            </Button>
+              <Button
+                onClick={() => { 
+                  navigate("/contact");
+                  setIsOpen(false);
+                }}
+                variant="ghost"
+                className="w-full justify-start"
+              >
+                <MessageCircle className="mr-2 h-4 w-4" />
+                Contact
+              </Button>
 
-            {session ? (
-              <>
+              {session ? (
+                <>
+                  <Button
+                    onClick={() => { 
+                      navigate("/profile");
+                      setIsOpen(false);
+                    }}
+                    variant="ghost"
+                    className="w-full justify-start"
+                  >
+                    <User className="mr-2 h-4 w-4" />
+                    My Images
+                  </Button>
+                  
+                  {session && (
+                    <Button
+                      onClick={() => { 
+                        navigate("/generator");
+                        setIsOpen(false);
+                      }}
+                      variant="ghost"
+                      className="w-full justify-start"
+                    >
+                      <Home className="mr-2 h-4 w-4" />
+                      Generator
+                    </Button>
+                  )}
+                  
+                  <Button
+                    onClick={handleSignOut}
+                    variant="ghost"
+                    className="w-full justify-start"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
                 <Button
                   onClick={() => { 
-                    navigate("/profile");
+                    navigate("/auth");
                     setIsOpen(false);
                   }}
                   variant="ghost"
                   className="w-full justify-start"
                 >
                   <User className="mr-2 h-4 w-4" />
-                  My Images
+                  Sign In
                 </Button>
-                
-                {session && (
-                  <Button
-                    onClick={() => { 
-                      navigate("/generator");
-                      setIsOpen(false);
-                    }}
-                    variant="ghost"
-                    className="w-full justify-start"
-                  >
-                    <Home className="mr-2 h-4 w-4" />
-                    Generator
-                  </Button>
-                )}
-                
-                <Button
-                  onClick={handleSignOut}
-                  variant="ghost"
-                  className="w-full justify-start"
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sign Out
-                </Button>
-              </>
-            ) : (
-              <Button
-                onClick={() => { 
-                  navigate("/auth");
-                  setIsOpen(false);
-                }}
-                variant="ghost"
-                className="w-full justify-start"
-              >
-                <User className="mr-2 h-4 w-4" />
-                Sign In
-              </Button>
-            )}
+              )}
+            </div>
           </div>
         </div>
       )}
