@@ -44,7 +44,7 @@ const MobileNav = ({ onSignOut }: MobileNavProps) => {
         {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
       </Button>
 
-      {/* Mobile menu - with matching background color */}
+      {/* Mobile menu */}
       {isOpen && (
         <div className="fixed inset-0 z-50 bg-white/95 md:hidden pt-24">
           <div className="flex flex-col items-center gap-4 p-4">

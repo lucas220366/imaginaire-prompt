@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthProvider";
@@ -7,7 +8,6 @@ import type { Database } from '@/integrations/supabase/types';
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import ImageGrid from "@/components/profile/ImageGrid";
 import ProfilePagination from "@/components/profile/ProfilePagination";
-import Logo from "@/components/Logo";
 
 type GeneratedImage = Database['public']['Tables']['generated_images']['Row'];
 
@@ -90,7 +90,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#f8faff]">
       <div className="container mx-auto px-4">
         <ProfileHeader onSignOut={handleSignOut} />
         
