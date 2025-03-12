@@ -7,38 +7,36 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { session, isLoading } = useAuth();
   const navigate = useNavigate();
 
-  // Simplified bot detection focused on major search engines
-  const isSearchEngine = /bot|googlebot|crawler|spider|robot|crawling/i.test(
+  // Most permissive bot detection
+  const isSearchEngine = /bot|crawler|spider|google|baidu|bing|yahoo|yandex|duckduck/i.test(
     navigator.userAgent
   );
 
   useEffect(() => {
-    // Enhanced logging for debugging
-    console.log({
+    // Debug logging
+    console.log("Route access:", {
+      path: window.location.pathname,
       userAgent: navigator.userAgent,
       isBot: isSearchEngine,
-      path: window.location.pathname,
-      isLoading,
-      hasSession: !!session
+      hasSession: !!session,
+      isLoading
     });
 
-    // Only redirect human users
+    // Only handle navigation for human users
     if (!isLoading && !session && !isSearchEngine) {
       navigate("/auth");
     }
   }, [session, isLoading, navigate, isSearchEngine]);
 
-  // Allow immediate access for search engines
+  // Search engines always see the content
   if (isSearchEngine) {
-    console.log("Search engine detected - allowing access");
     return <>{children}</>;
   }
 
-  // Show loading state for human users
+  // Regular user flow
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  // Show content for authenticated users
   return session ? <>{children}</> : null;
 };
