@@ -8,37 +8,36 @@
     <title>Free AI Image Generator - Create Stunning AI Art - vraho.com</title>
     <meta name="description" content="Create stunning AI-generated images for free! Use our AI image generator to turn text into art in seconds. Try it now!" />
     <script>
-      // Enhanced and more comprehensive bot detection
-      var botPatterns = [
-        'Googlebot', 'googlebot', 'bingbot', 'YandexBot', 'DuckDuckBot', 'Baiduspider', 
-        'AdsBot-Google', 'Mediapartners-Google', 'Googlebot-Mobile', 'Googlebot-Image', 
-        'APIs-Google', 'AdsBot-Google-Mobile', 'Twitterbot', 'facebookexternalhit', 
-        'ia_archiver', 'semrushbot', 'AhrefsBot', 'SeznamBot', 'YisouSpider', 'BLEXBot', 
-        'MJ12bot', 'PetalBot', 'LinkedInBot', 'slurp', 'Applebot', 'CCBot', 'Pinterestbot',
-        'archive.org_bot', 'Discordbot', 'WhatsApp', 'Dataprovider'
-      ];
-      
-      function detectBot(userAgent) {
+      // Ultra-permissive bot detection - extremely thorough
+      function isBot() {
+        var userAgent = navigator.userAgent.toLowerCase();
+        var botPatterns = [
+          'bot', 'crawler', 'spider', 'google', 'baidu', 'bing', 'yahoo', 'yandex', 
+          'duckduck', 'facebook', 'twitter', 'linkedin', 'pinterest', 'archive', 
+          'search', 'index', 'scrape', 'semrush', 'ahrefs', 'moz', 'majestic', 'alexa'
+        ];
+        
         for (var i = 0; i < botPatterns.length; i++) {
           if (userAgent.indexOf(botPatterns[i]) !== -1) {
-            return botPatterns[i];
+            console.log("404.html - Bot detected via keyword:", botPatterns[i]);
+            return true;
           }
         }
-        return null;
+        
+        console.log("404.html - No bot detected in user agent:", userAgent);
+        return false;
       }
       
-      var userAgent = navigator.userAgent;
-      var detectedBot = detectBot(userAgent);
-      var isBot = !!detectedBot;
+      // Extremely detailed logging
+      console.log("404.html - Page Access:", {
+        url: window.location.href,
+        userAgent: navigator.userAgent,
+        timestamp: new Date().toISOString()
+      });
       
-      console.log("404.html - User Agent:", userAgent);
-      console.log("404.html - Is Bot:", isBot);
-      if (isBot) {
-        console.log("404.html - Detected Bot:", detectedBot);
-      }
-      
-      // Only redirect non-bot users
-      if (!isBot) {
+      // Only redirect human users
+      if (!isBot()) {
+        console.log("404.html - Redirecting human user to home page");
         var pathSegmentsToKeep = 0;
         var l = window.location;
         l.replace(
@@ -48,6 +47,8 @@
           (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
           l.hash
         );
+      } else {
+        console.log("404.html - Showing content to search engine");
       }
     </script>
     <!-- Additional meta tags for SEO -->
@@ -78,9 +79,30 @@
         <li><a href="https://vraho.com">Home</a> - Main page</li>
         <li><a href="https://vraho.com/generator">AI Image Generator</a> - Create AI art</li>
         <li><a href="https://vraho.com/contact">Contact Us</a> - Get in touch</li>
+        <li><a href="https://vraho.com/privacy-policy">Privacy Policy</a> - Our privacy practices</li>
+        <li><a href="https://vraho.com/terms-of-use">Terms of Use</a> - Terms and conditions</li>
       </ul>
       
       <p>Visit our homepage at <a href="https://vraho.com">vraho.com</a> to start creating!</p>
+      
+      <!-- Additional content for improved SEO -->
+      <div>
+        <h2>About Our AI Image Generator</h2>
+        <p>Our AI art generator uses advanced machine learning to create stunning images from text descriptions. Whether you're a designer, artist, or just looking for inspiration, our tool can help you visualize your ideas instantly.</p>
+        
+        <h3>How It Works</h3>
+        <p>Simply enter a text description of what you want to see, choose your preferred settings, and our AI will generate a unique image based on your input. You can download the results in various formats for use in your projects.</p>
+        
+        <h3>Why Choose Our AI Art Generator</h3>
+        <ul>
+          <li>Free to use with no hidden costs</li>
+          <li>High-quality image output</li>
+          <li>Fast generation speed</li>
+          <li>User-friendly interface</li>
+          <li>No account required for basic usage</li>
+          <li>Multiple customization options</li>
+        </ul>
+      </div>
     </div>
     <div id="user-message" style="text-align: center; margin-top: 20px;">
       Redirecting to homepage...
