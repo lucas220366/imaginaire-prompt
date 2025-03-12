@@ -1,50 +1,45 @@
-
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import Logo from '@/components/Logo';
 import { Button } from "@/components/ui/button";
 import { Home } from "lucide-react";
 import MobileNav from "@/components/MobileNav";
+import { isSearchEngine } from "../utils/bot-detection";
 
 const NotFound = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
-  // Much more comprehensive search engine detection
-  const isSearchEngine = /Googlebot|googlebot|bingbot|YandexBot|DuckDuckBot|Baiduspider|AdsBot-Google|Mediapartners-Google|Googlebot-Mobile|Googlebot-Image|APIs-Google|AdsBot-Google-Mobile|Twitterbot|facebookexternalhit|ia_archiver|semrushbot|AhrefsBot|SeznamBot|YisouSpider|BLEXBot|MJ12bot|PetalBot|LinkedInBot|slurp|Applebot|CCBot|Pinterestbot|archive\.org_bot|Discordbot|WhatsApp|Dataprovider/i.test(navigator.userAgent);
+  const isBot = isSearchEngine();
 
   useEffect(() => {
-    // Enhanced logging for debugging
-    console.log("NotFound - User Agent:", navigator.userAgent);
-    console.log("NotFound - Is Search Engine:", isSearchEngine);
-    console.log("NotFound - Route:", location.pathname);
+    // Super enhanced logging for debugging
+    console.log("NotFound - Detailed Access Information:", {
+      path: location.pathname,
+      userAgent: navigator.userAgent,
+      isBot: isBot,
+      timestamp: new Date().toISOString(),
+      referrer: document.referrer,
+      language: navigator.language,
+      platform: navigator.platform,
+      screenDimensions: {
+        width: window.innerWidth,
+        height: window.innerHeight
+      },
+      devicePixelRatio: window.devicePixelRatio,
+      cookiesEnabled: navigator.cookieEnabled
+    });
     
     // Only log as error for real users, not for search engines
-    if (!isSearchEngine) {
+    if (!isBot) {
       console.error(
         "404 Error: User attempted to access non-existent route:",
         location.pathname
       );
     } else {
       // For search engines, log as info instead of error
-      console.log("Search engine accessed route:", location.pathname);
-      
-      // Log specifically which bot was detected
-      const botPatterns = [
-        'Googlebot', 'googlebot', 'bingbot', 'YandexBot', 'DuckDuckBot', 'Baiduspider', 
-        'AdsBot-Google', 'Mediapartners-Google', 'Googlebot-Mobile', 'Googlebot-Image', 
-        'APIs-Google', 'AdsBot-Google-Mobile', 'Twitterbot', 'facebookexternalhit', 
-        'ia_archiver', 'semrushbot', 'AhrefsBot', 'SeznamBot', 'YisouSpider', 'BLEXBot', 
-        'MJ12bot', 'PetalBot', 'LinkedInBot', 'slurp', 'Applebot', 'CCBot', 'Pinterestbot'
-      ];
-      
-      const detectedBot = botPatterns.find(bot => 
-        navigator.userAgent.indexOf(bot) !== -1
-      );
-      
-      console.log("NotFound - Detected Bot:", detectedBot || "Unknown bot");
+      console.log("Search engine accessed 404 route:", location.pathname);
     }
-  }, [location.pathname, isSearchEngine]);
+  }, [location.pathname, isBot]);
 
   return (
     <div className="min-h-screen">

@@ -4,35 +4,84 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <title>Free AI Image Generator - Create Stunning AI Art - vraho.com</title>
     <meta name="description" content="Create stunning AI-generated images for free! Use our AI image generator to turn text into art in seconds. Try it now!" />
     <script>
       // Ultra-permissive bot detection - extremely thorough
       function isBot() {
-        var userAgent = navigator.userAgent.toLowerCase();
-        var botPatterns = [
-          'bot', 'crawler', 'spider', 'google', 'baidu', 'bing', 'yahoo', 'yandex', 
-          'duckduck', 'facebook', 'twitter', 'linkedin', 'pinterest', 'archive', 
-          'search', 'index', 'scrape', 'semrush', 'ahrefs', 'moz', 'majestic', 'alexa'
-        ];
-        
-        for (var i = 0; i < botPatterns.length; i++) {
-          if (userAgent.indexOf(botPatterns[i]) !== -1) {
-            console.log("404.html - Bot detected via keyword:", botPatterns[i]);
+        try {
+          var userAgent = navigator.userAgent.toLowerCase();
+          
+          // Create a comprehensive list of known bots and crawlers
+          var botPatterns = [
+            // Major search engines
+            'googlebot', 'google', 'bingbot', 'bing', 'yandexbot', 'yandex', 'baiduspider', 'baidu', 'duckduckbot', 'duckduck',
+            'yahoo', 'ask', 'aol', 'sogou', 'exabot', 'daumoa', 'naver',
+            
+            // Social media crawlers
+            'facebook', 'twitter', 'linkedin', 'pinterest', 'slack', 'discord', 'whatsapp', 'telegram',
+            
+            // SEO and analytics tools
+            'semrush', 'ahrefs', 'moz', 'majestic', 'sistrix', 'searchmetrics', 'screaming', 'alexa',
+            
+            // Generic bot indicators
+            'bot', 'crawler', 'spider', 'search', 'index', 'scrape', 'monitor', 'archive', 'ia_archiver', 'huawei',
+            'slurp', 'feed', 'fetch', 'scan', 'check', 'request', 'chrome-lighthouse', 'headless',
+            
+            // Technical indicators
+            'http', 'client', 'python', 'java', 'curl', 'wget', 'mozilla', 'browser', 'phantomjs', 'webdriver'
+          ];
+          
+          // Check for any match in the user agent
+          for (var i = 0; i < botPatterns.length; i++) {
+            if (userAgent.indexOf(botPatterns[i]) !== -1) {
+              console.log("404.html - Bot detected via keyword:", botPatterns[i]);
+              return true;
+            }
+          }
+          
+          // Additional checks for bot characteristics
+          if (!navigator.languages || navigator.languages.length === 0) {
+            console.log("404.html - Bot detected via missing languages");
             return true;
           }
+          
+          // Check for webdriver attribute (common in headless browsers)
+          if (navigator.webdriver) {
+            console.log("404.html - Bot detected via webdriver attribute");
+            return true;
+          }
+          
+          // Very permissive fallback - if anything seems unusual, treat as a bot
+          if (typeof window.chrome === 'undefined' && typeof navigator.brave === 'undefined') {
+            // Many bots don't implement chrome object
+            console.log("404.html - Bot potentially detected via missing browser objects");
+            return true;
+          }
+          
+          console.log("404.html - No bot detected in user agent:", userAgent);
+          return false;
+        } catch (e) {
+          // If there's any error in detection, assume it's a bot to be safe
+          console.log("404.html - Error in bot detection, assuming bot:", e);
+          return true;
         }
-        
-        console.log("404.html - No bot detected in user agent:", userAgent);
-        return false;
       }
       
       // Extremely detailed logging
       console.log("404.html - Page Access:", {
         url: window.location.href,
         userAgent: navigator.userAgent,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        referrer: document.referrer,
+        language: navigator.language,
+        languages: navigator.languages,
+        cookiesEnabled: navigator.cookieEnabled,
+        doNotTrack: navigator.doNotTrack,
+        platform: navigator.platform,
+        screenWidth: window.innerWidth,
+        screenHeight: window.innerHeight
       });
       
       // Only redirect human users
@@ -53,7 +102,7 @@
     </script>
     <!-- Additional meta tags for SEO -->
     <link rel="canonical" href="https://vraho.com" />
-    <meta name="keywords" content="AI Image Generator, Free AI Art, AI Art Creator, Text to Image AI">
+    <meta name="keywords" content="AI Image Generator, Free AI Art, AI Art Creator, Text to Image AI, AI Drawing Tool, Midjourney Alternative, DALL-E Alternative, Free AI Image Maker">
     <meta property="og:title" content="Free AI Image Generator - Create AI Art Online">
     <meta property="og:description" content="Generate stunning AI images instantly with our free AI art tool. No sign-up required!">
     <meta property="og:image" content="https://vraho.com/preview-image.jpg">
