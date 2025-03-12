@@ -7,14 +7,31 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { session, isLoading } = useAuth();
   const navigate = useNavigate();
 
-  // Improved and more comprehensive search engine detection
-  const isSearchEngine = /Googlebot|googlebot|bingbot|YandexBot|DuckDuckBot|Baiduspider|AdsBot-Google|Mediapartners-Google|Googlebot-Mobile|Googlebot-Image|APIs-Google|AdsBot-Google-Mobile|Twitterbot|facebookexternalhit|ia_archiver|semrushbot|AhrefsBot|SeznamBot|YisouSpider|BLEXBot|MJ12bot|PetalBot/i.test(navigator.userAgent);
+  // More comprehensive search engine detection
+  const isSearchEngine = /Googlebot|googlebot|bingbot|YandexBot|DuckDuckBot|Baiduspider|AdsBot-Google|Mediapartners-Google|Googlebot-Mobile|Googlebot-Image|APIs-Google|AdsBot-Google-Mobile|Twitterbot|facebookexternalhit|ia_archiver|semrushbot|AhrefsBot|SeznamBot|YisouSpider|BLEXBot|MJ12bot|PetalBot|LinkedInBot|slurp|Applebot|CCBot|Pinterestbot|archive\.org_bot|Discordbot|WhatsApp|Dataprovider/i.test(navigator.userAgent);
   
-  // Log for debugging
+  // Log for debugging - more detailed
   useEffect(() => {
     console.log("ProtectedRoute - User Agent:", navigator.userAgent);
     console.log("ProtectedRoute - Is Search Engine:", isSearchEngine);
     console.log("ProtectedRoute - Auth State:", { isLoading, isAuthenticated: !!session });
+    
+    // For search engines, log specifically which bot was detected
+    if (isSearchEngine) {
+      const botPatterns = [
+        'Googlebot', 'googlebot', 'bingbot', 'YandexBot', 'DuckDuckBot', 'Baiduspider', 
+        'AdsBot-Google', 'Mediapartners-Google', 'Googlebot-Mobile', 'Googlebot-Image', 
+        'APIs-Google', 'AdsBot-Google-Mobile', 'Twitterbot', 'facebookexternalhit', 
+        'ia_archiver', 'semrushbot', 'AhrefsBot', 'SeznamBot', 'YisouSpider', 'BLEXBot', 
+        'MJ12bot', 'PetalBot', 'LinkedInBot', 'slurp', 'Applebot', 'CCBot', 'Pinterestbot'
+      ];
+      
+      const detectedBot = botPatterns.find(bot => 
+        navigator.userAgent.indexOf(bot) !== -1
+      );
+      
+      console.log("ProtectedRoute - Detected Bot:", detectedBot || "Unknown bot");
+    }
   }, [isSearchEngine, session, isLoading]);
 
   useEffect(() => {

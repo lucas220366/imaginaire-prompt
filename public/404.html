@@ -8,27 +8,34 @@
     <title>Free AI Image Generator - Create Stunning AI Art - vraho.com</title>
     <meta name="description" content="Create stunning AI-generated images for free! Use our AI image generator to turn text into art in seconds. Try it now!" />
     <script>
-      // Enhanced bot detection with more comprehensive patterns
+      // Enhanced and more comprehensive bot detection
       var botPatterns = [
         'Googlebot', 'googlebot', 'bingbot', 'YandexBot', 'DuckDuckBot', 'Baiduspider', 
         'AdsBot-Google', 'Mediapartners-Google', 'Googlebot-Mobile', 'Googlebot-Image', 
         'APIs-Google', 'AdsBot-Google-Mobile', 'Twitterbot', 'facebookexternalhit', 
         'ia_archiver', 'semrushbot', 'AhrefsBot', 'SeznamBot', 'YisouSpider', 'BLEXBot', 
-        'MJ12bot', 'PetalBot'
+        'MJ12bot', 'PetalBot', 'LinkedInBot', 'slurp', 'Applebot', 'CCBot', 'Pinterestbot',
+        'archive.org_bot', 'Discordbot', 'WhatsApp', 'Dataprovider'
       ];
       
-      var isBot = false;
-      var userAgent = navigator.userAgent;
-      
-      for (var i = 0; i < botPatterns.length; i++) {
-        if (userAgent.indexOf(botPatterns[i]) !== -1) {
-          isBot = true;
-          break;
+      function detectBot(userAgent) {
+        for (var i = 0; i < botPatterns.length; i++) {
+          if (userAgent.indexOf(botPatterns[i]) !== -1) {
+            return botPatterns[i];
+          }
         }
+        return null;
       }
+      
+      var userAgent = navigator.userAgent;
+      var detectedBot = detectBot(userAgent);
+      var isBot = !!detectedBot;
       
       console.log("404.html - User Agent:", userAgent);
       console.log("404.html - Is Bot:", isBot);
+      if (isBot) {
+        console.log("404.html - Detected Bot:", detectedBot);
+      }
       
       // Only redirect non-bot users
       if (!isBot) {
