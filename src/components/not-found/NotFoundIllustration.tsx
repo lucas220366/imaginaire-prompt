@@ -46,12 +46,14 @@ const NotFoundIllustration = () => {
       </div>
       
       {/* Add keyframes for the pulse animation */}
-      <style jsx>{`
+      <style>
+        {`
         @keyframes pulse {
           0%, 100% { transform: scale(1); opacity: 0.7; }
           50% { transform: scale(1.2); opacity: 1; }
         }
-      `}</style>
+        `}
+      </style>
     </div>
   );
 };
