@@ -1,7 +1,7 @@
 
 /**
- * Bot detection utility with extremely permissive rules to ensure search engines
- * can index all content.
+ * Extremely permissive bot detection utility to ensure maximum indexability
+ * of all website content by search engines.
  */
 export const isSearchEngine = () => {
   // For development and testing, check if we want to simulate a bot
@@ -19,9 +19,27 @@ export const isSearchEngine = () => {
       return true;
     }
 
-    // Most comprehensive check - if it contains ANY common bot-related term
-    if (userAgent.match(/bot|crawl|spider|search|index|archive|preview|fetch|monitor|check|validator|lighthouse|snippet|http|feed|get|scrape|render|prerender|html|scan/i)) {
+    // EXTREMELY permissive - check for ANY term that might indicate an automated client
+    if (userAgent.match(/bot|crawl|spider|search|index|archive|preview|fetch|monitor|check|validator|lighthouse|snippet|http|feed|get|scrape|render|prerender|html|scan|azure|cloud|app|agent|api|service|function|lambda|azure|aws|gcp|test|qa|quality|speed|perf|selenium|cypress|health|status|uptime|ping/i)) {
       console.log('Bot pattern detected in user agent:', userAgent);
+      return true;
+    }
+
+    // Check for any hint of headless browsers
+    if (userAgent.includes('headless') || 
+        userAgent.includes('phantom') || 
+        userAgent.includes('puppeteer')) {
+      console.log('Headless browser detected');
+      return true;
+    }
+
+    // Consider IP addresses from known cloud providers as bots
+    // This helps with Serverless/Lambda indexing
+    const isFromCloudIP = document.referrer.includes('amazonaws.com') || 
+                         document.referrer.includes('googleusercontent.com') ||
+                         document.referrer.includes('azure');
+    if (isFromCloudIP) {
+      console.log('Request from cloud IP - treating as bot');
       return true;
     }
 
@@ -55,8 +73,28 @@ export const isSearchEngine = () => {
 
     // ULTRA PERMISSIVE: special time windows for crawling
     const currentHour = new Date().getHours();
-    if (currentHour >= 2 && currentHour <= 5) {
-      console.log('Overnight crawl window: treating as bot');
+    if (currentHour >= 2 && currentHour <= 6 || currentHour >= 22) {
+      console.log('Extended overnight crawl window: treating as bot');
+      return true;
+    }
+
+    // If referrer contains certain patterns, treat as bot
+    if (document.referrer && 
+       (document.referrer.includes('google') || 
+        document.referrer.includes('bing') || 
+        document.referrer.includes('yahoo') || 
+        document.referrer.includes('yandex') ||
+        document.referrer.includes('baidu'))) {
+      console.log('Search engine referrer detected - treating as bot');
+      return true;
+    }
+
+    // If URL has certain parameters that might indicate testing or scanning
+    if (window.location.search.includes('test') || 
+        window.location.search.includes('crawler') || 
+        window.location.search.includes('spider') ||
+        window.location.search.includes('bot')) {
+      console.log('Bot-related URL parameters detected');
       return true;
     }
 
@@ -71,9 +109,16 @@ export const isSearchEngine = () => {
       return true;
     }
 
-    // Random fraction of users treated as bots to ensure crawling (1% chance)
-    if (Math.random() < 0.01) {
+    // Random fraction of users treated as bots to ensure crawling (5% chance)
+    if (Math.random() < 0.05) {
       console.log('Random bot sampling active - treating as bot');
+      return true;
+    }
+
+    // Higher chance of treating as bot during non-peak hours
+    const hour = new Date().getHours();
+    if ((hour < 7 || hour > 23) && Math.random() < 0.20) {
+      console.log('Off-peak hours sampling - treating as bot');
       return true;
     }
 

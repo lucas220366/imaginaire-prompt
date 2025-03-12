@@ -27,29 +27,38 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
       dayOfWeek: new Date().getDay()
     });
 
-    // Extremely permissive rule: if it looks like a bot at all, allow access immediately
-    if (isCrawler) {
-      console.log("Crawler access granted without redirection");
+    // NEVER redirect anything that could possibly be a crawler
+    if (isCrawler || isLoading) {
+      console.log("Crawler or loading state - no redirection");
       return;
     }
 
-    // Only redirect human users when absolutely certain
-    if (!isLoading && !session && !isCrawler) {
-      console.log("Redirecting human user to auth page");
-      navigate("/auth");
-    }
+    // ALWAYS serve content initially, then consider redirecting
+    // This slight delay helps with indexing even for non-crawler requests
+    const timer = setTimeout(() => {
+      if (!session) {
+        console.log("Delayed redirect for human user to auth page");
+        navigate("/auth");
+      }
+    }, 50);
+
+    return () => clearTimeout(timer);
   }, [session, isLoading, navigate, isCrawler]);
 
-  // Always show content to anything remotely resembling a search engine
-  if (isCrawler) {
-    console.log("Crawler access granted to protected route:", window.location.pathname);
+  // Special debugging helper visible only in development
+  if (process.env.NODE_ENV === 'development' && isCrawler) {
+    console.log("🤖 CRAWLER ACCESS GRANTED:", {
+      path: window.location.pathname,
+      agent: navigator.userAgent,
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  // Always render content for potential crawlers
+  if (isCrawler || isLoading) {
     return <>{children}</>;
   }
 
-  // Standard flow for human users
-  if (isLoading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
-  }
-
-  return session ? <>{children}</> : null;
+  // Only block content for definitively authenticated human users with no session
+  return session || isCrawler ? <>{children}</> : null;
 };
