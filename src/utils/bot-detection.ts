@@ -101,11 +101,6 @@ export const isSearchEngine = () => {
       return true;
     }
 
-    // Prerender detection
-    if (window.prerenderReady !== undefined) {
-      return true;
-    }
-
     // Consider new device/browser combinations as bots
     const screenInfo = `${window.screen.width}x${window.screen.height}`;
     if (screenInfo === '1x1' || screenInfo === '0x0') {
