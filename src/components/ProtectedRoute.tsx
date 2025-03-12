@@ -7,44 +7,42 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { session, isLoading } = useAuth();
   const navigate = useNavigate();
 
-  // Super permissive bot detection - include all possible variations and partial matches
+  // Simplified bot detection focused on major search engines
   const userAgent = navigator.userAgent.toLowerCase();
-  const botKeywords = [
-    'bot', 'crawler', 'spider', 'search', 'index', 'scrape', 'google', 'baidu', 
-    'bing', 'yahoo', 'yandex', 'duckduck', 'facebook', 'twitter', 'linkedin',
-    'pinterest', 'archive', 'semrush', 'ahrefs', 'moz', 'majestic', 'alexa'
-  ];
-  
-  const isSearchEngine = botKeywords.some(keyword => userAgent.includes(keyword));
+  const isSearchEngine = (
+    userAgent.includes('googlebot') ||
+    userAgent.includes('bingbot') ||
+    userAgent.includes('yandexbot') ||
+    userAgent.includes('baiduspider') ||
+    userAgent.includes('duckduckbot') ||
+    // Broader fallbacks for other potential crawlers
+    userAgent.includes('bot') ||
+    userAgent.includes('spider') ||
+    userAgent.includes('crawler')
+  );
 
   useEffect(() => {
-    // Comprehensive debug logging
-    console.log("Protected Route Access:", {
+    // Essential debug logging
+    console.log("Protected Route:", {
+      isBot: isSearchEngine,
+      userAgent: navigator.userAgent,
       path: window.location.pathname,
-      fullUserAgent: navigator.userAgent,
-      lowerUserAgent: userAgent,
-      isSearchEngine: isSearchEngine,
-      botDetectionKeywords: botKeywords,
-      matchedKeywords: botKeywords.filter(keyword => userAgent.includes(keyword)),
-      hasSession: !!session,
-      isLoading,
       timestamp: new Date().toISOString()
     });
 
-    // Only handle navigation for human users
+    // Only redirect human users
     if (!isLoading && !session && !isSearchEngine) {
-      console.log("Redirecting non-bot user to auth page");
       navigate("/auth");
     }
-  }, [session, isLoading, navigate, isSearchEngine, userAgent]);
+  }, [session, isLoading, navigate, isSearchEngine]);
 
-  // Search engines always see the content without any delay or conditions
+  // Immediate access for search engines
   if (isSearchEngine) {
-    console.log("Search engine detected - providing immediate full access to content");
+    console.log("Search engine access granted");
     return <>{children}</>;
   }
 
-  // Human user flow
+  // Standard flow for human users
   if (isLoading) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
