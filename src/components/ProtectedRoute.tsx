@@ -7,9 +7,16 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { session, isLoading } = useAuth();
   const navigate = useNavigate();
 
-  // Improved search engine detection with additional bot patterns
-  const isSearchEngine = /Googlebot|bingbot|YandexBot|DuckDuckBot|Baiduspider|AdsBot-Google|Mediapartners-Google|Googlebot-Mobile|Googlebot-Image|APIs-Google|AdsBot-Google-Mobile|Twitterbot|facebookexternalhit/i.test(navigator.userAgent);
+  // Improved and more comprehensive search engine detection
+  const isSearchEngine = /Googlebot|googlebot|bingbot|YandexBot|DuckDuckBot|Baiduspider|AdsBot-Google|Mediapartners-Google|Googlebot-Mobile|Googlebot-Image|APIs-Google|AdsBot-Google-Mobile|Twitterbot|facebookexternalhit|ia_archiver|semrushbot|AhrefsBot|SeznamBot|YisouSpider|BLEXBot|MJ12bot|PetalBot/i.test(navigator.userAgent);
   
+  // Log for debugging
+  useEffect(() => {
+    console.log("ProtectedRoute - User Agent:", navigator.userAgent);
+    console.log("ProtectedRoute - Is Search Engine:", isSearchEngine);
+    console.log("ProtectedRoute - Auth State:", { isLoading, isAuthenticated: !!session });
+  }, [isSearchEngine, session, isLoading]);
+
   useEffect(() => {
     // Only redirect if not loading, not authenticated and not a search engine
     if (!isLoading && !session && !isSearchEngine) {
@@ -17,12 +24,17 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     }
   }, [session, isLoading, navigate, isSearchEngine]);
 
-  // Show loading indicator only for real users, not for search engines
-  if (isLoading && !isSearchEngine) {
+  // Always render content for search engines regardless of authentication
+  if (isSearchEngine) {
+    console.log("ProtectedRoute - Rendering content for search engine");
+    return <>{children}</>;
+  }
+
+  // Show loading indicator for real users
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  // Always render content for search engines regardless of authentication
   // For regular users, only show if authenticated
-  return (session || isSearchEngine) ? <>{children}</> : null;
+  return session ? <>{children}</> : null;
 };

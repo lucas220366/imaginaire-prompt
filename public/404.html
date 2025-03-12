@@ -8,8 +8,27 @@
     <title>Free AI Image Generator - Create Stunning AI Art - vraho.com</title>
     <meta name="description" content="Create stunning AI-generated images for free! Use our AI image generator to turn text into art in seconds. Try it now!" />
     <script>
-      // Check if this is a search engine bot with more comprehensive detection
-      var isBot = /Googlebot|bingbot|YandexBot|DuckDuckBot|Baiduspider|AdsBot-Google|Mediapartners-Google|Googlebot-Mobile|Googlebot-Image|APIs-Google|AdsBot-Google-Mobile|Twitterbot|facebookexternalhit/i.test(navigator.userAgent);
+      // Enhanced bot detection with more comprehensive patterns
+      var botPatterns = [
+        'Googlebot', 'googlebot', 'bingbot', 'YandexBot', 'DuckDuckBot', 'Baiduspider', 
+        'AdsBot-Google', 'Mediapartners-Google', 'Googlebot-Mobile', 'Googlebot-Image', 
+        'APIs-Google', 'AdsBot-Google-Mobile', 'Twitterbot', 'facebookexternalhit', 
+        'ia_archiver', 'semrushbot', 'AhrefsBot', 'SeznamBot', 'YisouSpider', 'BLEXBot', 
+        'MJ12bot', 'PetalBot'
+      ];
+      
+      var isBot = false;
+      var userAgent = navigator.userAgent;
+      
+      for (var i = 0; i < botPatterns.length; i++) {
+        if (userAgent.indexOf(botPatterns[i]) !== -1) {
+          isBot = true;
+          break;
+        }
+      }
+      
+      console.log("404.html - User Agent:", userAgent);
+      console.log("404.html - Is Bot:", isBot);
       
       // Only redirect non-bot users
       if (!isBot) {
@@ -31,6 +50,7 @@
     <meta property="og:description" content="Generate stunning AI images instantly with our free AI art tool. No sign-up required!">
     <meta property="og:image" content="https://vraho.com/preview-image.jpg">
     <meta property="og:url" content="https://vraho.com">
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
   </head>
   <body>
     <div id="content-for-search-engines">
