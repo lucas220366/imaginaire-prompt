@@ -1,37 +1,44 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Redirecting...</title>
+    <meta name="robots" content="index, follow">
+    <title>Free AI Image Generator - Create Stunning AI Art - vraho.com</title>
+    <meta name="description" content="Create stunning AI-generated images for free! Use our AI image generator to turn text into art in seconds. Try it now!" />
     <script>
       // Single Page Apps for GitHub Pages
       // MIT License
       // https://github.com/rafgraph/spa-github-pages
-      // This script takes the current url and converts the path and query
-      // string into just a query string, and then redirects the browser
-      // to the new url with only a query string and hash fragment
       
-      // If you're creating a Project Pages site and NOT using a custom domain,
-      // then set pathSegmentsToKeep to 1 (enterprise users may need to set it to > 1).
-      // This way the code will only replace the route part of the path, and not
-      // the real directory in which the app resides, for example:
-      // https://username.github.io/repo-name/one/two?a=b&c=d#qwe becomes
-      // https://username.github.io/repo-name/?/one/two&a=b~and~c=d#qwe
-      // Otherwise, leave pathSegmentsToKeep as 0.
-      var pathSegmentsToKeep = 0;
-
-      var l = window.location;
-      l.replace(
-        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-        l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
-        l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
-        (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
-        l.hash
-      );
+      // Check if this is a search engine bot
+      var isBot = /Googlebot|bingbot|YandexBot|DuckDuckBot|Baiduspider/i.test(navigator.userAgent);
+      
+      // Only redirect non-bot users
+      if (!isBot) {
+        var pathSegmentsToKeep = 0;
+        var l = window.location;
+        l.replace(
+          l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+          l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+          l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+          (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+          l.hash
+        );
+      }
     </script>
+    <!-- Additional content for search engines -->
+    <link rel="canonical" href="https://vraho.com" />
   </head>
   <body>
-    Redirecting...
+    <div id="content-for-search-engines">
+      <h1>Free AI Image Generator - Create Stunning AI Art</h1>
+      <p>Generate beautiful AI images with our free online tool. Turn your text descriptions into stunning visual art in seconds.</p>
+      <p>Visit our homepage at <a href="https://vraho.com">vraho.com</a> to start creating!</p>
+    </div>
+    <div id="user-message" style="text-align: center; margin-top: 20px;">
+      Redirecting to homepage...
+    </div>
   </body>
 </html>

@@ -8,7 +8,10 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isLoading && !session) {
+    // Only redirect if not a search engine and not authenticated
+    const isSearchEngine = /Googlebot|bingbot|YandexBot|DuckDuckBot|Baiduspider/i.test(navigator.userAgent);
+    
+    if (!isLoading && !session && !isSearchEngine) {
       navigate("/auth");
     }
   }, [session, isLoading, navigate]);
@@ -17,5 +20,8 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return <div>Loading...</div>;
   }
 
-  return session ? <>{children}</> : null;
+  // Show content to search engines even if not authenticated
+  const isSearchEngine = /Googlebot|bingbot|YandexBot|DuckDuckBot|Baiduspider/i.test(navigator.userAgent);
+  
+  return session || isSearchEngine ? <>{children}</> : null;
 };

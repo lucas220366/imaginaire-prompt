@@ -20,6 +20,9 @@ const ImageGenerator = () => {
     aspectRatio: "square"
   });
 
+  // Check if it's a search engine
+  const isSearchEngine = /Googlebot|bingbot|YandexBot|DuckDuckBot|Baiduspider/i.test(navigator.userAgent);
+
   const handleSignOut = async () => {
     try {
       console.log("Starting sign out process");
@@ -100,6 +103,30 @@ const ImageGenerator = () => {
           onGenerate={handleGenerate}
           generatedImage={image}
         />
+        
+        {/* Additional SEO content for search engines */}
+        {isSearchEngine && !session && (
+          <div className="mt-8 max-w-3xl mx-auto">
+            <h2 className="text-2xl font-bold mb-4">AI Image Generator</h2>
+            <p className="mb-4">Create stunning AI-generated images from text descriptions with our free online tool.</p>
+            <p className="mb-4">Our AI Image Generator allows you to:</p>
+            <ul className="list-disc pl-5 mb-4">
+              <li>Generate high-quality AI art from text prompts</li>
+              <li>Customize image size and aspect ratio</li>
+              <li>Download your creations in various formats</li>
+              <li>Save your generated images to your profile</li>
+            </ul>
+            <p className="mb-4">Sign up or log in to start creating amazing AI art!</p>
+            
+            <h3 className="text-xl font-semibold mt-6 mb-3">How to use our AI Image Generator:</h3>
+            <ol className="list-decimal pl-5 mb-4">
+              <li>Sign up for a free account</li>
+              <li>Enter a detailed text description of what you want to create</li>
+              <li>Click "Generate" to create your AI image</li>
+              <li>Download your image or save it to your profile</li>
+            </ol>
+          </div>
+        )}
       </main>
     </div>
   );

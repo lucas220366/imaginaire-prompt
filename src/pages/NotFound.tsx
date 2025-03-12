@@ -15,6 +15,14 @@ const NotFound = () => {
       "404 Error: User attempted to access non-existent route:",
       location.pathname
     );
+    
+    // Check if this is a search engine bot
+    const isSearchEngine = /Googlebot|bingbot|YandexBot|DuckDuckBot|Baiduspider/i.test(navigator.userAgent);
+    
+    // If it's a search engine and the path looks like a protected route, don't log as an error
+    if (isSearchEngine && ['/generator', '/profile'].includes(location.pathname)) {
+      console.log("Search engine accessed protected route:", location.pathname);
+    }
   }, [location.pathname]);
 
   return (
@@ -50,6 +58,22 @@ const NotFound = () => {
           <Link to="/" className="text-blue-500 hover:text-blue-700 underline">
             Return to Home
           </Link>
+          
+          {/* Additional content for search engines */}
+          <div className="mt-8 max-w-2xl mx-auto text-left">
+            <h2 className="text-2xl font-semibold mb-4">Looking for AI Image Generation?</h2>
+            <p className="mb-4">Our AI Image Generator lets you create stunning AI art from text descriptions.</p>
+            <p className="mb-4">Visit our <Link to="/" className="text-blue-500 hover:text-blue-700 underline">homepage</Link> to learn more about our free AI art generation tools.</p>
+            
+            <div className="mt-8">
+              <h3 className="font-medium mb-2">Popular pages:</h3>
+              <ul className="list-disc pl-5 space-y-2">
+                <li><Link to="/" className="text-blue-500 hover:text-blue-700">Home</Link> - Our main page</li>
+                <li><Link to="/generator" className="text-blue-500 hover:text-blue-700">AI Image Generator</Link> - Create AI art</li>
+                <li><Link to="/contact" className="text-blue-500 hover:text-blue-700">Contact Us</Link> - Get in touch</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>
