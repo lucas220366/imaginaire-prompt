@@ -2,43 +2,31 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthProvider";
+import { isSearchEngine } from "../utils/bot-detection";
 
 export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { session, isLoading } = useAuth();
   const navigate = useNavigate();
-
-  // Simplified bot detection focused on major search engines
-  const userAgent = navigator.userAgent.toLowerCase();
-  const isSearchEngine = (
-    userAgent.includes('googlebot') ||
-    userAgent.includes('bingbot') ||
-    userAgent.includes('yandexbot') ||
-    userAgent.includes('baiduspider') ||
-    userAgent.includes('duckduckbot') ||
-    // Broader fallbacks for other potential crawlers
-    userAgent.includes('bot') ||
-    userAgent.includes('spider') ||
-    userAgent.includes('crawler')
-  );
+  const isCrawler = isSearchEngine();
 
   useEffect(() => {
-    // Essential debug logging
-    console.log("Protected Route:", {
-      isBot: isSearchEngine,
-      userAgent: navigator.userAgent,
+    // Enhanced logging for debugging
+    console.log("Protected Route Access:", {
       path: window.location.pathname,
+      isBot: isCrawler,
+      hasSession: !!session,
+      isLoading,
       timestamp: new Date().toISOString()
     });
 
     // Only redirect human users
-    if (!isLoading && !session && !isSearchEngine) {
+    if (!isLoading && !session && !isCrawler) {
       navigate("/auth");
     }
-  }, [session, isLoading, navigate, isSearchEngine]);
+  }, [session, isLoading, navigate, isCrawler]);
 
-  // Immediate access for search engines
-  if (isSearchEngine) {
-    console.log("Search engine access granted");
+  // Always show content to search engines
+  if (isCrawler) {
     return <>{children}</>;
   }
 
@@ -49,3 +37,4 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
   return session ? <>{children}</> : null;
 };
+
