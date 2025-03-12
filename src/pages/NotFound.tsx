@@ -1,3 +1,4 @@
+
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import Logo from '@/components/Logo';
@@ -12,34 +13,51 @@ const NotFound = () => {
   const isBot = isSearchEngine();
 
   useEffect(() => {
-    // Super enhanced logging for debugging
+    // Enhanced structured logging for search engines
     console.log("NotFound - Detailed Access Information:", {
       path: location.pathname,
       userAgent: navigator.userAgent,
       isBot: isBot,
       timestamp: new Date().toISOString(),
-      referrer: document.referrer,
+      referrer: document.referrer || "none",
       language: navigator.language,
-      platform: navigator.platform,
+      platform: navigator.platform || "unknown",
       screenDimensions: {
         width: window.innerWidth,
         height: window.innerHeight
       },
       devicePixelRatio: window.devicePixelRatio,
-      cookiesEnabled: navigator.cookieEnabled
+      cookiesEnabled: navigator.cookieEnabled,
+      statusCode: 404
     });
     
-    // Only log as error for real users, not for search engines
-    if (!isBot) {
+    // Make sure bots know this is a 404 page
+    if (isBot) {
+      // Set title for better search engine recognition
+      document.title = "404 Page Not Found - vraho.com";
+      
+      // For crawlers, log as info rather than error
+      console.log("Search engine accessed 404 route:", location.pathname);
+    } else {
+      // For real users, log as error
       console.error(
         "404 Error: User attempted to access non-existent route:",
         location.pathname
       );
-    } else {
-      // For search engines, log as info instead of error
-      console.log("Search engine accessed 404 route:", location.pathname);
+      
+      // Don't auto-redirect human users who land on 404 page directly
+      if (location.pathname !== "/404") {
+        // Wait a moment before redirecting actual users
+        const timer = setTimeout(() => {
+          // Only redirect non-crawler users
+          if (!isBot) {
+            navigate("/", { replace: true });
+          }
+        }, 5000); // 5-second delay to allow for better user experience
+        return () => clearTimeout(timer);
+      }
     }
-  }, [location.pathname, isBot]);
+  }, [location.pathname, isBot, navigate]);
 
   return (
     <div className="min-h-screen">
@@ -66,16 +84,16 @@ const NotFound = () => {
         </div>
       </header>
       
-      {/* Main content */}
+      {/* Main content with proper 404 semantics */}
       <div className="flex items-center justify-center min-h-screen pt-16">
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">404</h1>
-          <p className="text-xl text-gray-600 mb-4">Oops! Page not found</p>
+          <h1 className="text-4xl font-bold mb-4">404 - Page Not Found</h1>
+          <p className="text-xl text-gray-600 mb-4">The page you're looking for doesn't exist or has been moved.</p>
           <Link to="/" className="text-blue-500 hover:text-blue-700 underline">
             Return to Home
           </Link>
           
-          {/* Additional content for search engines - enhanced with more keywords */}
+          {/* Enhanced SEO content for 404 page */}
           <div className="mt-8 max-w-2xl mx-auto text-left">
             <h2 className="text-2xl font-semibold mb-4">Looking for AI Image Generation?</h2>
             <p className="mb-4">Our AI Image Generator lets you create stunning AI art from text descriptions. Free to use, no sign-up required.</p>

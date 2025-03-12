@@ -5,13 +5,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-    <title>Free AI Image Generator - Create Stunning AI Art - vraho.com</title>
-    <meta name="description" content="Create stunning AI-generated images for free! Use our AI image generator to turn text into art in seconds. Try it now!" />
+    <title>404 Page Not Found - Free AI Image Generator - vraho.com</title>
+    <meta name="description" content="Page not found. Visit vraho.com to create stunning AI-generated images for free! Use our AI image generator to turn text into art in seconds." />
     <script>
       // Ultra-permissive bot detection - extremely thorough
       function isBot() {
         try {
-          var userAgent = navigator.userAgent.toLowerCase();
+          // If running on the server or in SSR, treat as bot
+          if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+            console.log("404.html - Server side rendering detected");
+            return true;
+          }
+          
+          var userAgent = navigator.userAgent.toLowerCase() || '';
           
           // Create a comprehensive list of known bots and crawlers
           var botPatterns = [
@@ -53,10 +59,34 @@
             return true;
           }
           
-          // Very permissive fallback - if anything seems unusual, treat as a bot
-          if (typeof window.chrome === 'undefined' && typeof navigator.brave === 'undefined') {
-            // Many bots don't implement chrome object
-            console.log("404.html - Bot potentially detected via missing browser objects");
+          // More permissive - high chance of being a bot if HTTP headers are unusual
+          if (navigator.platform === undefined || navigator.platform === '') {
+            console.log("404.html - Bot detected via missing platform");
+            return true;
+          }
+          
+          // Treat all new browsers/visitors as potential bots
+          var visitCount = sessionStorage.getItem('visitCount') || 0;
+          if (visitCount < 1) {
+            console.log("404.html - New visitor treated as bot for indexing");
+            sessionStorage.setItem('visitCount', parseInt(visitCount) + 1);
+            return true;
+          }
+          
+          // Check referrer - treat as bot if coming from search engine
+          if (document.referrer && (
+              document.referrer.includes('google') || 
+              document.referrer.includes('bing') || 
+              document.referrer.includes('yahoo') ||
+              document.referrer.includes('baidu')
+          )) {
+            console.log("404.html - Bot detected via search engine referrer");
+            return true;
+          }
+          
+          // Random sampling - treat some percentage as bots
+          if (Math.random() < 0.3) { // 30% chance
+            console.log("404.html - Random sampling: treating as bot");
             return true;
           }
           
@@ -69,50 +99,58 @@
         }
       }
       
-      // Extremely detailed logging
-      console.log("404.html - Page Access:", {
+      // Enhanced logging with HTTP status code
+      console.log("404.html - Page Access (HTTP Status: 404):", {
         url: window.location.href,
         userAgent: navigator.userAgent,
         timestamp: new Date().toISOString(),
-        referrer: document.referrer,
-        language: navigator.language,
-        languages: navigator.languages,
+        referrer: document.referrer || "none",
+        language: navigator.language || "unknown",
+        languages: navigator.languages || [],
         cookiesEnabled: navigator.cookieEnabled,
         doNotTrack: navigator.doNotTrack,
-        platform: navigator.platform,
+        platform: navigator.platform || "unknown",
         screenWidth: window.innerWidth,
-        screenHeight: window.innerHeight
+        screenHeight: window.innerHeight,
+        statusCode: 404
       });
       
-      // Only redirect human users
-      if (!isBot()) {
-        console.log("404.html - Redirecting human user to home page");
-        var pathSegmentsToKeep = 0;
-        var l = window.location;
-        l.replace(
-          l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-          l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
-          l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
-          (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
-          l.hash
-        );
+      // Only redirect human users after a delay
+      var isSearchEngine = isBot();
+      if (!isSearchEngine) {
+        console.log("404.html - Human user detected, will redirect after delay");
+        // Delay redirect for actual users
+        setTimeout(function() {
+          var pathSegmentsToKeep = 0;
+          var l = window.location;
+          l.replace(
+            l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+            l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+            l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+            (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+            l.hash
+          );
+        }, 3000); // 3 second delay
       } else {
-        console.log("404.html - Showing content to search engine");
+        console.log("404.html - Search engine detected, showing full content");
+        // Update document title to reflect 404 status
+        document.title = "404 Page Not Found - Free AI Image Generator - vraho.com";
       }
     </script>
-    <!-- Additional meta tags for SEO -->
+    <!-- Enhanced meta tags for SEO -->
     <link rel="canonical" href="https://vraho.com" />
-    <meta name="keywords" content="AI Image Generator, Free AI Art, AI Art Creator, Text to Image AI, AI Drawing Tool, Midjourney Alternative, DALL-E Alternative, Free AI Image Maker">
-    <meta property="og:title" content="Free AI Image Generator - Create AI Art Online">
-    <meta property="og:description" content="Generate stunning AI images instantly with our free AI art tool. No sign-up required!">
+    <meta name="keywords" content="404, page not found, AI Image Generator, Free AI Art, AI Art Creator, Text to Image AI, AI Drawing Tool, Midjourney Alternative, DALL-E Alternative, Free AI Image Maker">
+    <meta property="og:title" content="404 Page Not Found - Free AI Image Generator">
+    <meta property="og:description" content="Page not found. Create stunning AI images instantly with our free AI art tool. No sign-up required!">
     <meta property="og:image" content="https://vraho.com/preview-image.jpg">
     <meta property="og:url" content="https://vraho.com">
+    <meta property="og:type" content="website">
     <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
   </head>
   <body>
     <div id="content-for-search-engines">
-      <h1>Free AI Image Generator - Create Stunning AI Art</h1>
-      <p>Generate beautiful AI images with our free online tool. Turn your text descriptions into stunning visual art in seconds.</p>
+      <h1>404 Page Not Found - Free AI Image Generator</h1>
+      <p>We're sorry, but the page you're looking for doesn't exist. While you're here, why not try our free AI image generator?</p>
       
       <h2>Features of our AI Image Generator:</h2>
       <ul>
@@ -151,10 +189,22 @@
           <li>No account required for basic usage</li>
           <li>Multiple customization options</li>
         </ul>
+        
+        <h3>404 - Page Not Found Information</h3>
+        <p>The page you were looking for could not be found. This might be because:</p>
+        <ul>
+          <li>The URL was mistyped</li>
+          <li>The page has been moved or deleted</li>
+          <li>The link you followed is outdated</li>
+        </ul>
+        <p>Please navigate to our <a href="https://vraho.com">homepage</a> or try one of the popular links above.</p>
       </div>
     </div>
-    <div id="user-message" style="text-align: center; margin-top: 20px;">
-      Redirecting to homepage...
+    <div id="user-message" style="text-align: center; margin-top: 20px; font-family: Arial, sans-serif;">
+      <h2>404 - Page Not Found</h2>
+      <p>We couldn't find the page you were looking for.</p>
+      <p>Redirecting to homepage in a few seconds...</p>
+      <p><a href="https://vraho.com" style="color: #4B5FFE; text-decoration: underline;">Click here</a> if you're not redirected automatically.</p>
     </div>
   </body>
 </html>

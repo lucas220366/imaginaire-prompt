@@ -10,39 +10,40 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const isCrawler = isSearchEngine();
 
   useEffect(() => {
-    // Detailed logging for debugging
+    // Enhanced logging for debugging
     console.log("Protected Route Access:", {
       path: window.location.pathname,
       userAgent: navigator.userAgent,
       isBot: isCrawler,
       hasSession: !!session,
       isLoading,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      referrer: document.referrer || "none"
     });
 
-    // ALWAYS allow crawlers to see content
+    // ALWAYS allow crawlers to see content without ANY restrictions
     if (isCrawler) {
-      console.log("Search engine detected - allowing access");
+      console.log("Search engine detected - allowing unrestricted access");
       return;
     }
 
-    // For real users, check auth after a small delay
-    // This helps with initial page load and indexing
+    // For human users, check auth after a longer delay
+    // This prevents race conditions and helps with indexing
     const timer = setTimeout(() => {
       if (!isLoading && !session) {
+        console.log("No session found after delay, redirecting to auth");
         navigate("/auth");
       }
-    }, 100);
+    }, 500); // Increased delay for better indexing support
 
     return () => clearTimeout(timer);
   }, [session, isLoading, navigate, isCrawler]);
 
-  // Search engines ALWAYS see content
+  // Search engines ALWAYS see the full page content immediately
   if (isCrawler) {
     return <>{children}</>;
   }
 
-  // Show loading state or content based on auth
-  return isLoading ? null : session ? <>{children}</> : null;
+  // For users: show full content if authenticated or still loading
+  return isLoading || session ? <>{children}</> : null;
 };
-
