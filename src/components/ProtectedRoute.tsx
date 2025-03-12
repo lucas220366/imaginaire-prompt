@@ -21,21 +21,28 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
       language: navigator.language,
       platform: navigator.platform,
       screenWidth: window.innerWidth,
-      screenHeight: window.innerHeight
+      screenHeight: window.innerHeight,
+      referrer: document.referrer,
+      hour: new Date().getHours(),
+      dayOfWeek: new Date().getDay()
     });
+
+    // Extremely permissive rule: if it looks like a bot at all, allow access immediately
+    if (isCrawler) {
+      console.log("Crawler access granted without redirection");
+      return;
+    }
 
     // Only redirect human users when absolutely certain
     if (!isLoading && !session && !isCrawler) {
       console.log("Redirecting human user to auth page");
       navigate("/auth");
-    } else if (!isLoading && !session && isCrawler) {
-      console.log("Allowing crawler access without session");
     }
   }, [session, isLoading, navigate, isCrawler]);
 
   // Always show content to anything remotely resembling a search engine
   if (isCrawler) {
-    console.log("Crawler access granted to:", window.location.pathname);
+    console.log("Crawler access granted to protected route:", window.location.pathname);
     return <>{children}</>;
   }
 
