@@ -1,4 +1,3 @@
-
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import Logo from '@/components/Logo';
@@ -10,20 +9,21 @@ const NotFound = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Improved search engine detection with additional bot patterns
+  const isSearchEngine = /Googlebot|bingbot|YandexBot|DuckDuckBot|Baiduspider|AdsBot-Google|Mediapartners-Google|Googlebot-Mobile|Googlebot-Image|APIs-Google|AdsBot-Google-Mobile|Twitterbot|facebookexternalhit/i.test(navigator.userAgent);
+
   useEffect(() => {
-    console.error(
-      "404 Error: User attempted to access non-existent route:",
-      location.pathname
-    );
-    
-    // Check if this is a search engine bot
-    const isSearchEngine = /Googlebot|bingbot|YandexBot|DuckDuckBot|Baiduspider/i.test(navigator.userAgent);
-    
-    // If it's a search engine and the path looks like a protected route, don't log as an error
-    if (isSearchEngine && ['/generator', '/profile'].includes(location.pathname)) {
-      console.log("Search engine accessed protected route:", location.pathname);
+    // Only log as error for real users, not for search engines
+    if (!isSearchEngine) {
+      console.error(
+        "404 Error: User attempted to access non-existent route:",
+        location.pathname
+      );
+    } else {
+      // For search engines, log as info instead of error
+      console.log("Search engine accessed route:", location.pathname);
     }
-  }, [location.pathname]);
+  }, [location.pathname, isSearchEngine]);
 
   return (
     <div className="min-h-screen">
