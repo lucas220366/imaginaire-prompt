@@ -7,51 +7,38 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { session, isLoading } = useAuth();
   const navigate = useNavigate();
 
-  // More comprehensive search engine detection
-  const isSearchEngine = /Googlebot|googlebot|bingbot|YandexBot|DuckDuckBot|Baiduspider|AdsBot-Google|Mediapartners-Google|Googlebot-Mobile|Googlebot-Image|APIs-Google|AdsBot-Google-Mobile|Twitterbot|facebookexternalhit|ia_archiver|semrushbot|AhrefsBot|SeznamBot|YisouSpider|BLEXBot|MJ12bot|PetalBot|LinkedInBot|slurp|Applebot|CCBot|Pinterestbot|archive\.org_bot|Discordbot|WhatsApp|Dataprovider/i.test(navigator.userAgent);
-  
-  // Log for debugging - more detailed
-  useEffect(() => {
-    console.log("ProtectedRoute - User Agent:", navigator.userAgent);
-    console.log("ProtectedRoute - Is Search Engine:", isSearchEngine);
-    console.log("ProtectedRoute - Auth State:", { isLoading, isAuthenticated: !!session });
-    
-    // For search engines, log specifically which bot was detected
-    if (isSearchEngine) {
-      const botPatterns = [
-        'Googlebot', 'googlebot', 'bingbot', 'YandexBot', 'DuckDuckBot', 'Baiduspider', 
-        'AdsBot-Google', 'Mediapartners-Google', 'Googlebot-Mobile', 'Googlebot-Image', 
-        'APIs-Google', 'AdsBot-Google-Mobile', 'Twitterbot', 'facebookexternalhit', 
-        'ia_archiver', 'semrushbot', 'AhrefsBot', 'SeznamBot', 'YisouSpider', 'BLEXBot', 
-        'MJ12bot', 'PetalBot', 'LinkedInBot', 'slurp', 'Applebot', 'CCBot', 'Pinterestbot'
-      ];
-      
-      const detectedBot = botPatterns.find(bot => 
-        navigator.userAgent.indexOf(bot) !== -1
-      );
-      
-      console.log("ProtectedRoute - Detected Bot:", detectedBot || "Unknown bot");
-    }
-  }, [isSearchEngine, session, isLoading]);
+  // Simplified bot detection focused on major search engines
+  const isSearchEngine = /bot|googlebot|crawler|spider|robot|crawling/i.test(
+    navigator.userAgent
+  );
 
   useEffect(() => {
-    // Only redirect if not loading, not authenticated and not a search engine
+    // Enhanced logging for debugging
+    console.log({
+      userAgent: navigator.userAgent,
+      isBot: isSearchEngine,
+      path: window.location.pathname,
+      isLoading,
+      hasSession: !!session
+    });
+
+    // Only redirect human users
     if (!isLoading && !session && !isSearchEngine) {
       navigate("/auth");
     }
   }, [session, isLoading, navigate, isSearchEngine]);
 
-  // Always render content for search engines regardless of authentication
+  // Allow immediate access for search engines
   if (isSearchEngine) {
-    console.log("ProtectedRoute - Rendering content for search engine");
+    console.log("Search engine detected - allowing access");
     return <>{children}</>;
   }
 
-  // Show loading indicator for real users
+  // Show loading state for human users
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  // For regular users, only show if authenticated
+  // Show content for authenticated users
   return session ? <>{children}</> : null;
 };
