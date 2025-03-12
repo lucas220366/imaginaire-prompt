@@ -10,55 +10,39 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const isCrawler = isSearchEngine();
 
   useEffect(() => {
-    // Super detailed logging for debugging
+    // Detailed logging for debugging
     console.log("Protected Route Access:", {
       path: window.location.pathname,
       userAgent: navigator.userAgent,
       isBot: isCrawler,
       hasSession: !!session,
       isLoading,
-      timestamp: new Date().toISOString(),
-      language: navigator.language,
-      platform: navigator.platform,
-      screenWidth: window.innerWidth,
-      screenHeight: window.innerHeight,
-      referrer: document.referrer,
-      hour: new Date().getHours(),
-      dayOfWeek: new Date().getDay()
+      timestamp: new Date().toISOString()
     });
 
-    // NEVER redirect anything that could possibly be a crawler
-    if (isCrawler || isLoading) {
-      console.log("Crawler or loading state - no redirection");
+    // ALWAYS allow crawlers to see content
+    if (isCrawler) {
+      console.log("Search engine detected - allowing access");
       return;
     }
 
-    // ALWAYS serve content initially, then consider redirecting
-    // This slight delay helps with indexing even for non-crawler requests
+    // For real users, check auth after a small delay
+    // This helps with initial page load and indexing
     const timer = setTimeout(() => {
-      if (!session) {
-        console.log("Delayed redirect for human user to auth page");
+      if (!isLoading && !session) {
         navigate("/auth");
       }
-    }, 50);
+    }, 100);
 
     return () => clearTimeout(timer);
   }, [session, isLoading, navigate, isCrawler]);
 
-  // Special debugging helper visible only in development
-  if (process.env.NODE_ENV === 'development' && isCrawler) {
-    console.log("🤖 CRAWLER ACCESS GRANTED:", {
-      path: window.location.pathname,
-      agent: navigator.userAgent,
-      timestamp: new Date().toISOString()
-    });
-  }
-
-  // Always render content for potential crawlers
-  if (isCrawler || isLoading) {
+  // Search engines ALWAYS see content
+  if (isCrawler) {
     return <>{children}</>;
   }
 
-  // Only block content for definitively authenticated human users with no session
-  return session || isCrawler ? <>{children}</> : null;
+  // Show loading state or content based on auth
+  return isLoading ? null : session ? <>{children}</> : null;
 };
+
