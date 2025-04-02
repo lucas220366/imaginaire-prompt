@@ -38,6 +38,19 @@
     "priceCurrency": "USD"
   }
 }
+</script> 
+    
+<!-- Chatbot Widget -->
+<script>
+  (function() {
+    window.CHATBOT_CONFIG = {"projectId":"67ed0167c9681e514c580514","baseUrl":"https://chatbot-builder-api.onrender.com","config":{"appearance":{"primaryColor":"#3498db","launcherIcon":"CHAT","avatarUrl":"https://res.cloudinary.com/dbqdqnbka/image/upload/v1743585638/avatars/Screenshot%202025-02-11%20123535.png.png"},"configuration":{"welcomeMessage":"Hello! How can I help you today?","sampleQuestions":[]}}};
+    const script = document.createElement('script');
+    script.src = "https://chatbot-builder-api.onrender.com/js/chatbot-widget.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    document.head.appendChild(script);
+  })();
 </script>
+
   </body>
 </html>
