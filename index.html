@@ -42,5 +42,17 @@
     
 </script>
 
+<!-- Chatbot Widget -->
+<script>
+  (function() {
+    window.CHATBOT_CONFIG = {"projectId":"67ed00abc9681e514c5804c3","baseUrl":"https://chatbot-builder-api.onrender.com","config":{"appearance":{"primaryColor":"#3498db","launcherIcon":"CHAT","avatarUrl":"https://res.cloudinary.com/doaxoti6i/image/upload/v1740363595/Screenshot_2025-02-24_101927_k8yz4j.png"},"configuration":{"welcomeMessage":"Hello! How can I help you today?","sampleQuestions":[]}}};
+    const script = document.createElement('script');
+    script.src = "https://chatbot-builder-api.onrender.com/js/chatbot-widget.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    document.head.appendChild(script);
+  })();
+</script>
+
   </body>
 </html>
